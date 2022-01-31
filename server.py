@@ -16,5 +16,10 @@ def open_question(quiestion_id):
     return flask.render_template()
 
 
+@app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
+def new_answer(question_id):
+    return "new_answer"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
