@@ -1,11 +1,14 @@
+import flask
 from flask import Flask
 
 app = Flask(__name__)
 
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+@app.route('/list')
+def list_all():
+    return flask.render_template()
+
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -14,4 +17,4 @@ def new_answer(question_id):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
