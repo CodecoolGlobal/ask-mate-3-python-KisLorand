@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+    <h1>Add New Answer</h1>
+    <form action="/question/<question_id>/new-answer" method="post">
+        <textarea rows="4" cols="40" name="message">
+        </textarea>
+        <button type="submit">SUBMIT</button>
+    </form>
 </body>
 </html>
