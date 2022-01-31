@@ -7,8 +7,9 @@
 <body>
     <h1>Add New Answer</h1>
     <form action="/question/<question_id>/new-answer" method="post">
-        <textarea rows="4" cols="40" name="message">
-        </textarea>
+        <label for="message"> Answer</label><br>
+        <textarea id="message" rows="6" cols="60" name="message">
+        </textarea><br>
         <button type="submit">SUBMIT</button>
     </form>
 </body>
