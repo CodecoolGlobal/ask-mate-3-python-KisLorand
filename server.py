@@ -1,5 +1,6 @@
 import flask
 from flask import Flask
+import data_manager
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ def open_question(question_id):
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
     if flask.request.method == "POST":
+        data_handler.add_new_answer(question_id, flask.request.form.get("message"))
         return flask.redirect('/question/<question_id>')
     return flask.render_template("new_answer.html")
 
