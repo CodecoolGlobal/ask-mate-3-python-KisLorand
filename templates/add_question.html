@@ -8,6 +8,17 @@
     <title>Add Question</title>
 </head>
 <body>
-
+    <h1>Add New Question</h1>
+    <form action="/add-question" method="POST">
+            <label for="title-input">Title:<br></label>
+            <textarea id="title-input" name="title" rows="1" cols="20"></textarea>
+        <br><br>
+        <form action="/add-question" method="POST">
+            <label for="message-input">Message:<br></label>
+            <textarea id="message-input" name="message" rows="4" cols="40"></textarea>
+        <br><br>
+        <form action = "/add-question" method="POST">
+            <button type="submit">POST new question</button>
+        </form>
 </body>
 </html>
