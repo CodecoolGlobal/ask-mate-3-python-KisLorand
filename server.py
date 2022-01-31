@@ -10,10 +10,9 @@ def list_all():
     return flask.render_template()
 
 
-
 @app.route("/add-question")
 def add_question():
-    pass
+    return flask.render_template("add_question.html")
 
 
 if __name__ == "__main__":
