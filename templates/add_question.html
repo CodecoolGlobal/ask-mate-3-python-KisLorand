@@ -1,0 +1,15 @@
+{% extends "useless_main_page.html" %}
+{% block page_name %}Add New Question{% endblock %}
+{% block title %}
+    <label for="title-input">Title:<br></label>
+    <textarea id="title-input" name="title" rows="1" cols="20"></textarea>
+    <br><br>
+{% endblock %}
+{% block message %}
+    <label for="message-input">Message:<br></label>
+    <textarea id="message-input" name="message" rows="4" cols="40"></textarea>
+    <br><br>
+{% endblock %}
+{% block submit_question %}
+    <button type="submit">POST new question</button>
+{% endblock %}
