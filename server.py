@@ -1,17 +1,26 @@
 import flask
-from flask import Flask
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 
 
 @app.route("/")
+def main_page():
+    return flask.render_template("useless_main_page.html")
+
+
 @app.route('/list')
 def list_all():
-    return flask.render_template("add_question.html")
+    return flask.render_template("useless_main_page.html")
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
+    if request.method == "POST":
+        title = request.form['title']
+        message = request.form['message']
+        
+        return redirect('/')
     return flask.render_template("add_question.html")
 
 
