@@ -11,7 +11,7 @@ def list_all():
 
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
-def open_question(quiestion_id):
+def open_question(question_id):
     pass
     return flask.render_template()
 
