@@ -18,7 +18,9 @@ def open_question(quiestion_id):
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
-    return "new_answer"
+    if flask.request.method == "POST":
+        return flask.redirect('/question/<question_id>')
+    return flask.render_template("new_answer.html")
 
 
 if __name__ == "__main__":
