@@ -9,7 +9,7 @@ def add_new_answer(id_input, input_text):
     new_answer = {"id": "0", "submission_time": time.time(), "vote_number": "1", "question_id": id_input,
                   "message": input_text, "image": ""}
     all_answers.append(new_answer)
-    connection.write_all_data_to_csv(PATH_ANSWERS, all_answers)
+    connection.write_all_data_to_csv(all_answers, "ANSWERS")
 
 
 def get_all_data(type):
@@ -20,8 +20,8 @@ def get_all_data(type):
     return None
 
 
-def vote(id,csv_name,up=False):
-    datas = get_all_data(csv_name)
+def vote(id, type, up=False):
+    datas = get_all_data(type)
     updated_datas = []
     for data in datas:
         if data['id'] == id:
@@ -32,12 +32,13 @@ def vote(id,csv_name,up=False):
                 old_vote_number -= 1
             data['vote_number'] = str(old_vote_number)
         updated_datas.append(data)
-    connection.write_all_data_to_csv(csv_name, updated_datas)
+    print(updated_datas)
+    connection.write_all_data_to_csv(updated_datas, type)
 
 
 def write_all_data(type, all_data):
     if type.upper() == "ANSWERS":
-        return connection.write_all_data_to_csv(PATH_ANSWERS, all_data)
+        return connection.write_all_data_to_csv(all_data, type)
     elif type.upper() == "QUESTIONS":
-        return connection.write_all_data_to_csv(PATH_QUESTIONS, all_data)
+        return connection.write_all_data_to_csv(all_data, type)
     return None
