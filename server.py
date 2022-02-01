@@ -1,7 +1,7 @@
 import flask
 from flask import Flask
 import data_manager
-
+import connection
 
 
 app = Flask(__name__)
@@ -20,10 +20,11 @@ def list_all_questions():
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
+    all_data = data_manager.get_all_data()
     if flask.request.method == "POST":
         title = flask.request.form['title']
         message = flask.request.form['message']
-
+        id = all_data[-1]["id"]
         return flask.redirect('/')
     return flask.render_template("add_question.html")
 
