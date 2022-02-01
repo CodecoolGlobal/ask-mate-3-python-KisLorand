@@ -17,7 +17,7 @@ def main_page():
 
 @app.route('/list')
 def list_all_questions():
-    all_questions = data_manager.get_all_data('sample_data/question.csv')
+    all_questions = data_manager.get_all_data("questions")
     return flask.render_template('index.html',all_questions=all_questions)
 
 
@@ -29,7 +29,7 @@ def is_new_question_valid(question_title, question_message):
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
-    all_question_data = data_manager.get_all_data('sample_data/question.csv')
+    all_question_data = data_manager.get_all_data("QUESTIONS")
     if flask.request.method == "POST":
         new_title = flask.request.form['title']
         new_message = flask.request.form['message']
@@ -45,15 +45,26 @@ def add_question():
             new_question = {"id": str(new_id), "submission_time": submission_time, "view_number": new_view_number,
                             "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
             all_question_data.append(new_question)
-            data_manager.write_all_data("../ask-mate-1-python-KisLorand/sample_data/question.csv", all_question_data)
+            data_manager.write_all_data("QUESTIONS", all_question_data)
             return flask.redirect('/')
     return flask.render_template("add_question.html")
 
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
-    pass
-    return flask.render_template("useless_main_page.html")
+    question = data_manager.get_all_data('questions')
+    all_answers = data_manager.get_all_data('answers')
+    for row in question:
+        if row['id'] == question_id:
+            question_title = row['title']
+            question_message = row['message']
+            question_image = row['image']
+    answers = []
+    for answer in all_answers:
+        if answer['question_id'] == question_id:
+            answers.append(answer)
+
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])

@@ -3,7 +3,7 @@ import csv
 DATA_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 
 
-def get_all_csv_data(path):
+def get_all_csv_data(path='sample_data/question.csv'):
     with open(path) as csv_file:
         csv_reader = csv.DictReader(csv_file, fieldnames=DATA_HEADER)
         data = []
