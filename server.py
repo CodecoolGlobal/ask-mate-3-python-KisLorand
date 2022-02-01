@@ -75,14 +75,15 @@ def new_answer(question_id):
     return flask.render_template("add_answer.html")
 
 
-# @app.route('/question/<question_id>/vote_up')
-# def vote_up(id):
-#     return flask.redirect('/list')
-#
-#
-# @app.route('/question/<question_id>/vote_down')
-# def vote_down(id):
-#    return flask.redirect('/list')
+@app.route('/question/<question_id>/vote_up')
+def vote_up(id):
+
+    return flask.redirect('/list')
+
+
+@app.route('/question/<question_id>/vote_down')
+def vote_down(id):
+   return flask.redirect('/list')
 
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
@@ -100,6 +101,7 @@ def vote_down(answer_id):
         if answer['id'] == answer_id:
             answer['id'] -= 1
     return flask.redirect('/question/<question_id>')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
