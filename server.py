@@ -55,6 +55,7 @@ def new_answer(question_id):
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up(id):
+
     return flask.redirect('/list')
 
 

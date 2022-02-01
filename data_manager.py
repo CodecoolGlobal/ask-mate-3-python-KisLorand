@@ -17,3 +17,22 @@ def get_all_data(type):
     elif type.upper() == "QUESTIONS":
         return connection.get_all_csv_data(PATH_QUESTIONS)
     return None
+
+def vote(id,csv_name,up=False):
+    datas = get_all_data(csv_name)
+    updated_datas = []
+    for data in datas:
+        if data['id'] == id:
+            old_vote_number = int(data['vote_number'])
+            if up:
+                old_vote_number += 1
+            else:
+                old_vote_number -= 1
+            data['vote_number'] = str(old_vote_number)
+        updated_datas.append(data)
+    return updated_datas
+
+
+
+
+
