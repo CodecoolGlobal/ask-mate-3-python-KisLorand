@@ -20,7 +20,8 @@
                 <td>{{ answer['message'] }}</td>
                 <td><img src="static/images/{{ answer['image'] }}" alt=""></td>
                 <td>
-
+                    <a href="/question/{{ answer['id'] }}/vote_up"> Up vote</a>
+                    <a href="/question/{{ answer['id'] }}/vote_down">Down vote</a>
                 </td>
             </tr>
         {% endfor %}
