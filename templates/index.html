@@ -22,14 +22,12 @@
     <tr>
         <td>{{ data['view_number'] }}</td>
         <td>{{ data['vote_number'] }}</td>
-        <td>{{ data['title'] }}</td>
+        <td><a href="/question/{{ data['id'] }}">{{ data['title'] }}</a></td>
         <td>{{ data['message'] }}</td>
         <td><img src="{{ data['image'] }}" alt="image"></td>
         <td>
-            <form action="/vote" method="get" style=" display:inline!important;">
-                <input type="submit" name="up_vote" value="Up Vote">
-                <input type="submit" name="down_vote" value="Down Vote" />
-            </form>
+            <a href="/question/{{ data['id'] }}/vote_up"> Up vote</a>
+            <a href="/question/{{ data['id'] }}/vote_down">Down vote</a>
         </td>
     </tr>
     {% endfor %}
