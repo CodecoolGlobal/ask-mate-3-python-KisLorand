@@ -14,7 +14,7 @@ def main_page():
 
 @app.route('/list')
 def list_all_questions():
-    all_questions = data_manager.get_all_data()
+    all_questions = data_manager.get_all_data('questions')
     return flask.render_template('index.html',all_questions=all_questions)
 
 
@@ -40,6 +40,16 @@ def new_answer(question_id):
         data_manager.add_new_answer(question_id, flask.request.form.get("message"))
         return flask.redirect('/question/<question_id>')
     return flask.render_template("add_answer.html")
+
+
+@app.route('/question/<question_id>/vote_up')
+def vote_up(id):
+    return flask.redirect('/list')
+
+
+@app.route('/question/<question_id>/vote_down')
+def vote_down(id):
+   return flask.redirect('/list')
 
 
 if __name__ == "__main__":
