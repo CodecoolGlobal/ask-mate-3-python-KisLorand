@@ -54,6 +54,8 @@ def add_question():
 def open_question(question_id):
     question = data_manager.get_all_data('questions')
     all_answers = data_manager.get_all_data('answers')
+    print(question)
+    print(all_answers)
     for row in question:
         if row['id'] == question_id:
             question_title = row['title']
@@ -75,24 +77,20 @@ def new_answer(question_id):
     return flask.render_template("add_answer.html")
 
 
-@app.route('/question/<question_id>/vote_up')
-def vote_up(id):
-
-    return flask.redirect('/list')
-
-
-@app.route('/question/<question_id>/vote_down')
-def vote_down(id):
-   return flask.redirect('/list')
+# @app.route('/question/<question_id>/vote_up')
+# def vote_up(id):
+#
+#     return flask.redirect('/list')
+#
+#
+# @app.route('/question/<question_id>/vote_down')
+# def vote_down(id):
+#    return flask.redirect('/list')
 
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
-def vote_up(answer_id):
-    all_answers = data_manager.get_all_data('answers')
-    for answer in all_answers:
-        if answer['id'] == answer_id:
-            answer['id'] += 1
-    return flask.redirect('/question/<question_id>')
+
+
 
 @app.route("/answer/<answer_id>/down_up", methods=["GET"])
 def vote_down(answer_id):

@@ -41,4 +41,3 @@ def write_all_data(type, all_data):
     elif type.upper() == "QUESTIONS":
         return connection.write_all_data_to_csv(PATH_QUESTIONS, all_data)
     return None
-
