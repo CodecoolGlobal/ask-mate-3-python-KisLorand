@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>{% block page_name %}{% endblock %}</h1>
-    <form action="{% block action_destination %}{% endblock %}" method="post">
+    <form action="{% block action_destination %}{% endblock %}" method="POST">
         {% block title %}{% endblock %}
         {% block message %}{% endblock %}
         {% block submit_button %}{% endblock %}

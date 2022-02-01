@@ -21,13 +21,13 @@
                 <td>{{ answer['message'] }}</td>
                 <td><img src="static/images/{{ answer['image'] }}" alt=""></td>
                 <td>
-                    <a href="/answer/{{ answer['id'] }}/vote_up"> Up vote</a>
-                    <a href="/answer/{{ answer['id'] }}/vote_down">Down vote</a>
+                    <a href="/answer/{{ answer['id'] }}/vote_up?question_id={{ question_id }}" > Up vote</a>
+                    <a href="/answer/{{ answer['id'] }}/vote_down?question_id={{ question_id }}" >Down vote</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
 
-    <a href="/question/{{ question_id }}/new-answer">Add new answer</a>
+    <a href="/question/{{ question_id }}/new-answer?question_id={{ question_id }}">Add new answer</a>
     </body>
 </html>
