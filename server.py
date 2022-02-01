@@ -1,10 +1,8 @@
 import flask
-<<<<<<< HEAD
-from flask import Flask
-import data_manager
-=======
 from flask import Flask, request, redirect
->>>>>>> dab6a9b49afdc1c2b34e230cd8671944f514a7b9
+import data_manager
+import connection
+
 
 app = Flask(__name__)
 
@@ -15,8 +13,9 @@ def main_page():
 
 
 @app.route('/list')
-def list_all():
-    return flask.render_template('index.html')
+def list_all_questions():
+    all_questions = connection.get_all_csv_data('sample_data/question.csv')
+    return flask.render_template('index.html',all_questions=all_questions)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])

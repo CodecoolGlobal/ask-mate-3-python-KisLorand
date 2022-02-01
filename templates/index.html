@@ -9,6 +9,31 @@
 </head>
 <body>
     <h1>Ask Me</h1>
+<table>
+    <tr>
+        <th>View Number &nbsp;|</th>
+        <th>Vote Number &nbsp;| </th>
+        <th>Title &nbsp;| </th>
+        <th>Message &nbsp;|</th>
+        <th>Image</th>
+    </tr>
+
+    {%for data in all_questions  %}
+    <tr>
+        <td>{{ data['view_number'] }}</td>
+        <td>{{ data['vote_number'] }}</td>
+        <td>{{ data['title'] }}</td>
+        <td>{{ data['message'] }}</td>
+        <td><img src="{{ data['image'] }}" alt="image"></td>
+        <td>
+            <form action="/vote" method="get" style=" display:inline!important;">
+                <input type="submit" name="log" value="Up Vote">
+                <input type="submit" name="log" value="Down Vote" />
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 </body>
 </html>
