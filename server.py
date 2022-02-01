@@ -49,7 +49,7 @@ def open_question(question_id):
 def new_answer(question_id):
     if flask.request.method == "POST":
         data_manager.add_new_answer(question_id, flask.request.form.get("message"))
-        return flask.redirect('/question/<question_id>')
+        return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html")
 
 
