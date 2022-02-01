@@ -2,10 +2,29 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Title</title>
+        <title>Opened Question</title>
     </head>
-    <body>sss
-        <h1>H1</h1>
-        <p>Paragraph</p>
+    <body>
+        <h1>{{ question_title }}</h1>
+        <p>{{ question_message }}</p>
+        <img src="static/images/{{ question_image }}" alt="">
+    <table>
+        <tr>
+            <th>Vote Number</th>
+            <th>Answer</th>
+            <th>Image</th>
+        </tr>
+        {% for answer in answers %}
+            <tr>
+                <td>{{ answer['vote_number'] }}</td>
+                <td>{{ answer['message'] }}</td>
+                <td><img src="static/images/{{ answer['image'] }}" alt=""></td>
+                <td>
+
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="/question/<question_id>/new-answer">Add new answer</a>
     </body>
 </html>
