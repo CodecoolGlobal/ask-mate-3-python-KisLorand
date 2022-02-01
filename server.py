@@ -30,8 +30,19 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
-    pass
-    return flask.render_template("useless_main_page.html")
+    question = data_manager.get_all_data('questions')
+    all_answers = data_manager.get_all_data('answers')
+    for row in question:
+        if row['id'] == question_id:
+            question_title = row['title']
+            question_message = row['message']
+            question_image = row['image']
+    answers = []
+    for answer in all_answers:
+        if answer['question_id'] == question_id:
+            answers.append(answer)
+
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
