@@ -40,7 +40,7 @@ def add_question():
             new_vote_number = "0"
             # submission_time =
             submission_time = "0"
-            new_image = "future path for the image"
+            new_image = ""
             # new_image =
             new_question = {"id": str(new_id), "submission_time": submission_time, "view_number": new_view_number,
                             "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
@@ -77,19 +77,11 @@ def new_answer(question_id):
     return flask.render_template("add_answer.html")
 
 
-# @app.route('/question/<question_id>/vote_up')
-# def vote_up(id):
-#
-#     return flask.redirect('/list')
-#
-#
-# @app.route('/question/<question_id>/vote_down')
-# def vote_down(id):
-#    return flask.redirect('/list')
-
-
+@app.route("/answer/<answer_id>/down_up", methods=["GET"])
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
-
+def vote_answer(id):
+    data_manager.vote(id, 'answers', up=False)
+    return flask.redirect('/question/<question_id>')
 
 
 @app.route("/answer/<answer_id>/down_up", methods=["GET"])
@@ -99,6 +91,7 @@ def vote_down(answer_id):
         if answer['id'] == answer_id:
             answer['id'] -= 1
     return flask.redirect('/question/<question_id>')
+
 
 
 if __name__ == "__main__":

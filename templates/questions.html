@@ -8,6 +8,7 @@
         <h1>{{ question_title }}</h1>
         <p>{{ question_message }}</p>
         <img src="static/images/{{ question_image }}" alt="">
+        {% if (answer|length) != 0 %}
     <table>
         <tr>
             <th>Vote <br> Number &nbsp;</th>
@@ -26,6 +27,7 @@
             </tr>
         {% endfor %}
     </table>
+        {% endif %}
     <a href="/question/{{ question_id }}/new-answer">Add new answer</a>
     </body>
 </html>

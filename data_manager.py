@@ -9,7 +9,7 @@ def add_new_answer(id_input, input_text):
     new_answer = {"id": "0", "submission_time": time.time(), "vote_number": "1", "question_id": id_input,
                   "message": input_text, "image": ""}
     all_answers.append(new_answer)
-    connection.write_all_data_to_csv(PATH_ANSWERS, all_answers)
+    connection.write_all_data_to_csv(PATH_ANSWERS, all_answers, "answer")
 
 
 def get_all_data(type):
@@ -37,7 +37,7 @@ def vote(id,csv_name,up=False):
 
 def write_all_data(type, all_data):
     if type.upper() == "ANSWERS":
-        return connection.write_all_data_to_csv(PATH_ANSWERS, all_data)
+        return connection.write_all_data_to_csv(PATH_ANSWERS, all_data, type)
     elif type.upper() == "QUESTIONS":
-        return connection.write_all_data_to_csv(PATH_QUESTIONS, all_data)
+        return connection.write_all_data_to_csv(PATH_QUESTIONS, all_data, type)
     return None
