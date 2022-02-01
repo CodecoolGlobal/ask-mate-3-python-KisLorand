@@ -1,5 +1,6 @@
-{% extends "useless_main_page.html" %}
+{% extends "add_new_form.html" %}
 {% block page_name %}Add New Question{% endblock %}
+{% block action_destination %}/add-question{% endblock %}
 {% block title %}
     <label for="title-input">Title:<br></label>
     <textarea id="title-input" name="title" rows="1" cols="20"></textarea>
@@ -10,6 +11,6 @@
     <textarea id="message-input" name="message" rows="4" cols="40"></textarea>
     <br><br>
 {% endblock %}
-{% block submit_question %}
+{% block submit_button %}
     <button type="submit">POST new question</button>
 {% endblock %}
