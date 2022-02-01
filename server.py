@@ -42,7 +42,7 @@ def open_question(question_id):
         if answer['question_id'] == question_id:
             answers.append(answer)
 
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image)
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image, question_id=question_id)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -62,6 +62,14 @@ def vote_up(id):
 def vote_down(id):
    return flask.redirect('/list')
 
+
+@app.route("/answer/<answer_id>/vote_up")
+def vote_up(answer_id):
+    return flask.redirect('/question/<question_id>')
+
+@app.route("/answer/<answer_id>/down_up")
+def vote_up(answer_id):
+    return flask.redirect('/question/<question_id>')
 
 if __name__ == "__main__":
     app.run(debug=True)
