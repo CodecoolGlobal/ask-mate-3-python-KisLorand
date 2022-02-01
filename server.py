@@ -2,6 +2,7 @@ import flask
 from flask import Flask
 import data_manager
 import connection
+import time
 
 
 app = Flask(__name__)
@@ -39,10 +40,10 @@ def add_question():
             new_view_number = "0"
             new_vote_number = "0"
             # submission_time =
-            submission_time = "0"
+            submission_time = time.time()
             new_image = ""
             # new_image =
-            new_question = {"id": str(new_id), "submission_time": submission_time, "view_number": new_view_number,
+            new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": new_view_number,
                             "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
             all_question_data.append(new_question)
             data_manager.write_all_data("QUESTIONS", all_question_data)
@@ -87,14 +88,14 @@ def question_vote_down(question_id):
 
 
 @app.route("/answer/<answer_id>/vote_down", methods=["GET"])
-def vote_answer_down(anwer_id):
-    data_manager.vote(anwer_id, 'answers', up=False)
+def vote_answer_down(answer_id):
+    data_manager.vote(answer_id, 'answers', up=False)
     return flask.redirect('/question/<question_id>')
 
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
-def vote_answer_up(anwer_id):
-    data_manager.vote(anwer_id, 'answers', up=True)
+def vote_answer_up(answer_id):
+    data_manager.vote(answer_id, 'answers', up=True)
     return flask.redirect('/question/<question_id>')
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
