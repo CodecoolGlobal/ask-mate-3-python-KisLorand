@@ -32,7 +32,7 @@ def vote(id,csv_name,up=False):
                 old_vote_number -= 1
             data['vote_number'] = str(old_vote_number)
         updated_datas.append(data)
-    return updated_datas
+    connection.write_all_data_to_csv(csv_name, updated_datas)
 
 
 def write_all_data(type, all_data):

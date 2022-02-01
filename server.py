@@ -77,13 +77,14 @@ def new_answer(question_id):
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up(id):
-
+    data_manager.vote(id,'questions',up=True)
     return flask.redirect('/list')
 
 
 @app.route('/question/<question_id>/vote_down')
 def vote_down(id):
-   return flask.redirect('/list')
+    data_manager.vote(id,'questions',up=False)
+    return flask.redirect('/list')
 
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
@@ -93,6 +94,7 @@ def vote_up(answer_id):
         if answer['id'] == answer_id:
             answer['id'] += 1
     return flask.redirect('/question/<question_id>')
+
 
 @app.route("/answer/<answer_id>/down_up", methods=["GET"])
 def vote_up(answer_id):
