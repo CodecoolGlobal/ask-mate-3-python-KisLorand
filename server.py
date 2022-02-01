@@ -78,13 +78,13 @@ def new_answer(question_id):
 
 
 @app.route('/question/<question_id>/vote_up')
-def vote_up(id):
+def question_vote_up(id):
     data_manager.vote(id,'questions',up=True)
     return flask.redirect('/list')
 
 
 @app.route('/question/<question_id>/vote_down')
-def vote_down(id):
+def question_vote_down(id):
     data_manager.vote(id,'questions',up=False)
     return flask.redirect('/list')
 
