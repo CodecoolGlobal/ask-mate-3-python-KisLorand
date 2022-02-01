@@ -6,3 +6,7 @@ def add_new_answer(id_input, input_text):
 
 def get_all_data(path):
     return connection.get_all_csv_data(path)
+
+
+def write_all_data(path, all_data):
+    return connection.write_all_data_to_csv(path, all_data)

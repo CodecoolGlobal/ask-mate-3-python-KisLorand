@@ -29,24 +29,23 @@ def is_new_question_valid(question_title, question_message):
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
-    all_data = data_manager.get_all_data('sample_data/question.csv')
+    all_question_data = data_manager.get_all_data('sample_data/question.csv')
     if flask.request.method == "POST":
         new_title = flask.request.form['title']
         new_message = flask.request.form['message']
         if is_new_question_valid(new_title, new_message):
-            last_question_id = all_data[-1]["id"]
+            last_question_id = all_question_data[-1]["id"]
             new_id = 1 + int(last_question_id)
-            new_view_number = 0
-            new_vote_number = 0
-            submission_time = 0
-            new_image = "future link for the image"
-            # new_image = 
-            new_question = {"id": new_id, "submission_time": submission_time, "view_number": new_view_number,
+            new_view_number = "0"
+            new_vote_number = "0"
+            # submission_time =
+            submission_time = "0"
+            new_image = "future path for the image"
+            # new_image =
+            new_question = {"id": str(new_id), "submission_time": submission_time, "view_number": new_view_number,
                             "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
-            print(new_question)
-            all_data.append(new_question)
-            # data_manager.write_all_data(all_data)
-            print(all_data)
+            all_question_data.append(new_question)
+            data_manager.write_all_data("../ask-mate-1-python-KisLorand/sample_data/question.csv", all_question_data)
             return flask.redirect('/')
     return flask.render_template("add_question.html")
 
