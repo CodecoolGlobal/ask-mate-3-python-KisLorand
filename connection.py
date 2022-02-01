@@ -1,7 +1,7 @@
 import csv
 
 
-def get_all_csv_data(path):
+def get_all_csv_data(path='sample_data/question.csv'):
     with open(path) as csv_file:
         csv_reader = csv.DictReader(csv_file)
         data = []
