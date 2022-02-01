@@ -86,6 +86,13 @@ def question_vote_down(question_id):
     return flask.redirect('/list')
 
 
+@app.route("/answer/<answer_id>/vote_up", methods=["GET"])
+def vote_answer_up(answer_id):
+    question_id = flask.request.args.get("question_id")
+    data_manager.vote(answer_id, "answers", up=True)
+    return flask.redirect(f'/question/{question_id}')
+
+
 @app.route("/answer/<answer_id>/vote_down", methods=["GET"])
 def vote_answer_down(answer_id):
     question_id = flask.request.args.get("question_id")
