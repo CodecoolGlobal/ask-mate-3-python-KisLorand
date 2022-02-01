@@ -40,9 +40,13 @@ def add_question():
             new_vote_number = 0
             submission_time = 0
             new_image = "future link for the image"
+            # new_image = 
             new_question = {"id": new_id, "submission_time": submission_time, "view_number": new_view_number,
                             "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
             print(new_question)
+            all_data.append(new_question)
+            # data_manager.write_all_data(all_data)
+            print(all_data)
             return flask.redirect('/')
     return flask.render_template("add_question.html")
 
