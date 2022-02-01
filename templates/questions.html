@@ -8,11 +8,12 @@
         <h1>{{ question_title }}</h1>
         <p>{{ question_message }}</p>
         <img src="static/images/{{ question_image }}" alt="">
+        {% if (answer|length) != 0 %}
     <table>
         <tr>
-            <th>Vote Number</th>
-            <th>Answer</th>
-            <th>Image</th>
+            <th>Vote <br> Number &nbsp;</th>
+            <th>Answer &nbsp;</th>
+            <th>Image &nbsp;</th>
         </tr>
         {% for answer in answers %}
             <tr>
@@ -20,12 +21,13 @@
                 <td>{{ answer['message'] }}</td>
                 <td><img src="static/images/{{ answer['image'] }}" alt=""></td>
                 <td>
-                    <a href="/question/{{ answer['id'] }}/vote_up"> Up vote</a>
-                    <a href="/question/{{ answer['id'] }}/vote_down">Down vote</a>
+                    <a href="/answer/{{ answer['id'] }}/vote_up"> Up vote</a>
+                    <a href="/answer/{{ answer['id'] }}/vote_down">Down vote</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
+        {% endif %}
     <a href="/question/{{ question_id }}/new-answer">Add new answer</a>
     </body>
 </html>
