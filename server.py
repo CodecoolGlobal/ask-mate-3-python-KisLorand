@@ -39,7 +39,6 @@ def add_question():
             new_id = 1 + int(last_question_id)
             new_view_number = "0"
             new_vote_number = "0"
-            # submission_time =
             submission_time = time.time()
             new_image = ""
             # new_image =
@@ -64,7 +63,8 @@ def open_question(question_id):
     for answer in all_answers:
         if answer['question_id'] == question_id:
             answers.append(answer)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image, question_id=question_id)
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
+                                 answers=answers, question_image=question_image, question_id=question_id)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -87,16 +87,17 @@ def question_vote_down(question_id):
     return flask.redirect('/list')
 
 
-@app.route("/answer/<answer_id>/vote_down", methods=["GET"])
-def vote_answer_down(answer_id):
-    data_manager.vote(answer_id, 'answers', up=False)
-    return flask.redirect('/question/<question_id>')
+# @app.route("/answer/<answer_id>/vote_down", methods=["GET"])
+# def vote_answer_down(answer_id):
+#     data_manager.vote(answer_id, 'answers', up=False)
+#     return flask.redirect('/question/<question_id>')
+#
+#
+# @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
+# def vote_answer_up(answer_id):
+#     data_manager.vote(answer_id, 'answers', up=True)
+#     return flask.redirect('/question/<question_id>')
 
-
-@app.route("/answer/<answer_id>/vote_up", methods=["GET"])
-def vote_answer_up(answer_id):
-    data_manager.vote(answer_id, 'answers', up=True)
-    return flask.redirect('/question/<question_id>')
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])
 def vote_answer_up(answer_id):
