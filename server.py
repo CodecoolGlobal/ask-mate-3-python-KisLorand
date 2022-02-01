@@ -63,12 +63,20 @@ def vote_down(id):
    return flask.redirect('/list')
 
 
-@app.route("/answer/<answer_id>/vote_up")
+@app.route("/answer/<answer_id>/vote_up", methods=["GET"])
 def vote_up(answer_id):
+    all_answers = data_manager.get_all_data('answers')
+    for answer in all_answers:
+        if answer['id'] == answer_id:
+            answer['id'] += 1
     return flask.redirect('/question/<question_id>')
 
-@app.route("/answer/<answer_id>/down_up")
+@app.route("/answer/<answer_id>/down_up", methods=["GET"])
 def vote_up(answer_id):
+    all_answers = data_manager.get_all_data('answers')
+    for answer in all_answers:
+        if answer['id'] == answer_id:
+            answer['id'] -= 1
     return flask.redirect('/question/<question_id>')
 
 if __name__ == "__main__":
