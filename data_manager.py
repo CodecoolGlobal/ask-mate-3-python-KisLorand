@@ -9,7 +9,7 @@ def add_new_answer(id_input, input_text):
     new_answer = {"id": "0", "submission_time": time.time(), "vote_number": "1", "question_id": id_input,
                   "message": input_text, "image": ""}
     all_answers.append(new_answer)
-
+    print(new_answer)
 
 def get_all_data(type):
     if type.upper() == "ANSWERS":
