@@ -79,6 +79,7 @@ def is_new_question_valid(question_title, question_message):
         return True
     return False
 
+
 def add_new_question():
     all_question_data = get_all_data("QUESTIONS")
     new_title = flask.request.form['title']

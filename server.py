@@ -20,9 +20,11 @@ def list_all_questions():
     order_direction_val = sort.get_order_value("order_direction", "descending")
     display_questions_list = all_questions
     if flask.request.method == "GET":
-        new_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val, order_direction_val)
+        new_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val,
+                                                                                      order_direction_val)
         print(questions_order_val)
-    return flask.render_template('index.html', all_questions=display_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
+    return flask.render_template('index.html', all_questions=display_questions_list,
+                                 questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
@@ -37,7 +39,8 @@ def add_question():
 def open_question(question_id):
     data_manager.count_view_number(question_id)
     question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image, question_id=question_id)
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
+                                 answers=answers, question_image=question_image, question_id=question_id)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
