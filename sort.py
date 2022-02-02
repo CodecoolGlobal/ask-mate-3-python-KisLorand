@@ -2,6 +2,14 @@ import flask
 import data_manager
 
 
+def set_order_direction(order_direct, new_list_of_questions):
+    if order_direct == "ascending":
+        questions_set = new_list_of_questions[::-1]
+    else:
+        questions_set = new_list_of_questions
+    return questions_set
+
+
 def sort_main():
     all_questions = data_manager.get_all_data('questions')
     questions_order_val = flask.request.args.get("questions_order")
@@ -15,7 +23,6 @@ def sort_main():
     if flask.request.method == "GET":
 
         if questions_order_val != "submission_time" or order_direction_val != "descending":
-            print("makka")
             questions_order_val = flask.request.args.get("questions_order")
             order_direction_val = flask.request.args.get("order_direction")
             print(questions_order_val)
@@ -44,6 +51,6 @@ def sort_main():
                         if question["id"] == first_value["id"]:
                             all_questions_copy.remove(question)
                 # break
-        if order_direction_val == "ascending":
-            new_questions_list = new_questions_list[::-1]
+        new_questions_list = set_order_direction(order_direction_val, new_questions_list)
+
         return new_questions_list, questions_order_val, order_direction_val
