@@ -130,9 +130,9 @@ def upload_image(img_name, image_request):
         return None
     name_ext = image_request.filename.split('.')
     extension = name_ext[1]
-    img_name = f'{UPLOAD_FOLDER}/{img_name}.{extension}'
+    img_name = f'{img_name}.{extension}'
     image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
-    return img_name
+    return f'{UPLOAD_FOLDER}/{img_name}.{extension}'
 
 
 def question_editor(question_id, question_title, question_message):
