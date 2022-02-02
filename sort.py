@@ -18,13 +18,17 @@ def remove_none_value(checked_value, check_type):
     return new_checked_value
 
 
+def get_order_value(order_type_value, default_order_type_value):
+    order_val = flask.request.args.get(order_type_value)
+    order_val = remove_none_value(order_val, default_order_type_value)
+    return order_val
+
+
+
 def sort_main():
     all_questions = data_manager.get_all_data('questions')
-    questions_order_val = flask.request.args.get("questions_order")
-    order_direction_val = flask.request.args.get("order_direction")
-
-    questions_order_val = remove_none_value(questions_order_val, "submission_time")
-    order_direction_val = remove_none_value(order_direction_val, "descending")
+    questions_order_val = get_order_value("questions_order", "submission_time")
+    order_direction_val = get_order_value("order_direction", "descending")
     new_questions_list = all_questions
 
     if flask.request.method == "GET":
