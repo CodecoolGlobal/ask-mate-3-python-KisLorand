@@ -1,7 +1,13 @@
 import connection
 import time
+import os
 import flask
 
+
+# image path
+UPLOAD_FOLDER = 'static/images'
+
+# data path
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
 
@@ -63,7 +69,6 @@ def vote(id, type, up=False):
                 old_vote_number -= 1
             data['vote_number'] = str(old_vote_number)
         updated_datas.append(data)
-    print(updated_datas)
     connection.write_all_data_to_csv(updated_datas, type)
 
 
@@ -112,6 +117,13 @@ def delete(input_id, type, id_type="id"):
     connection.write_all_data_to_csv(updated_datas, type)
 
 
+def upload_image(img_name, image_request):
+    extencion = image_request.filename[-4:]
+    img_name = img_name + extencion
+    image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
+    return img_name
+
+
 def question_editor(question_id, question_title, question_message):
     question = get_all_data('questions')
     for row in question:
@@ -119,3 +131,4 @@ def question_editor(question_id, question_title, question_message):
             row['title'] = question_title
             row['message'] = question_message
     connection.write_all_data_to_csv(question, 'questions')
+
