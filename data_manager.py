@@ -97,6 +97,10 @@ def add_new_question():
         write_all_data("QUESTIONS", all_question_data)
 
 
+def delete_image():
+    pass
+
+
 def delete(input_id, type, id_type="id"):
     if type.upper() == "ANSWERS":
         file_path = PATH_ANSWERS
