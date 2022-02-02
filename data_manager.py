@@ -78,3 +78,14 @@ def delete(input_id, type):
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get("id") != input_id]
     connection.write_all_data_to_csv(updated_datas)
+
+
+def question_editor(question_id, question_title, question_message):
+    question = get_all_data('questions')
+    for row in question:
+        if row['id'] == question_id:
+            row['title'] = question_title
+            row['message'] = question_message
+    connection.write_all_data_to_csv(question, 'questions')
+
+

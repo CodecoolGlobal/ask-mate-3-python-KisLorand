@@ -98,5 +98,15 @@ def delete_answer(answer_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
+    if flask.request.method == 'POST':
+        question_title = flask.request.form.get("title")
+        question_message = flask.request.form.get("message")
+        data_manager.question_editor(question_id, question_title, question_message)
+        return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('edit_question.html', question_title=question_title, question_message=question_message, question_id=question_id)
+
 if __name__ == "__main__":
     app.run(debug=True)
