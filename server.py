@@ -98,5 +98,11 @@ def delete_answer(answer_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete(question_id, "QUESTIONS")
+    return flask.redirect('/list')
+
+
 if __name__ == "__main__":
     app.run(debug=True)

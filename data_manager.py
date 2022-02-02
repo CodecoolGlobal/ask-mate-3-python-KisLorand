@@ -70,11 +70,12 @@ def write_all_data(type, all_data):
     return None
 
 
-def delete(input_id, type):
+def delete(input_id, type, id_type="id"):
     if type.upper() == "ANSWERS":
         file_path = PATH_ANSWERS
-    elif type.upper() == "QUESTION":
+    elif type.upper() == "QUESTIONS":
         file_path = PATH_QUESTIONS
+        delete(input_id, "ANSWERS", id_type="quesion_id")
     all_datas = connection.get_all_csv_data(file_path)
-    updated_datas = [data for data in all_datas if data.get("id") != input_id]
+    updated_datas = [data for data in all_datas if data.get(id_type) != input_id]
     connection.write_all_data_to_csv(updated_datas, type)
