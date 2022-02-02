@@ -11,7 +11,8 @@ MIN_QUESTION_MESSAGE_LEN = 10
 
 def add_new_answer(id_input, input_text, image_path=""):
     all_answers = connection.get_all_csv_data(PATH_ANSWERS)
-    new_answer = {"id": all_answers[-1].get("id"), "submission_time": time.time(), "vote_number": "1",
+    new_id = int(all_answers[-1].get("id"))+1
+    new_answer = {"id": str(new_id), "submission_time": time.time(), "vote_number": "1",
                   "question_id": id_input, "message": input_text, "image": image_path}
     all_answers.append(new_answer)
     connection.write_all_data_to_csv(all_answers, "ANSWERS")
@@ -101,7 +102,7 @@ def delete(input_id, type, id_type="id"):
         file_path = PATH_ANSWERS
     elif type.upper() == "QUESTIONS":
         file_path = PATH_QUESTIONS
-        delete(input_id, "ANSWERS", id_type="quesion_id")
+        delete(input_id, "ANSWERS", id_type="question_id")
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get(id_type) != input_id]
     connection.write_all_data_to_csv(updated_datas, type)
