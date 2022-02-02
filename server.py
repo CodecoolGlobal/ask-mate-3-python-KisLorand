@@ -52,17 +52,8 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
-    question = data_manager.get_all_data('questions')
-    all_answers = data_manager.get_all_data('answers')
-    for row in question:
-        if row['id'] == question_id:
-            question_title = row['title']
-            question_message = row['message']
-            question_image = row['image']
-    answers = []
-    for answer in all_answers:
-        if answer['question_id'] == question_id:
-            answers.append(answer)
+    data_manager.count_view_number(question_id)
+    question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image, question_id=question_id)
 
 
@@ -99,6 +90,12 @@ def vote_answer_down(answer_id):
     data_manager.vote(answer_id, "answers", up=False)
     return flask.redirect(f'/question/{question_id}')
 
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    question_id = flask.request.args.get("question_id")
+    data_manager.delete(answer_id, "ANSWER")
+    return flask.redirect(f'/question/{question_id}')
 
 
 if __name__ == "__main__":
