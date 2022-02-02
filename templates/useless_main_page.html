@@ -5,14 +5,13 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Useless Main Pagen</title>
+    <title>Useless Main Page</title>
 </head>
 <body>
-    {% block page_name %}Useless Main Page{% endblock %}
-    <br><br>
-    <a href="/add-question">add question</a>
-    <br><br>
-    <a href="/list">alist page</a>
+    <h1>{% block page_name %}AskMate{% endblock %}</h1>
+    <p>Welcome to the AskMate main page.</p>
+    <h3><a href="/add-question">Ask new question</a></h3>
+    <h3><a href="/list">List all questions</a></h3>
     <form action="/add-question" method="POST">
     {% block title %}{% endblock %}
     {% block message %}meaningful message{% endblock %}
