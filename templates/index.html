@@ -9,7 +9,16 @@
 </head>
 <body>
     <h1>Ask Me</h1>
-    <a href="/add-question">Ask new question</a><br><br>
+    <a href="/list">Ask new question</a><br><br>
+    <br><form action = "/list" method="POST">
+            <label for="sort_questions">Sort:</label><br>
+            <select id="status" name="sort_questions">
+              <option value="by_title">title</option>
+              <option value="by_submission_time" selected>submission time</option>
+              <option value="by_message">message</option>
+              <option value="by_number_of_views">number of view</option>
+              <option value="by_number_of_votes">number of votes</option>
+            </select>
 <table>
     <tr>
         <th>View Number &nbsp;|</th>

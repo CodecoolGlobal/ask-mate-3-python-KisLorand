@@ -16,6 +16,7 @@ def main_page():
 @app.route('/list')
 def list_all_questions():
     all_questions = data_manager.get_all_data('questions')
+
     return flask.render_template('index.html',all_questions=all_questions)
 
 
