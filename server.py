@@ -17,6 +17,7 @@ def list_all_questions(questions_order="by_submission_time"):
     all_questions = data_manager.get_all_data('questions')
     questions_order_val = "submission time"
     order_direction_val = "descending"
+    new_questions_list = all_questions
     if flask.request.method == "GET":
 
         questions_order_val = flask.request.args.get("questions_order")
@@ -26,7 +27,7 @@ def list_all_questions(questions_order="by_submission_time"):
         new_questions_list = []
 
         QUESTION_HEADERS = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
-        for order_type in QUESTION_HEADERS
+        for order_type in QUESTION_HEADERS:
             if questions_order_val == order_type:
                 while len(new_questions_list) != len(all_questions):
 
@@ -39,10 +40,10 @@ def list_all_questions(questions_order="by_submission_time"):
                     for question in all_questions_copy:
                         if question["id"] == first_value["id"]:
                             all_questions_copy.remove(question)
-
+        if order_direction_val == "ascending":
+            new_questions_list = new_questions_list[::-1]
         print(new_questions_list)
-
-    return flask.render_template('index.html',all_questions=new_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
+    return flask.render_template('index.html', all_questions=new_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])

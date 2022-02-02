@@ -14,5 +14,5 @@ app.js (bundled file with webpack, including jquery)",images/image1.png
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 4,1643793447.9864352,18,2,New question,How do I add a new question?,
 5,1643796111.6395657,4,2,How to sort questions,How do I sort the questions on the page?,
-6,1643800619.2754161,3,5,"Ask a question with A
+6,1643800619.2754161,3,6,"Ask a question with A
 ","I don't know how to sort, at all.",
