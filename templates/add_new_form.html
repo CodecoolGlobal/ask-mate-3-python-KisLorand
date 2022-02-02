@@ -6,8 +6,8 @@
 </head>
 <body>
     <h1>{% block page_name %}{% endblock %}</h1>
-    <a href="/">back to useless main page<a><br><br>
-{#    <h3>{% block back_to_main_page %}{% endblock %}</h3>#}
+    <a href="/">back to main page<a><br><br>
+    <a href="{% block back_to_last_page %}{% endblock %}">back to {% block back_to_last_page_name %}list{% endblock %} page<a><br><br>
     <form action="{% block action_destination %}{% endblock %}" method="POST">
         {% block title %}{% endblock %}
         {% block message %}{% endblock %}
