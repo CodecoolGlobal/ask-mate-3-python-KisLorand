@@ -43,11 +43,11 @@ def compare_questions(all_questions_copy, first_value, order_type):
     return new_first_value
 
 
-def remove_compared_question(all_questions_copy, compared_dict):
-    for question in all_questions_copy:
+def remove_compared_question(questions_copy, compared_dict):
+    for question in questions_copy:
         if question["id"] == compared_dict["id"]:
-            all_questions_copy.remove(question)
-    return all_questions_copy
+            questions_copy.remove(question)
+    return questions_copy
 
 
 def set_order_direction(order_direct, new_list_of_questions):
@@ -62,17 +62,16 @@ def sort_main(all_questions, questions_order_val, order_direction_val):
     if 3 > 1:
         questions_order_val_1 = check_for_not_default_value(questions_order_val, "questions_order", "submission_time")
         order_direction_val_1 = check_for_not_default_value(order_direction_val, "order_direction", "descending")
-
         all_questions_copy = all_questions[:]
         new_questions_list = []
 
         for order_type in SORT_HEADERS:
             if questions_order_val_1 == order_type:
-
                 while len(new_questions_list) != len(all_questions):
-                    first_value = compare_questions()
-                    new_questions_list.append(first_value)
-                    all_questions_copy = remove_compared_question(all_questions_copy, first_value)
+                    first_compared_value = all_questions_copy[0]
+                    new_compared_value = compare_questions(all_questions_copy, first_compared_value, order_type)
+                    new_questions_list.append(new_compared_value)
+                    all_questions_copy = remove_compared_question(all_questions_copy, new_compared_value)
 
         new_questions_list = set_order_direction(order_direction_val_1, new_questions_list)
     return new_questions_list, questions_order_val_1, order_direction_val_1
