@@ -24,19 +24,22 @@ def get_order_value(order_type_value, default_order_type_value):
     return order_val
 
 
+def check_for_not_default_value(check_order_type_value, default_check_order_type):
+    if check_order_type_value != default_check_order_type:
+        new_check_order_type_value = flask.request.args.get(check_order_type_value)
+    else:
+        new_check_order_type_value = check_order_type_value
+    return new_check_order_type_value
+
 
 def sort_main():
     all_questions = data_manager.get_all_data('questions')
     questions_order_val = get_order_value("questions_order", "submission_time")
     order_direction_val = get_order_value("order_direction", "descending")
     new_questions_list = all_questions
-
     if flask.request.method == "GET":
-
-        if questions_order_val != "submission_time" or order_direction_val != "descending":
-            questions_order_val = flask.request.args.get("questions_order")
-            order_direction_val = flask.request.args.get("order_direction")
-            print(questions_order_val)
+        questions_order_val = check_for_not_default_value("questions_order", "submission_time")
+        order_direction_val = check_for_not_default_value("order_direction", "descending")
 
         all_questions_copy = all_questions[:]
         new_questions_list = []
@@ -64,4 +67,4 @@ def sort_main():
                 # break
         new_questions_list = set_order_direction(order_direction_val, new_questions_list)
 
-        return new_questions_list, questions_order_val, order_direction_val
+    return new_questions_list, questions_order_val, order_direction_val
