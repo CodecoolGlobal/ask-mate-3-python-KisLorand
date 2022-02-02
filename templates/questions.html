@@ -23,6 +23,7 @@
                 <td>
                     <a href="/answer/{{ answer['id'] }}/vote_up?question_id={{ question_id }}" > Up vote</a>
                     <a href="/answer/{{ answer['id'] }}/vote_down?question_id={{ question_id }}" >Down vote</a>
+                    <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question_id }}">Delete</a>
                 </td>
             </tr>
         {% endfor %}
