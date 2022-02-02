@@ -1,5 +1,6 @@
 import connection
 import time
+import flask
 
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
@@ -78,6 +79,22 @@ def is_new_question_valid(question_title, question_message):
         return True
     return False
 
+def add_new_question():
+    all_question_data = get_all_data("QUESTIONS")
+    new_title = flask.request.form['title']
+    new_message = flask.request.form['message']
+    if is_new_question_valid(new_title, new_message):
+        last_question_id = all_question_data[-1]["id"]
+        new_id = 1 + int(last_question_id)
+        new_view_number = "0"
+        new_vote_number = "0"
+        submission_time = time.time()
+        new_image = ""
+        new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": new_view_number,
+                        "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
+        all_question_data.append(new_question)
+        write_all_data("QUESTIONS", all_question_data)
+
 
 def delete(input_id, type):
     if type.upper() == "ANSWERS":
@@ -86,4 +103,4 @@ def delete(input_id, type):
         file_path = PATH_QUESTIONS
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get("id") != input_id]
-    connection.write_all_data_to_csv(updated_datas)
+    connection.write_all_data_to_csv(updated_datas, type)
