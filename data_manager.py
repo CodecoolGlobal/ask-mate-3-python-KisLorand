@@ -90,13 +90,14 @@ def add_new_question():
     all_question_data = get_all_data("QUESTIONS")
     new_title = flask.request.form['title']
     new_message = flask.request.form['message']
+    image_file = flask.request.files.get('image')
     if is_new_question_valid(new_title, new_message):
         last_question_id = all_question_data[-1]["id"]
         new_id = 1 + int(last_question_id)
         new_view_number = "0"
         new_vote_number = "0"
         submission_time = time.time()
-        new_image = ""
+        new_image = upload_image(f'Q_{new_id}',image_file)
         new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": new_view_number,
                         "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
         all_question_data.append(new_question)
@@ -121,8 +122,9 @@ def delete(input_id, type, id_type="id"):
 def upload_image(img_name, image_request):
     if image_request is None:
         return None
-    extension = image_request.filename[-4:]
-    img_name = img_name + extension
+    name_ext = image_request.filename.split('.')
+    extension = name_ext[1]
+    img_name = f'{UPLOAD_FOLDER}/{img_name}.{extension}'
     image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
     return img_name
 
