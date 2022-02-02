@@ -20,7 +20,7 @@ def add_new_answer(id_input, input_text, image_file):
     new_id = int(all_answers[-1].get("id"))+1
     image_name = upload_image(f"A_{new_id}", image_file)
     new_answer = {"id": str(new_id), "submission_time": time.time(), "vote_number": "1",
-                  "question_id": id_input, "message": input_text, "image": image_name}
+                  "question_id": id_input, "message": input_text, "image": image_name if image_name is not None else ""}
     all_answers.append(new_answer)
     connection.write_all_data_to_csv(all_answers, "ANSWERS")
 
@@ -119,11 +119,12 @@ def delete(input_id, type, id_type="id"):
 
 
 def upload_image(img_name, image_request):
-    if image_request:
-        extencion = image_request.filename[-4:]
-        img_name = img_name + extencion
-        image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
-        return img_name
+    if image_request is None:
+        return None
+    extension = image_request.filename[-4:]
+    img_name = img_name + extension
+    image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
+    return img_name
 
 
 def question_editor(question_id, question_title, question_message):

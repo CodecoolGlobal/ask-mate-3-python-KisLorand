@@ -37,7 +37,7 @@ def open_question(question_id):
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
     if flask.request.method == "POST":
-        file = flask.request.files
+        file = flask.request.files.get("image")
         data_manager.add_new_answer(question_id, flask.request.form.get("message"), file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)
