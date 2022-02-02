@@ -2,7 +2,6 @@ import flask
 from flask import Flask
 import data_manager
 import connection
-import time
 
 
 app = Flask(__name__)
@@ -16,29 +15,34 @@ def main_page():
 @app.route('/list', methods=['GET', 'POST'])
 def list_all_questions(questions_order="by_submission_time"):
     all_questions = data_manager.get_all_data('questions')
+    questions_order_val = "submission time"
+    order_direction_val = "descending"
     if flask.request.method == "GET":
 
         questions_order_val = flask.request.args.get("questions_order")
-        if questions_order_val == "None":
-            questions_order_val = "submission time"
         order_direction_val = flask.request.args.get("order_direction")
-        if order_direction_val == "None":
-            order_direction_val = "descending"
 
-        print(questions_order_val)
-        print(order_direction_val)
-
+        all_questions_copy = all_questions[:]
         new_questions_list = []
-        if order_direction_val == "title":
-            for listed_question in all_questions:
-                first_value = {}
-                for compared_question in all_questions:
-                    if listed_question["title"] > compared_question["title"]:
-                        first_value = listed_question
-                new_questions_list.append(first_value)
+
+        QUESTION_HEADERS = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
+        for order_type in QUESTION_HEADERS
+            if questions_order_val == order_type:
+                while len(new_questions_list) != len(all_questions):
+
+                    first_value = all_questions_copy[0]
+                    for compared_question in all_questions_copy:
+                        if first_value[order_type] > compared_question[order_type]:
+                            first_value = compared_question
+                    new_questions_list.append(first_value)
+
+                    for question in all_questions_copy:
+                        if question["id"] == first_value["id"]:
+                            all_questions_copy.remove(question)
+
         print(new_questions_list)
 
-    return flask.render_template('index.html',all_questions=all_questions, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
+    return flask.render_template('index.html',all_questions=new_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])

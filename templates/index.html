@@ -14,8 +14,8 @@
         <form action = "/list" method="POST">
                 <label for="questions_order">Sort questions by:</label>
                 <select id="questions_order" name="questions_order">
-                  <option value="default" >{{ questions_order_val }}</option>
-                  <option value="title" selected>title</option>
+                  <option value="{{ questions_order_val }}" selected>{{ questions_order_val }}</option>
+                  <option value="title" >title</option>
                   <option value="submission time">submission time</option>
                   <option value="message">message</option>
                   <option value="number of views">number of view</option>
@@ -24,7 +24,7 @@
         <form action = "/list" method="POST">
                 <label for="order_direction">Order:</label>
                 <select id="order_direction" name="order_direction">
-                  <option value="default" selected>{{ order_direction_val }}</option>
+                  <option value="{{ order_direction_val }}" selected>{{ order_direction_val }}</option>
                   <option value="descending">descending</option>
                   <option value="ascending">ascending</option>
                 </select>
