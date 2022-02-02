@@ -100,6 +100,12 @@ def vote_answer_down(answer_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    question_id = flask.request.args.get("question_id")
+    data_manager.delete(answer_id, "ANSWER")
+    return flask.redirect(f'/question/{question_id}')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

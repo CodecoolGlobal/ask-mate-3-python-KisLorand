@@ -7,7 +7,7 @@ PATH_QUESTIONS = "sample_data/question.csv"
 
 def add_new_answer(id_input, input_text, image_path=""):
     all_answers = connection.get_all_csv_data(PATH_ANSWERS)
-    new_answer = {"id": str(len(all_answers)), "submission_time": time.time(), "vote_number": "1",
+    new_answer = {"id": all_answers[-1].get("id"), "submission_time": time.time(), "vote_number": "1",
                   "question_id": id_input, "message": input_text, "image": image_path}
     all_answers.append(new_answer)
     connection.write_all_data_to_csv(all_answers, "ANSWERS")
@@ -43,3 +43,13 @@ def write_all_data(type, all_data):
     elif type.upper() == "QUESTIONS":
         return connection.write_all_data_to_csv(all_data, type)
     return None
+
+
+def delete(input_id, type):
+    if type.upper() == "ANSWERS":
+        file_path = PATH_ANSWERS
+    elif type.upper() == "QUESTION":
+        file_path = PATH_QUESTIONS
+    all_datas = connection.get_all_csv_data(file_path)
+    updated_datas = [data for data in all_datas if data.get("id") != input_id]
+    connection.write_all_data_to_csv(updated_datas)
