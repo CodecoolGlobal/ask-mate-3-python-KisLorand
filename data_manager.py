@@ -1,6 +1,11 @@
 import connection
 import time
+import os
 
+# image path
+UPLOAD_FOLDER = 'static/images'
+
+# data path
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
 
@@ -58,7 +63,6 @@ def vote(id, type, up=False):
                 old_vote_number -= 1
             data['vote_number'] = str(old_vote_number)
         updated_datas.append(data)
-    print(updated_datas)
     connection.write_all_data_to_csv(updated_datas, type)
 
 
@@ -78,3 +82,10 @@ def delete(input_id, type):
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get("id") != input_id]
     connection.write_all_data_to_csv(updated_datas)
+
+
+def upload_image(img_name, image_request):
+    extencion = image_request.filename[-4:]
+    img_name = img_name + extencion
+    image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
+    return img_name
