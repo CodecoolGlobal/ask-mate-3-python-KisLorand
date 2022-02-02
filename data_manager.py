@@ -77,4 +77,4 @@ def delete(input_id, type):
         file_path = PATH_QUESTIONS
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get("id") != input_id]
-    connection.write_all_data_to_csv(updated_datas)
+    connection.write_all_data_to_csv(updated_datas, type)
