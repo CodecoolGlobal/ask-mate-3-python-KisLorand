@@ -2,6 +2,9 @@ import flask
 import data_manager
 
 
+SORT_HEADERS = ["submission_time", "view_number", "vote_number", "title", "message"]
+
+
 def set_order_direction(order_direct, new_list_of_questions):
     if order_direct == "ascending":
         questions_set = new_list_of_questions[::-1]
@@ -44,8 +47,8 @@ def sort_main():
         all_questions_copy = all_questions[:]
         new_questions_list = []
 
-        QUESTION_HEADERS = ["submission_time", "view_number", "vote_number", "title", "message"]
-        for order_type in QUESTION_HEADERS:
+
+        for order_type in SORT_HEADERS:
             if questions_order_val == order_type:
 
                 while len(new_questions_list) != len(all_questions):
