@@ -1,8 +1,12 @@
 import connection
 import time
+import flask
 
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
+
+MIN_QUESTION_TITLE_LEN = 6
+MIN_QUESTION_MESSAGE_LEN = 10
 
 
 def add_new_answer(id_input, input_text, image_path=""):
@@ -70,6 +74,28 @@ def write_all_data(type, all_data):
     return None
 
 
+def is_new_question_valid(question_title, question_message):
+    if len(question_title) > MIN_QUESTION_TITLE_LEN and len(question_message) > MIN_QUESTION_MESSAGE_LEN:
+        return True
+    return False
+
+def add_new_question():
+    all_question_data = get_all_data("QUESTIONS")
+    new_title = flask.request.form['title']
+    new_message = flask.request.form['message']
+    if is_new_question_valid(new_title, new_message):
+        last_question_id = all_question_data[-1]["id"]
+        new_id = 1 + int(last_question_id)
+        new_view_number = "0"
+        new_vote_number = "0"
+        submission_time = time.time()
+        new_image = ""
+        new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": new_view_number,
+                        "vote_number": new_vote_number, "title": new_title, "message": new_message, "image": new_image}
+        all_question_data.append(new_question)
+        write_all_data("QUESTIONS", all_question_data)
+
+
 def delete(input_id, type, id_type="id"):
     if type.upper() == "ANSWERS":
         file_path = PATH_ANSWERS
@@ -79,3 +105,12 @@ def delete(input_id, type, id_type="id"):
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = [data for data in all_datas if data.get(id_type) != input_id]
     connection.write_all_data_to_csv(updated_datas, type)
+
+
+def question_editor(question_id, question_title, question_message):
+    question = get_all_data('questions')
+    for row in question:
+        if row['id'] == question_id:
+            row['title'] = question_title
+            row['message'] = question_message
+    connection.write_all_data_to_csv(question, 'questions')
