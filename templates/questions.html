@@ -6,7 +6,10 @@
     </head>
     <body>
         <h1>{{ question_title }}</h1>
-        <p>{{ question_message }}</p>
+        <p>{{ question_message }}
+            <br>
+            <a href='/question/{{ question_id }}/edit'>Edit</a>
+        </p>
         <img src="static/images/{{ question_image }}" alt="">
 
     <table>
@@ -24,6 +27,7 @@
                     <a href="/answer/{{ answer['id'] }}/vote_up?question_id={{ question_id }}" > Up vote</a>
                     <a href="/answer/{{ answer['id'] }}/vote_down?question_id={{ question_id }}" >Down vote</a>
                     <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question_id }}">Delete</a>
+
                 </td>
             </tr>
         {% endfor %}

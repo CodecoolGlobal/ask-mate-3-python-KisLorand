@@ -20,9 +20,8 @@ def list_all_questions():
     order_direction_val = sort.get_order_value("order_direction", "descending")
     display_questions_list = all_questions
     if flask.request.method == "GET":
-        new_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val,
+        display_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val,
                                                                                       order_direction_val)
-        print(questions_order_val)
     return flask.render_template('index.html', all_questions=display_questions_list,
                                  questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
@@ -46,7 +45,8 @@ def open_question(question_id):
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
     if flask.request.method == "POST":
-        data_manager.add_new_answer(question_id, flask.request.form.get("message"))
+        file = flask.request.files.get("image")
+        data_manager.add_new_answer(question_id, flask.request.form.get("message"), file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)
 
@@ -82,6 +82,23 @@ def delete_answer(answer_id):
     question_id = flask.request.args.get("question_id")
     data_manager.delete(answer_id, "ANSWERS")
     return flask.redirect(f'/question/{question_id}')
+
+
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete(question_id, "QUESTIONS")
+    return flask.redirect('/list')
+
+
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
+    if flask.request.method == 'POST':
+        question_title = flask.request.form.get("title")
+        question_message = flask.request.form.get("message")
+        data_manager.question_editor(question_id, question_title, question_message)
+        return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('edit_question.html', question_title=question_title, question_message=question_message, question_id=question_id)
 
 
 if __name__ == "__main__":

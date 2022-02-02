@@ -39,17 +39,17 @@
         <th>Message &nbsp;|</th>
         <th>Image</th>
     </tr>
-
     {%for data in all_questions  %}
     <tr>
         <td>{{ data['view_number'] }}</td>
         <td>{{ data['vote_number'] }}</td>
         <td><a href="/question/{{ data['id'] }}">{{ data['title'] }}</a></td>
         <td>{{ data['message'] }}</td>
-        <td><img src="{{ data['image'] }}" alt="image"></td>
+        <td><img src={{ data['image'] }}" alt="image" width="42" height="42"></td>
         <td>
             <a href="/question/{{ data['id'] }}/vote_up"> Up vote</a>
             <a href="/question/{{ data['id'] }}/vote_down">Down vote</a>
+            <a href="/question/{{ data['id'] }}/delete">Delete</a>
         </td>
     </tr>
     {% endfor %}
