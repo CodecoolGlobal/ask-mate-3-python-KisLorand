@@ -118,10 +118,11 @@ def delete(input_id, type, id_type="id"):
 
 
 def upload_image(img_name, image_request):
-    extencion = image_request.filename[-4:]
-    img_name = img_name + extencion
-    image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
-    return img_name
+    if image_request:
+        extencion = image_request.filename[-4:]
+        img_name = img_name + extencion
+        image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
+        return img_name
 
 
 def question_editor(question_id, question_title, question_message):
