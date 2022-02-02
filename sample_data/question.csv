@@ -9,10 +9,10 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)",images/image1.png
-3,1493015432,1366,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+3,1493015432,1366,58,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 4,1643793447.9864352,18,2,New question,How do I add a new question?,
 5,1643796111.6395657,4,2,How to sort questions,How do I sort the questions on the page?,
-6,1643800619.2754161,3,6,"Ask a question with A
+6,1643800619.2754161,3,8,"Ask a question with A
 ","I don't know how to sort, at all.",
