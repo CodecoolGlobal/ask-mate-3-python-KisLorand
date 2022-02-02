@@ -17,13 +17,12 @@ def main_page():
 def list_all_questions():
     all_questions = data_manager.get_all_data('questions')
     questions_order_val = sort.get_order_value("questions_order", "submission_time")
-
     order_direction_val = sort.get_order_value("order_direction", "descending")
-    new_questions_list = all_questions
+    display_questions_list = all_questions
     if flask.request.method == "GET":
         new_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val, order_direction_val)
         print(questions_order_val)
-    return flask.render_template('index.html', all_questions=new_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
+    return flask.render_template('index.html', all_questions=display_questions_list, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
