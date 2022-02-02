@@ -29,6 +29,20 @@ def check_for_not_default_value(check_value, check_order_type_value, default_che
 
 
 
+def compare_questions(all_questions_copy, first_value, order_type):
+    new_first_value = all_questions_copy[0]
+    for compared_question in all_questions_copy:
+        compared_order = compared_question[order_type]
+
+        if compared_order.isdigit():
+            if int(first_value[order_type]) < int(compared_question[order_type]):
+                new_first_value = compared_question
+        else:
+            if first_value[order_type] < compared_question[order_type]:
+                new_first_value = compared_question
+    return new_first_value
+
+
 def remove_compared_question(all_questions_copy, compared_dict):
     for question in all_questions_copy:
         if question["id"] == compared_dict["id"]:
@@ -45,11 +59,6 @@ def set_order_direction(order_direct, new_list_of_questions):
 
 
 def sort_main(all_questions, questions_order_val, order_direction_val):
-    # all_questions = data_manager.get_all_data('questions')
-    # questions_order_val = get_order_value("questions_order", "submission_time")
-    # order_direction_val = get_order_value("order_direction", "descending")
-    # new_questions_list = all_questions
-    # if flask.request.method == "GET":
     if 3 > 1:
         questions_order_val_1 = check_for_not_default_value(questions_order_val, "questions_order", "submission_time")
         order_direction_val_1 = check_for_not_default_value(order_direction_val, "order_direction", "descending")
@@ -61,16 +70,7 @@ def sort_main(all_questions, questions_order_val, order_direction_val):
             if questions_order_val_1 == order_type:
 
                 while len(new_questions_list) != len(all_questions):
-                    first_value = all_questions_copy[0]
-                    for compared_question in all_questions_copy:
-
-                        compared_order = compared_question[order_type]
-                        if compared_order.isdigit():
-                            if int(first_value[order_type]) < int(compared_question[order_type]):
-                                first_value = compared_question
-                        else:
-                            if first_value[order_type] < compared_question[order_type]:
-                                first_value = compared_question
+                    first_value = compare_questions()
                     new_questions_list.append(first_value)
                     all_questions_copy = remove_compared_question(all_questions_copy, first_value)
 
