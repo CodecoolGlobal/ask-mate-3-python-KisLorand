@@ -9,16 +9,28 @@
 </head>
 <body>
     <h1>Ask Me</h1>
-    <a href="/list">Ask new question</a><br><br>
-    <br><form action = "/list" method="POST">
-            <label for="sort_questions">Sort:</label><br>
-            <select id="status" name="sort_questions">
-              <option value="by_title">title</option>
-              <option value="by_submission_time" selected>submission time</option>
-              <option value="by_message">message</option>
-              <option value="by_number_of_views">number of view</option>
-              <option value="by_number_of_votes">number of votes</option>
-            </select>
+    <a href="/add-question">Ask new question</a><br><br>
+    <form>
+        <form action = "/list" method="POST">
+                <label for="questions_order">Sort questions by:</label>
+                <select id="questions_order" name="questions_order">
+                  <option value="default" >{{ questions_order_val }}</option>
+                  <option value="title" selected>title</option>
+                  <option value="submission time">submission time</option>
+                  <option value="message">message</option>
+                  <option value="number of views">number of view</option>
+                  <option value="number of votes">number of votes</option>
+                </select>
+        <form action = "/list" method="POST">
+                <label for="order_direction">Order:</label>
+                <select id="order_direction" name="order_direction">
+                  <option value="default" selected>{{ order_direction_val }}</option>
+                  <option value="descending">descending</option>
+                  <option value="ascending">ascending</option>
+                </select>
+        <form action = "/list" method="POST">
+                <button type="submit">Sort</button>
+    </form>
 <table>
     <tr>
         <th>View Number &nbsp;|</th>

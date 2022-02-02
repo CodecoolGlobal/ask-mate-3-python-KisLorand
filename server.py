@@ -13,18 +13,39 @@ def main_page():
     return flask.render_template("useless_main_page.html")
 
 
-@app.route('/list')
-def list_all_questions():
+@app.route('/list', methods=['GET', 'POST'])
+def list_all_questions(questions_order="by_submission_time"):
     all_questions = data_manager.get_all_data('questions')
+    if flask.request.method == "GET":
 
-    return flask.render_template('index.html',all_questions=all_questions)
+        questions_order_val = flask.request.args.get("questions_order")
+        if questions_order_val == "None":
+            questions_order_val = "submission time"
+        order_direction_val = flask.request.args.get("order_direction")
+        if order_direction_val == "None":
+            order_direction_val = "descending"
+
+        print(questions_order_val)
+        print(order_direction_val)
+
+        new_questions_list = []
+        if order_direction_val == "title":
+            for listed_question in all_questions:
+                first_value = {}
+                for compared_question in all_questions:
+                    if listed_question["title"] > compared_question["title"]:
+                        first_value = listed_question
+                new_questions_list.append(first_value)
+        print(new_questions_list)
+
+    return flask.render_template('index.html',all_questions=all_questions, questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     if flask.request.method == "POST":
         data_manager.add_new_question()
-        return flask.redirect('/')
+        return flask.redirect('/list')
     return flask.render_template("add_question.html")
 
 
