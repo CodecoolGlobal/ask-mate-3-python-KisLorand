@@ -15,11 +15,12 @@ MIN_QUESTION_TITLE_LEN = 6
 MIN_QUESTION_MESSAGE_LEN = 10
 
 
-def add_new_answer(id_input, input_text, image_path=""):
+def add_new_answer(id_input, input_text, image_file):
     all_answers = connection.get_all_csv_data(PATH_ANSWERS)
     new_id = int(all_answers[-1].get("id"))+1
+    image_name = upload_image(f"A_{new_id}", image_file)
     new_answer = {"id": str(new_id), "submission_time": time.time(), "vote_number": "1",
-                  "question_id": id_input, "message": input_text, "image": image_path}
+                  "question_id": id_input, "message": input_text, "image": image_name}
     all_answers.append(new_answer)
     connection.write_all_data_to_csv(all_answers, "ANSWERS")
 
