@@ -10,14 +10,21 @@ def set_order_direction(order_direct, new_list_of_questions):
     return questions_set
 
 
+def remove_none_value(checked_value, check_type):
+    if checked_value == None:
+        new_checked_value = check_type
+    else:
+        new_checked_value = checked_value
+    return new_checked_value
+
+
 def sort_main():
     all_questions = data_manager.get_all_data('questions')
     questions_order_val = flask.request.args.get("questions_order")
     order_direction_val = flask.request.args.get("order_direction")
 
-    if questions_order_val == None or order_direction_val == None:
-        questions_order_val = "submission_time"
-        order_direction_val = "descending"
+    questions_order_val = remove_none_value(questions_order_val, "submission_time")
+    order_direction_val = remove_none_value(order_direction_val, "descending")
     new_questions_list = all_questions
 
     if flask.request.method == "GET":
@@ -43,7 +50,7 @@ def sort_main():
                             if int(first_value[order_type]) < int(compared_question[order_type]):
                                 first_value = compared_question
                         else:
-                            if first_value[order_type] > compared_question[order_type]:
+                            if first_value[order_type] < compared_question[order_type]:
                                 first_value = compared_question
                     new_questions_list.append(first_value)
 
