@@ -103,8 +103,9 @@ def add_new_question():
         write_all_data("QUESTIONS", all_question_data)
 
 
-def delete_image():
-    pass
+def delete_image(image_name):
+    if os.path.exists(f"{UPLOAD_FOLDER}/{image_name}"):
+        os.remove(f"{UPLOAD_FOLDER}/{image_name}")
 
 
 def delete(input_id, type, id_type="id"):
@@ -114,7 +115,12 @@ def delete(input_id, type, id_type="id"):
         file_path = PATH_QUESTIONS
         delete(input_id, "ANSWERS", id_type="question_id")
     all_datas = connection.get_all_csv_data(file_path)
-    updated_datas = [data for data in all_datas if data.get(id_type) != input_id]
+    updated_datas = []
+    for datas in all_datas:
+        if datas.get(id_type) != input_id:
+            updated_datas.append(datas)
+        else:
+            delete_image(datas.get("image"))
     connection.write_all_data_to_csv(updated_datas, type)
 
 
