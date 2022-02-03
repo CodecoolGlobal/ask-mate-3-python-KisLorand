@@ -92,13 +92,31 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
+    question_title,message,question_image, answers = data_manager.question_opener(question_id)
     if flask.request.method == 'POST':
         question_title = flask.request.form.get("title")
-        question_message = flask.request.form.get("message")
-        data_manager.question_editor(question_id, question_title, question_message)
+        message = flask.request.form.get("message")
+        data_manager.question_editor(question_id, question_title, message, 'questions')
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_question.html', question_title=question_title, question_message=question_message, question_id=question_id)
+    return flask.render_template('edit_question.html', question_title=question_title, message=message, question_id=question_id)
+
+
+@app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    answers = data_manager.get_all_data('answers')
+    question_title = ""
+    for row in answers:
+        if row['id'] == answer_id:
+            answer_message = row['message']
+    if flask.request.method == 'POST':
+        message = flask.request.form.get("message")
+        for row in answers:
+            if row['id'] == answer_id:
+                question_id = row['question_id']
+                row['message'] = message
+                data_manager.question_editor(question_id, question_title, message, 'answers')
+                return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id)
 
 
 if __name__ == "__main__":
