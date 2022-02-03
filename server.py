@@ -111,6 +111,7 @@ def edit_answer(answer_id):
         if row['id'] == answer_id:
             question_id = row['question_id']
             answer_message = row['message']
+            question_id = row['question_id']
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
         for row in answers:

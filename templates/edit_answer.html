@@ -1,5 +1,7 @@
 {% extends "add_new_form.html" %}
 {% block page_name %}Edit Answer{% endblock %}
+{% block back_to_last_page %}/question/{{ question_id }}{% endblock %}
+{% block back_to_last_page_name %}the answers{% endblock %}
 {% block action_destination %}/answer/{{ answer_id }}/edit{% endblock %}
                               /answer/<answer_id>/edit
 {% block message %}
