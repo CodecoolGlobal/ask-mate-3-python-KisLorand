@@ -51,16 +51,16 @@ def new_answer(question_id):
     return flask.render_template("add_answer.html", question_id=question_id)
 
 
-@app.route('/question/<question_id>/vote_up')
-def question_vote_up(question_id):
+@app.route('/question/<question_id>/vote_up/<questions_order_val>/<order_direction_val>')
+def question_vote_up(question_id, questions_order_val, order_direction_val):
     data_manager.vote(question_id, "questions", up=True)
-    return flask.redirect('/list')
+    return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
 
 
-@app.route('/question/<question_id>/vote_down')
-def question_vote_down(question_id):
+@app.route('/question/<question_id>/vote_down/<questions_order_val>/<order_direction_val>')
+def question_vote_down(question_id, questions_order_val, order_direction_val):
     data_manager.vote(question_id, "questions", up=False)
-    return flask.redirect('/list')
+    return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
 
 
 @app.route("/answer/<answer_id>/vote_up", methods=["GET"])

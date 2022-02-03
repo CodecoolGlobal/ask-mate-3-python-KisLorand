@@ -47,10 +47,10 @@
         <td>{{ data['message'] }}</td>
         <td><img src={{ data['image'] }}" alt="image" width="42" height="42"></td>
         <td>
-            <a href="/question/{{ data['id'] }}/vote_up"> Up vote</a>
-            <a href="/question/{{ data['id'] }}/vote_down">Down vote</a>
-            <a href="/question/{{ data['id'] }}/delete">Delete</a>
+            <a href="/question/{{ data['id'] }}/vote_up/{{ questions_order_val }}/{{ order_direction_val }}">Up vote</a>
+            <a href="/question/{{ data['id'] }}/vote_down/{{ questions_order_val }}/{{ order_direction_val }}">Down vote</a>
         </td>
+        <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
     </tr>
     {% endfor %}
 </table>
