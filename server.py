@@ -109,7 +109,6 @@ def edit_answer(answer_id):
     image_file = flask.request.files.get("image")
     for row in answers:
         if row['id'] == answer_id:
-            question_id = row['question_id']
             answer_message = row['message']
             question_id = row['question_id']
     if flask.request.method == 'POST':
