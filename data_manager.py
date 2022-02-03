@@ -134,7 +134,8 @@ def upload_image(img_name, image_request):
     extension = name_ext[1]
     img_name = f'{img_name}.{extension}'
     image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
-    return f'{UPLOAD_FOLDER}/{img_name}'
+    slpitted_path = UPLOAD_FOLDER.split('/')
+    return f'{slpitted_path[1]}/{img_name}'
 
 
 def question_editor(question_id, question_title, message, type):

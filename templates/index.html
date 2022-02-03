@@ -45,7 +45,7 @@
         <td>{{ data['vote_number'] }}</td>
         <td><a href="/question/{{ data['id'] }}">{{ data['title'] }}</a></td>
         <td>{{ data['message'] }}</td>
-        <td><img src="{{ data['image'] }}" width="42" height="42"></td>
+        <td><img src="{{url_for('static', filename=data['image'])}}" width="42" height="42"></td>
         <td>
             <a href="/question/{{ data['id'] }}/vote_up/{{ questions_order_val }}/{{ order_direction_val }}">Up vote</a>
             <a href="/question/{{ data['id'] }}/vote_down/{{ questions_order_val }}/{{ order_direction_val }}">Down vote</a>
