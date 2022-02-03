@@ -2,7 +2,7 @@ import flask
 from flask import Flask
 import data_manager
 import connection
-import time
+import sort
 
 
 app = Flask(__name__)
@@ -13,17 +13,24 @@ def main_page():
     return flask.render_template("useless_main_page.html")
 
 
-@app.route('/list')
+@app.route('/list', methods=['GET', 'POST'])
 def list_all_questions():
     all_questions = data_manager.get_all_data('questions')
-    return flask.render_template('index.html',all_questions=all_questions)
+    questions_order_val = sort.get_order_value("questions_order", "submission_time")
+    order_direction_val = sort.get_order_value("order_direction", "descending")
+    display_questions_list = all_questions
+    if flask.request.method == "GET":
+        display_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val,
+                                                                                      order_direction_val)
+    return flask.render_template('index.html', all_questions=display_questions_list,
+                                 questions_order_val=questions_order_val, order_direction_val=order_direction_val)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     if flask.request.method == "POST":
         data_manager.add_new_question()
-        return flask.redirect('/')
+        return flask.redirect('/list')
     return flask.render_template("add_question.html")
 
 
@@ -31,13 +38,14 @@ def add_question():
 def open_question(question_id):
     data_manager.count_view_number(question_id)
     question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message, answers=answers, question_image=question_image, question_id=question_id)
+    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
+                                 answers=answers, question_image=question_image, question_id=question_id)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
     if flask.request.method == "POST":
-        file = flask.request.files
+        file = flask.request.files.get("image")
         data_manager.add_new_answer(question_id, flask.request.form.get("message"), file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)

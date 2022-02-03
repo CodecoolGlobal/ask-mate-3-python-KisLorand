@@ -10,6 +10,27 @@
 <body>
     <h1>Ask Me</h1>
     <a href="/add-question">Ask new question</a><br><br>
+    <form>
+        <form action = "/list" method="POST">
+                <label for="questions_order">Sort questions by:</label>
+                <select id="questions_order" name="questions_order">
+                  <option value="{{ questions_order_val }}" selected>{{ questions_order_val }}</option>
+                  <option value="title">title</option>
+                  <option value="submission_time">submission time</option>
+                  <option value="message">message</option>
+                  <option value="view_number">number of view</option>
+                  <option value="vote_number">number of votes</option>
+                </select>
+        <form action = "/list" method="POST">
+                <label for="order_direction">Order:</label>
+                <select id="order_direction" name="order_direction">
+                  <option value="{{ order_direction_val }}" selected>{{ order_direction_val }}</option>
+                  <option value="descending">descending</option>
+                  <option value="ascending">ascending</option>
+                </select>
+        <form action = "/list" method="POST">
+                <button type="submit">Sort</button>
+    </form>
 <table>
     <tr>
         <th>View Number &nbsp;|</th>
@@ -18,14 +39,13 @@
         <th>Message &nbsp;|</th>
         <th>Image</th>
     </tr>
-
     {%for data in all_questions  %}
     <tr>
         <td>{{ data['view_number'] }}</td>
         <td>{{ data['vote_number'] }}</td>
         <td><a href="/question/{{ data['id'] }}">{{ data['title'] }}</a></td>
         <td>{{ data['message'] }}</td>
-        <td><img src="{{ data['image'] }}" alt="image"></td>
+        <td><img src={{ data['image'] }}" alt="image" width="42" height="42"></td>
         <td>
             <a href="/question/{{ data['id'] }}/vote_up"> Up vote</a>
             <a href="/question/{{ data['id'] }}/vote_down">Down vote</a>

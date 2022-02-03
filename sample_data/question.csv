@@ -14,5 +14,4 @@ app.js (bundled file with webpack, including jquery)",images/image1.png
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 4,1643836300.34044,22,2,How to add a question,How to do dis? Imi edited this question,
 5,1643836492.34044,13,37,Can I sort the questions?,"Why can't I sort the questions by setting the orders?
-
 Developer note: the new_questions_list wasn't change to display_questions_list in all of its occurrences. Thank you for your understanding.",

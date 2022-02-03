@@ -1,6 +1,12 @@
 id,submission_time,vote_number,question_id,message,image
-1,1493398154,24,1,You need to use brackets: my_list = [],
-2,1493088154,12,1,Look it up in the Python docs,
-0,1643723179.2301,-87,1,new message.,
-0,1643728011.0751631,-69,4,dunno how man,
-4,1643729197.630688,-3,4,was dis fákk,
+1,1493398154,29,1,You need to use brackets: my_list = [],
+2,1493088154,11,1,Look it up in the Python docs,
+0,1643723179.2301,-89,1,new message.,
+0,1643728011.0751631,-71,4,dunno how man,
+4,1643729197.630688,-6,4,was dis fákk,
+5,1643808287.9570677,1,4,sssssssssssssss,A_5.png
+6,1643836595.3808382,2,5,Do you use a previous version of the site?,
+7,1643836650.6136422,2,5,Were all of the refactoring correct?,
+8,1643836756.1250334,3,5,"Developer note:
+the new_questions_list wasn't change to display_questions_list in all of its occurrences. Thank you for your understanding.",
+9,1643837092.2089403,-1,5,Really?,
