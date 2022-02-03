@@ -137,11 +137,15 @@ def upload_image(img_name, image_request):
     return f'{UPLOAD_FOLDER}/{img_name}'
 
 
-def question_editor(question_id, question_title, question_message):
-    question = get_all_data('questions')
-    for row in question:
-        if row['id'] == question_id:
-            row['title'] = question_title
-            row['message'] = question_message
-    connection.write_all_data_to_csv(question, 'questions')
+def question_editor(question_id, question_title, message, type):
+    data = get_all_data(type)
+    for row in data:
+        if type == "questions":
+            if row['id'] == question_id:
+                row['title'] = question_title
+                row['message'] = message
+        elif type == "answers":
+            if row['id'] == question_id:
+                row['message'] = message
+    connection.write_all_data_to_csv(data, type)
 
