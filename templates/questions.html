@@ -10,7 +10,7 @@
             <br>
             <a href='/question/{{ question_id }}/edit'>Edit</a>
         </p>
-        <img src="static/images/{{ question_image }}" alt="">
+        <img src="{{ question_image }}" alt="">
 
     <table>
         <tr>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ answer['vote_number'] }}</td>
                 <td>{{ answer['message'] }}</td>
-                <td><img src="static/images/{{ answer['image'] }}" alt=""></td>
+                <td><img src="{{ answer['image'] }}" alt=""></td>
                 <td>
                     <a href="/answer/{{ answer['id'] }}/vote_up?question_id={{ question_id }}" > Up vote</a>
                     <a href="/answer/{{ answer['id'] }}/vote_down?question_id={{ question_id }}" >Down vote</a>
