@@ -1,0 +1,12 @@
+{% extends "add_new_form.html" %}
+{% block page_name %}Edit Answer{% endblock %}
+{% block action_destination %}/answer/{{ answer_id }}/edit{% endblock %}
+                              /answer/<answer_id>/edit
+{% block message %}
+    <label for="message-input">Message:<br></label>
+    <textarea id="message-input" name="message" rows="4" cols="40">{{ answer_message }}</textarea>
+    <br><br>
+{% endblock %}
+{% block submit_button %}
+    <button type="submit">Edit answer</button>
+{% endblock %}
