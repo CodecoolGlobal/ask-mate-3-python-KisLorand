@@ -95,8 +95,9 @@ def edit_question(question_id):
     question_title,message,question_image, answers = data_manager.question_opener(question_id)
     if flask.request.method == 'POST':
         question_title = flask.request.form.get("title")
+        image_file = flask.request.files.get('image')
         message = flask.request.form.get("message")
-        data_manager.question_editor(question_id, question_title, message, 'questions')
+        data_manager.entry_editor(question_id, question_title, message, image_file, 'questions')
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_question.html', question_title=question_title, message=message, question_id=question_id)
 
@@ -105,8 +106,10 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     answers = data_manager.get_all_data('answers')
     question_title = ""
+    image_file = flask.request.files.get("image")
     for row in answers:
         if row['id'] == answer_id:
+            question_id = row['question_id']
             answer_message = row['message']
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
@@ -114,9 +117,9 @@ def edit_answer(answer_id):
             if row['id'] == answer_id:
                 question_id = row['question_id']
                 row['message'] = message
-                data_manager.question_editor(question_id, question_title, message, 'answers')
+                data_manager.entry_editor(answer_id, question_title, message, image_file, 'answers')
                 return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id)
+    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
 
 
 if __name__ == "__main__":

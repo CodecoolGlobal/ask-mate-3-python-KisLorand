@@ -107,8 +107,10 @@ def add_new_question():
 
 
 def delete_image(image_path):
-    if os.path.exists(image_path):
-        os.remove(image_path)
+    if image_path != "":
+        correct_path = f"static/{image_path}"
+        if os.path.exists(correct_path):
+            os.remove(correct_path)
 
 
 def delete(input_id, type, id_type="id"):
@@ -134,19 +136,23 @@ def upload_image(img_name, image_request):
     extension = name_ext[1]
     img_name = f'{img_name}.{extension}'
     image_request.save(os.path.join(UPLOAD_FOLDER, img_name))
-    slpitted_path = UPLOAD_FOLDER.split('/')
-    return f'{slpitted_path[1]}/{img_name}'
+    splitted_path = UPLOAD_FOLDER.split('/')
+    return f'{splitted_path[1]}/{img_name}'
 
 
-def question_editor(question_id, question_title, message, type):
+def entry_editor(id_input, question_title, message, image_file, type):
     data = get_all_data(type)
     for row in data:
         if type == "questions":
-            if row['id'] == question_id:
+            if row['id'] == id_input:
+                delete_image(row["image"])
+                row["image"] = upload_image(f"Q_{row['id']}", image_file)
                 row['title'] = question_title
                 row['message'] = message
         elif type == "answers":
-            if row['id'] == question_id:
+            if row['id'] == id_input:
+                delete_image(row["image"])
+                row["image"] = upload_image(f"A_{row['id']}", image_file)
                 row['message'] = message
     connection.write_all_data_to_csv(data, type)
 
