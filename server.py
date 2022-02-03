@@ -108,6 +108,7 @@ def edit_answer(answer_id):
     for row in answers:
         if row['id'] == answer_id:
             answer_message = row['message']
+            question_id = row['question_id']
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
         for row in answers:
@@ -116,7 +117,7 @@ def edit_answer(answer_id):
                 row['message'] = message
                 data_manager.question_editor(question_id, question_title, message, 'answers')
                 return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id)
+    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
 
 
 if __name__ == "__main__":
