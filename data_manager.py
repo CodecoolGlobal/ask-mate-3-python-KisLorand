@@ -25,10 +25,10 @@ def add_new_answer(id_input, input_text, image_file):
     connection.write_all_data_to_csv(all_answers, "ANSWERS")
 
 
-def get_all_data(type):
-    if type.upper() == "ANSWERS":
+def get_all_data(data_type):
+    if data_type.upper() == "ANSWERS":
         return connection.get_all_csv_data(PATH_ANSWERS)
-    elif type.upper() == "QUESTIONS":
+    elif data_type.upper() == "QUESTIONS":
         return connection.get_all_csv_data(PATH_QUESTIONS)
     return None
 
@@ -58,8 +58,8 @@ def count_view_number(question_id):
     connection.write_all_data_to_csv(question, 'questions')
 
 
-def vote(id, type, up=False):
-    datas = get_all_data(type)
+def vote(id, data_type, up=False):
+    datas = get_all_data(data_type)
     updated_datas = []
     for data in datas:
         if data['id'] == id:
@@ -70,14 +70,14 @@ def vote(id, type, up=False):
                 old_vote_number -= 1
             data['vote_number'] = str(old_vote_number)
         updated_datas.append(data)
-    connection.write_all_data_to_csv(updated_datas, type)
+    connection.write_all_data_to_csv(updated_datas, data_type)
 
 
-def write_all_data(type, all_data):
-    if type.upper() == "ANSWERS":
-        return connection.write_all_data_to_csv(all_data, type)
-    elif type.upper() == "QUESTIONS":
-        return connection.write_all_data_to_csv(all_data, type)
+def write_all_data(data_type, all_data):
+    if data_type.upper() == "ANSWERS":
+        return connection.write_all_data_to_csv(all_data, data_type)
+    elif data_type.upper() == "QUESTIONS":
+        return connection.write_all_data_to_csv(all_data, data_type)
     return None
 
 
@@ -87,21 +87,21 @@ def is_new_question_valid(question_title, question_message):
     return False
 
 
-def add_new_question():
+def format_new_question(all_question_data, new_title, new_message, image_file):
+    last_question_id = all_question_data[-1]["id"]
+    new_id = 1 + int(last_question_id)
+    submission_time = time.time()
+    new_image = upload_image(f'Q_{new_id}', image_file)
+    new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": "0",
+                    "vote_number": "0", "title": new_title, "message": new_message,
+                    "image": new_image if new_image is not None else ""}
+    return new_question
+
+
+def add_new_question(new_title, new_message, image_file):
     all_question_data = get_all_data("QUESTIONS")
-    new_title = flask.request.form['title']
-    new_message = flask.request.form['message']
-    image_file = flask.request.files.get('image')
     if is_new_question_valid(new_title, new_message):
-        last_question_id = all_question_data[-1]["id"]
-        new_id = 1 + int(last_question_id)
-        new_view_number = "0"
-        new_vote_number = "0"
-        submission_time = time.time()
-        new_image = upload_image(f'Q_{new_id}',image_file)
-        new_question = {"id": str(new_id), "submission_time": str(submission_time), "view_number": new_view_number,
-                        "vote_number": new_vote_number, "title": new_title, "message": new_message,
-                        "image": new_image if new_image is not None else ""}
+        new_question = format_new_question(all_question_data, new_title, new_message, image_file)
         all_question_data.append(new_question)
         write_all_data("QUESTIONS", all_question_data)
 
@@ -113,20 +113,20 @@ def delete_image(image_path):
             os.remove(correct_path)
 
 
-def delete(input_id, type, id_type="id"):
-    if type.upper() == "ANSWERS":
+def delete(input_id, data_type, id_data_type="id"):
+    if data_type.upper() == "ANSWERS":
         file_path = PATH_ANSWERS
-    elif type.upper() == "QUESTIONS":
+    elif data_type.upper() == "QUESTIONS":
         file_path = PATH_QUESTIONS
-        delete(input_id, "ANSWERS", id_type="question_id")
+        delete(input_id, "ANSWERS", id_data_type="question_id")
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = []
     for datas in all_datas:
-        if datas.get(id_type) != input_id:
+        if datas.get(id_data_type) != input_id:
             updated_datas.append(datas)
         else:
             delete_image(datas.get("image"))
-    connection.write_all_data_to_csv(updated_datas, type)
+    connection.write_all_data_to_csv(updated_datas, data_type)
 
 
 def upload_image(img_name, image_request):
@@ -140,19 +140,31 @@ def upload_image(img_name, image_request):
     return f'{splitted_path[1]}/{img_name}'
 
 
-def entry_editor(id_input, question_title, message, image_file, type):
-    data = get_all_data(type)
+def get_entry_by_id(entry_id, answers, entry_post, message="", image_file=""):
+    for row in answers:
+        if row['id'] == entry_id:
+            answer_message = row['message']
+            question_id = row['question_id']
+            if entry_post:
+                row['message'] = message
+                entry_editor(entry_id, message, image_file, 'answers')
+            else:
+                return answer_message, question_id
+
+
+def entry_editor(id_input, message, image_file, data_type, question_title=""):
+    data = get_all_data(data_type)
     for row in data:
-        if type == "questions":
+        if data_type == "questions":
             if row['id'] == id_input:
                 delete_image(row["image"])
                 row["image"] = upload_image(f"Q_{row['id']}", image_file)
                 row['title'] = question_title
                 row['message'] = message
-        elif type == "answers":
+        elif data_type == "answers":
             if row['id'] == id_input:
                 delete_image(row["image"])
                 row["image"] = upload_image(f"A_{row['id']}", image_file)
                 row['message'] = message
-    connection.write_all_data_to_csv(data, type)
+    connection.write_all_data_to_csv(data, data_type)
 

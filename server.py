@@ -1,7 +1,6 @@
 import flask
-from flask import Flask, url_for
+from flask import Flask
 import data_manager
-import connection
 import sort
 
 
@@ -10,12 +9,17 @@ app = Flask(__name__)
 
 @app.route("/")
 def main_page():
-    return flask.render_template("useless_main_page.html")
+    return flask.render_template("main_page.html")
 
 
 @app.route('/list', methods=['GET', 'POST'])
 def list_all_questions():
     all_questions = data_manager.get_all_data('questions')
+    # questions_order = flask.request.args.get('questions_order')
+    # order_direction = flask.request.args.get('order_direction')
+    # is_reversed = [order_direction=="ascending"]
+    # if questions_order and order_direction:
+    #     all_questions.sort(reverse=is_reversed, key=lambda x: x[questions_order])
     questions_order_val = sort.get_order_value("questions_order", "submission_time")
     order_direction_val = sort.get_order_value("order_direction", "descending")
     display_questions_list = all_questions
@@ -29,7 +33,10 @@ def list_all_questions():
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     if flask.request.method == "POST":
-        data_manager.add_new_question()
+        new_title = flask.request.form['title']
+        new_message = flask.request.form['message']
+        image_file = flask.request.files.get('image')
+        data_manager.add_new_question(new_title, new_message, image_file)
         return flask.redirect('/list')
     return flask.render_template("add_question.html")
 
@@ -37,7 +44,7 @@ def add_question():
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
     data_manager.count_view_number(question_id)
-    question_title,question_message,question_image, answers = data_manager.question_opener(question_id)
+    question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
                                  answers=answers, question_image=question_image, question_id=question_id)
 
@@ -46,7 +53,8 @@ def open_question(question_id):
 def new_answer(question_id):
     if flask.request.method == "POST":
         file = flask.request.files.get("image")
-        data_manager.add_new_answer(question_id, flask.request.form.get("message"), file)
+        new_message = flask.request.form.get("message")
+        data_manager.add_new_answer(question_id, new_message, file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)
 
@@ -92,12 +100,12 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    question_title,message,question_image, answers = data_manager.question_opener(question_id)
+    question_title, message, question_image, answers = data_manager.question_opener(question_id)
     if flask.request.method == 'POST':
         question_title = flask.request.form.get("title")
         image_file = flask.request.files.get('image')
         message = flask.request.form.get("message")
-        data_manager.entry_editor(question_id, question_title, message, image_file, 'questions')
+        data_manager.entry_editor(question_id, message, image_file, 'questions', question_title)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_question.html', question_title=question_title, message=message, question_id=question_id)
 
@@ -105,20 +113,12 @@ def edit_question(question_id):
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
     answers = data_manager.get_all_data('answers')
-    question_title = ""
     image_file = flask.request.files.get("image")
-    for row in answers:
-        if row['id'] == answer_id:
-            answer_message = row['message']
-            question_id = row['question_id']
+    answer_message, question_id = data_manager.get_entry_by_id(answer_id, answers, False)
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
-        for row in answers:
-            if row['id'] == answer_id:
-                question_id = row['question_id']
-                row['message'] = message
-                data_manager.entry_editor(answer_id, question_title, message, image_file, 'answers')
-                return flask.redirect(f'/question/{question_id}')
+        data_manager.get_entry_by_id(answer_id, answers, True, message, image_file)
+        return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
 
 
