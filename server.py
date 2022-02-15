@@ -14,20 +14,14 @@ def main_page():
 
 @app.route('/list', methods=['GET', 'POST'])
 def list_all_questions():
-    all_questions = data_manager.get_all_data('questions')
-    # questions_order = flask.request.args.get('questions_order')
-    # order_direction = flask.request.args.get('order_direction')
-    # is_reversed = [order_direction=="ascending"]
-    # if questions_order and order_direction:
-    #     all_questions.sort(reverse=is_reversed, key=lambda x: x[questions_order])
-    questions_order_val = sort.get_order_value("questions_order", "submission_time")
-    order_direction_val = sort.get_order_value("order_direction", "descending")
-    display_questions_list = all_questions
-    if flask.request.method == "GET":
-        display_questions_list, questions_order_val, order_direction_val = sort.sort_main(all_questions, questions_order_val,
-                                                                                      order_direction_val)
-    return flask.render_template('index.html', all_questions=display_questions_list,
-                                 questions_order_val=questions_order_val, order_direction_val=order_direction_val)
+    questions_order = flask.request.args.get('questions_order')
+    order_direction = flask.request.args.get('order_direction')
+    if questions_order and order_direction:
+        all_questions = data_manager.get_all_data('question', questions_order, order_direction)
+    else:
+        all_questions = data_manager.get_all_data('question')
+    return flask.render_template('index.html', all_questions=all_questions,
+                                 questions_order_val=questions_order, order_direction_val=order_direction)
 
 
 @app.route("/add-question", methods=['GET', 'POST'])
@@ -112,7 +106,7 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
-    answers = data_manager.get_all_data('answers')
+    answers = data_manager.get_all_data('answer')
     image_file = flask.request.files.get("image")
     answer_message, question_id = data_manager.get_entry_by_id(answer_id, answers, False)
     if flask.request.method == 'POST':

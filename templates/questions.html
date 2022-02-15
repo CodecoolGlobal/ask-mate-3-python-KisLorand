@@ -10,7 +10,11 @@
             <br>
             <a href='/question/{{ question_id }}/edit'>Edit</a>
         </p>
-        <img src="{{ url_for('static', filename=question_image)}}" width="100" height="100">
+        {% if question_image %}
+            <img src="{{ url_for('static', filename=question_image)}}" width="100" height="100">
+        {% else %}
+            <p></p>
+        {% endif %}
 
     <table>
         <tr>
@@ -22,8 +26,11 @@
             <tr>
                 <td>{{ answer['vote_number'] }}</td>
                 <td>{{ answer['message'] }}</td>
-                <td><img src="{{url_for('static', filename=answer['image'])}}"  width="42" height="42"></td>
-
+                {% if answer['image'] %}
+                    <td><img src="{{url_for('static', filename=answer['image'])}}" alt=" " width="42" height="42"></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 <td>
                     <a href="/answer/{{ answer['id'] }}/vote_up?question_id={{ question_id }}" > Up vote</a>
                     <a href="/answer/{{ answer['id'] }}/vote_down?question_id={{ question_id }}" >Down vote</a>

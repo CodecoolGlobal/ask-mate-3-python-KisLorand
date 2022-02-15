@@ -1,6 +1,7 @@
 id,submission_time,view_number,vote_number,title,message,image
-1,1493368154,69,27,How to make lists in Python?,"I am totally new to this, any hints?",
-2,1493068124,16,21,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
+2,2017-05-01 10:41:00,1364,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+",
+1,2017-04-29 09:19:00,15,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $("".myBook"").booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -9,13 +10,4 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)",images/image1.png
-3,1493015432,1369,69,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
-
-This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
-4,1643836300.34044,36,2,How to add a question,How to do dis? Imi edited this question twice.,
-5,1643836492.34044,22,70,Can I sort the questions?,"Why can't I sort the questions by setting the orders?
-Developer note: the new_questions_list wasn't change to display_questions_list in all of its occurrences. Thank you for your understanding.",
-6,1643882425.7763886,14,3,New question add,Meaningful message.,
-7,1643884575.1380117,76,71,Can I add a picture,Can I add a picture of a cat. With pickles.,images/Q_7.png
-8,1643893436.894132,18,1,New question,Text for new question.,images/Q_8.png
-9,1644486233.405045,33,2,Test adding this feature,"Test this feature, cats, more cats",
+0,2017-04-28 08:29:00,29,7,How to make lists in Python?,"I am totally new to this, any hints?",

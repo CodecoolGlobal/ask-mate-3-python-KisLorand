@@ -22,7 +22,6 @@ def add_new_answer(cursor, id_input, input_text, image_file):
     query = f"""INSERT INTO answer (vote_number, question_id, message) VALUES (0, '{id_input}', '{input_text}')"""
     cursor.execute(query)
     select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
-    # select_query = f"""SELECT SCOPE_IDENTITY"""
     cursor.execute(select_query)
     image_index = cursor.fetchone().get('id')
     image_path = upload_image(f"A_{image_index}", image_file)
@@ -32,31 +31,33 @@ def add_new_answer(cursor, id_input, input_text, image_file):
     return True
 
 
-def get_all_data(data_type):
-    if data_type.upper() == "ANSWERS":
-        return connection.get_all_csv_data(PATH_ANSWERS)
-    elif data_type.upper() == "QUESTIONS":
-        return connection.get_all_csv_data(PATH_QUESTIONS)
-    return None
+@connection_handler
+def get_all_data(cursor, table_name, order_type="submission_time", order_direction="DESC"):
+    query = f"""SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
 
 
-def question_opener(question_id):
-    question = get_all_data('questions')
-    all_answers = get_all_data('answers')
-    for row in question:
-        if row['id'] == question_id:
-            question_title = row['title']
-            question_message = row['message']
-            question_image = row['image']
-    answers = []
-    for answer in all_answers:
-        if answer['question_id'] == question_id:
-            answers.append(answer)
-    return question_title,question_message,question_image, answers
+@connection_handler
+def question_opener(cursor, question_id):
+    # question = get_all_data('question')
+    # all_answers = get_all_data('answer')
+
+    question_query = f"""SELECT * FROM question WHERE id='{question_id}' """
+    cursor.execute(question_query)
+    question_data = cursor.fetchone()
+
+    # answer_query = f"""SELECT * FROM answer INNER JOIN question ON answer.question_id = question.id"""
+    answer_query = f"""SELECT * FROM answer WHERE question_id = '{question_id}' """
+    cursor.execute(answer_query)
+    answers = cursor.fetchall()
+
+    return question_data['title'], question_data['message'], question_data['image'], answers
 
 
 def count_view_number(question_id):
-    question = get_all_data('questions')
+    question = get_all_data('question')
     for row in question:
         if row['id'] == question_id:
             old_view_number = int(row['view_number'])
@@ -81,7 +82,7 @@ def vote(id, data_type, up=False):
 
 
 def write_all_data(data_type, all_data):
-    if data_type.upper() == "ANSWERS":
+    if data_type.upper() == "ANSWER":
         return connection.write_all_data_to_csv(all_data, data_type)
     elif data_type.upper() == "QUESTIONS":
         return connection.write_all_data_to_csv(all_data, data_type)
@@ -121,11 +122,11 @@ def delete_image(image_path):
 
 
 def delete(input_id, data_type, id_data_type="id"):
-    if data_type.upper() == "ANSWERS":
+    if data_type.upper() == "ANSWER":
         file_path = PATH_ANSWERS
-    elif data_type.upper() == "QUESTIONS":
+    elif data_type.upper() == "QUESTION":
         file_path = PATH_QUESTIONS
-        delete(input_id, "ANSWERS", id_data_type="question_id")
+        delete(input_id, "ANSWER", id_data_type="question_id")
     all_datas = connection.get_all_csv_data(file_path)
     updated_datas = []
     for datas in all_datas:
