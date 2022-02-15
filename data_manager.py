@@ -2,6 +2,8 @@ import connection
 import time
 import os
 import flask
+import datetime
+from sql_connection import connection_handler
 
 
 # image path
@@ -15,14 +17,19 @@ MIN_QUESTION_TITLE_LEN = 6
 MIN_QUESTION_MESSAGE_LEN = 10
 
 
-def add_new_answer(id_input, input_text, image_file):
-    all_answers = connection.get_all_csv_data(PATH_ANSWERS)
-    new_id = int(all_answers[-1].get("id"))+1
-    image_path = upload_image(f"A_{new_id}", image_file)
-    new_answer = {"id": str(new_id), "submission_time": time.time(), "vote_number": "1",
-                  "question_id": id_input, "message": input_text, "image": image_path if image_path is not None else ""}
-    all_answers.append(new_answer)
-    connection.write_all_data_to_csv(all_answers, "ANSWERS")
+@connection_handler
+def add_new_answer(cursor, id_input, input_text, image_file):
+    query = f"""INSERT INTO answer (vote_number, question_id, message) VALUES (0, '{id_input}', '{input_text}')"""
+    cursor.execute(query)
+    select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
+    # select_query = f"""SELECT SCOPE_IDENTITY"""
+    cursor.execute(select_query)
+    image_index = cursor.fetchone().get('id')
+    image_path = upload_image(f"A_{image_index}", image_file)
+    new_answer_query = f"""UPDATE answer SET image='{image_path}' WHERE id='{image_index}'"""
+    cursor.execute(new_answer_query)
+    print("Uploaded")
+    return True
 
 
 def get_all_data(data_type):

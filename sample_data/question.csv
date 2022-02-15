@@ -1,5 +1,5 @@
 id,submission_time,view_number,vote_number,title,message,image
-1,1493368154,62,27,How to make lists in Python?,"I am totally new to this, any hints?",
+1,1493368154,69,27,How to make lists in Python?,"I am totally new to this, any hints?",
 2,1493068124,16,21,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
@@ -18,4 +18,4 @@ Developer note: the new_questions_list wasn't change to display_questions_list i
 6,1643882425.7763886,14,3,New question add,Meaningful message.,
 7,1643884575.1380117,76,71,Can I add a picture,Can I add a picture of a cat. With pickles.,images/Q_7.png
 8,1643893436.894132,18,1,New question,Text for new question.,images/Q_8.png
-9,1644486233.405045,30,2,Test adding this feature,"Test this feature, cats, more cats",
+9,1644486233.405045,33,2,Test adding this feature,"Test this feature, cats, more cats",
