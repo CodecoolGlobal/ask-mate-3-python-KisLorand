@@ -23,11 +23,11 @@ def add_new_answer(cursor, id_input, input_text, image_file):
     cursor.execute(query)
     select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
     cursor.execute(select_query)
+
     image_index = cursor.fetchone().get('id')
     image_path = upload_image(f"A_{image_index}", image_file)
     new_answer_query = f"""UPDATE answer SET image='{image_path}' WHERE id='{image_index}'"""
     cursor.execute(new_answer_query)
-    print("Uploaded")
     return True
 
 
@@ -41,14 +41,10 @@ def get_all_data(cursor, table_name, order_type="submission_time", order_directi
 
 @connection_handler
 def question_opener(cursor, question_id):
-    # question = get_all_data('question')
-    # all_answers = get_all_data('answer')
-
     question_query = f"""SELECT * FROM question WHERE id='{question_id}' """
     cursor.execute(question_query)
     question_data = cursor.fetchone()
 
-    # answer_query = f"""SELECT * FROM answer INNER JOIN question ON answer.question_id = question.id"""
     answer_query = f"""SELECT * FROM answer WHERE question_id = '{question_id}' """
     cursor.execute(answer_query)
     answers = cursor.fetchall()
@@ -106,12 +102,19 @@ def format_new_question(all_question_data, new_title, new_message, image_file):
     return new_question
 
 
-def add_new_question(new_title, new_message, image_file):
-    all_question_data = get_all_data("QUESTIONS")
+@connection_handler
+def add_new_question(cursor, new_title, new_message, image_file):
     if is_new_question_valid(new_title, new_message):
-        new_question = format_new_question(all_question_data, new_title, new_message, image_file)
-        all_question_data.append(new_question)
-        write_all_data("QUESTIONS", all_question_data)
+        insert_new_question = f""" INSERT INTO question (view_number, vote_number, title, message) VALUES (0, 0, '{new_title}', '{new_message}') """
+        cursor.execute(insert_new_question)
+        select_query = f"""SELECT id FROM question ORDER BY id DESC LIMIT 1"""
+        cursor.execute(select_query)
+
+        image_index = cursor.fetchone().get('id')
+        image_path = upload_image(f"Q_{image_index}", image_file)
+        new_answer_query = f""" UPDATE question SET image='{image_path}' WHERE id='{image_index}' """
+        cursor.execute(new_answer_query)
+        return True
 
 
 def delete_image(image_path):
