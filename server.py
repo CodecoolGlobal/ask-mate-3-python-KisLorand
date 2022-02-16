@@ -37,7 +37,7 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
-    data_manager.count_view_number(question_id)
+    data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
                                  answers=answers, question_image=question_image, question_id=question_id)
@@ -51,18 +51,6 @@ def new_answer(question_id):
         data_manager.add_new_answer(question_id, new_message, file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)
-
-
-# @app.route('/question/<question_id>/vote_up/<questions_order_val>/<order_direction_val>')
-# def question_vote_up(question_id, questions_order_val, order_direction_val):
-#     data_manager.vote(question_id, "questions", up=True)
-#     return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
-#
-#
-# @app.route('/question/<question_id>/vote_down/<questions_order_val>/<order_direction_val>')
-# def question_vote_down(question_id, questions_order_val, order_direction_val):
-#     data_manager.vote(question_id, "questions", up=False)
-#     return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
 
 
 @app.route("/question/<id_number>/vote", methods=["GET"])

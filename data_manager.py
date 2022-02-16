@@ -69,21 +69,6 @@ def count_view_number(question_id):
     connection.write_all_data_to_csv(question, 'questions')
 
 
-def vote(id, data_type, up=False):
-    datas = get_all_data(data_type)
-    updated_datas = []
-    for data in datas:
-        if data['id'] == id:
-            old_vote_number = int(data['vote_number'])
-            if up:
-                old_vote_number += 1
-            else:
-                old_vote_number -= 1
-            data['vote_number'] = str(old_vote_number)
-        updated_datas.append(data)
-    connection.write_all_data_to_csv(updated_datas, data_type)
-
-
 def write_all_data(data_type, all_data):
     if data_type.upper() == "ANSWER":
         return connection.write_all_data_to_csv(all_data, data_type)
