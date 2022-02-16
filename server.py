@@ -53,30 +53,29 @@ def new_answer(question_id):
     return flask.render_template("add_answer.html", question_id=question_id)
 
 
-@app.route('/question/<question_id>/vote_up/<questions_order_val>/<order_direction_val>')
-def question_vote_up(question_id, questions_order_val, order_direction_val):
-    data_manager.vote(question_id, "questions", up=True)
-    return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
+# @app.route('/question/<question_id>/vote_up/<questions_order_val>/<order_direction_val>')
+# def question_vote_up(question_id, questions_order_val, order_direction_val):
+#     data_manager.vote(question_id, "questions", up=True)
+#     return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
+#
+#
+# @app.route('/question/<question_id>/vote_down/<questions_order_val>/<order_direction_val>')
+# def question_vote_down(question_id, questions_order_val, order_direction_val):
+#     data_manager.vote(question_id, "questions", up=False)
+#     return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
 
 
-@app.route('/question/<question_id>/vote_down/<questions_order_val>/<order_direction_val>')
-def question_vote_down(question_id, questions_order_val, order_direction_val):
-    data_manager.vote(question_id, "questions", up=False)
-    return flask.redirect(f'/list?questions_order={ questions_order_val }&order_direction={ order_direction_val }')
-
-
-@app.route("/answer/<answer_id>/vote_up", methods=["GET"])
-def vote_answer_up(answer_id):
-    question_id = flask.request.args.get("question_id")
-    data_manager.vote(answer_id, "answers", up=True)
-    return flask.redirect(f'/question/{question_id}')
-
-
-@app.route("/answer/<answer_id>/vote_down", methods=["GET"])
-def vote_answer_down(answer_id):
-    question_id = flask.request.args.get("question_id")
-    data_manager.vote(answer_id, "answers", up=False)
-    return flask.redirect(f'/question/{question_id}')
+@app.route("/question/<id_number>/vote", methods=["GET"])
+@app.route("/answer/<id_number>/vote", methods=["GET"])
+def vote_answer_up(id_number):
+    table_name = flask.request.args.get("table")
+    vote_up = flask.request.args.get("vote-up")
+    data_manager.update_table_single_col(table_name, "vote_number", id_number, vote_up)
+    if table_name == "answer":
+        question_id = flask.request.args.get("question_id ")
+        return flask.redirect(f'/question/{question_id}')
+    else:
+        return flask.redirect(f'/list')
 
 
 @app.route("/answer/<answer_id>/delete")

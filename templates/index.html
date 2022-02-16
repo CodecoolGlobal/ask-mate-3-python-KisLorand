@@ -49,8 +49,8 @@
             <td></td>
         {% endif %}
         <td>
-            <a href="/question/{{ data['id'] }}/vote_up/{{ questions_order_val }}/{{ order_direction_val }}">Up vote</a>
-            <a href="/question/{{ data['id'] }}/vote_down/{{ questions_order_val }}/{{ order_direction_val }}">Down vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question">Up vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question">Down vote</a>
         </td>
         <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
     </tr>

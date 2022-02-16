@@ -18,9 +18,15 @@ MIN_QUESTION_MESSAGE_LEN = 10
 
 
 @connection_handler
+def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
+    query = f""" UPDATE {table_name} SET {col_name}={col_name}+{vote_up} WHERE id={id_number} """
+    cursor.execute(query)
+
+
+@connection_handler
 def add_new_answer(cursor, id_input, input_text, image_file):
     current_time = datetime.datetime.now()
-    query = f"""INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}')"""
+    query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
     cursor.execute(query)
     select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
     cursor.execute(select_query)
