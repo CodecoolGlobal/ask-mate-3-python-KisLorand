@@ -19,7 +19,8 @@ MIN_QUESTION_MESSAGE_LEN = 10
 
 @connection_handler
 def add_new_answer(cursor, id_input, input_text, image_file):
-    query = f"""INSERT INTO answer (vote_number, question_id, message) VALUES (0, '{id_input}', '{input_text}')"""
+    current_time = datetime.datetime.now()
+    query = f"""INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}')"""
     cursor.execute(query)
     select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
     cursor.execute(select_query)
@@ -105,7 +106,9 @@ def format_new_question(all_question_data, new_title, new_message, image_file):
 @connection_handler
 def add_new_question(cursor, new_title, new_message, image_file):
     if is_new_question_valid(new_title, new_message):
-        insert_new_question = f""" INSERT INTO question (view_number, vote_number, title, message) VALUES (0, 0, '{new_title}', '{new_message}') """
+        current_time = datetime.datetime.now()
+        insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message) 
+                                   VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}') """
         cursor.execute(insert_new_question)
         select_query = f"""SELECT id FROM question ORDER BY id DESC LIMIT 1"""
         cursor.execute(select_query)
