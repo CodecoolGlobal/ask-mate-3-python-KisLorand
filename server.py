@@ -60,7 +60,7 @@ def vote_answer_up(id_number):
     vote_up = flask.request.args.get("vote-up")
     data_manager.update_table_single_col(table_name, "vote_number", id_number, vote_up)
     if table_name == "answer":
-        question_id = flask.request.args.get("question_id ")
+        question_id = flask.request.args.get("question_id")
         return flask.redirect(f'/question/{question_id}')
     else:
         return flask.redirect(f'/list')
@@ -69,13 +69,13 @@ def vote_answer_up(id_number):
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
     question_id = flask.request.args.get("question_id")
-    data_manager.delete(answer_id, "ANSWERS")
+    data_manager.delete(answer_id, "answer")
     return flask.redirect(f'/question/{question_id}')
 
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    data_manager.delete(question_id, "QUESTIONS")
+    data_manager.delete(question_id, "question")
     return flask.redirect('/list')
 
 

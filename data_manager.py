@@ -28,19 +28,19 @@ def add_new_answer(cursor, id_input, input_text, image_file):
     current_time = datetime.datetime.now()
     query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
     cursor.execute(query)
-    select_query = f"""SELECT id FROM answer ORDER BY id DESC LIMIT 1"""
+    select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
     cursor.execute(select_query)
 
     image_index = cursor.fetchone().get('id')
     image_path = upload_image(f"A_{image_index}", image_file)
-    new_answer_query = f"""UPDATE answer SET image='{image_path}' WHERE id='{image_index}'"""
+    new_answer_query = f""" UPDATE answer SET image='{image_path}' WHERE id='{image_index}' """
     cursor.execute(new_answer_query)
     return True
 
 
 @connection_handler
 def get_all_data(cursor, table_name, order_type="submission_time", order_direction="DESC"):
-    query = f"""SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
+    query = f""" SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
@@ -48,11 +48,11 @@ def get_all_data(cursor, table_name, order_type="submission_time", order_directi
 
 @connection_handler
 def question_opener(cursor, question_id):
-    question_query = f"""SELECT * FROM question WHERE id='{question_id}' """
+    question_query = f""" SELECT * FROM question WHERE id='{question_id}' """
     cursor.execute(question_query)
     question_data = cursor.fetchone()
 
-    answer_query = f"""SELECT * FROM answer WHERE question_id = '{question_id}' """
+    answer_query = f""" SELECT * FROM answer WHERE question_id = '{question_id}' """
     cursor.execute(answer_query)
     answers = cursor.fetchall()
 
@@ -101,7 +101,7 @@ def add_new_question(cursor, new_title, new_message, image_file):
         insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message) 
                                    VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}') """
         cursor.execute(insert_new_question)
-        select_query = f"""SELECT id FROM question ORDER BY id DESC LIMIT 1"""
+        select_query = f""" SELECT id FROM question ORDER BY id DESC LIMIT 1 """
         cursor.execute(select_query)
 
         image_index = cursor.fetchone().get('id')
@@ -118,20 +118,25 @@ def delete_image(image_path):
             os.remove(correct_path)
 
 
-def delete(input_id, data_type, id_data_type="id"):
-    if data_type.upper() == "ANSWER":
-        file_path = PATH_ANSWERS
-    elif data_type.upper() == "QUESTION":
-        file_path = PATH_QUESTIONS
-        delete(input_id, "ANSWER", id_data_type="question_id")
-    all_datas = connection.get_all_csv_data(file_path)
-    updated_datas = []
-    for datas in all_datas:
-        if datas.get(id_data_type) != input_id:
-            updated_datas.append(datas)
-        else:
-            delete_image(datas.get("image"))
-    connection.write_all_data_to_csv(updated_datas, data_type)
+@connection_handler
+def delete(cursor, input_id, table_name, id_data_type="id"):
+    # if table_name == "question":
+    #     delete_comment_query = f""" DELETE FROM comment WHERE question_id='{input_id}' """
+    #     cursor.execute(delete_comment_query)
+    #
+    #     all_data = 11
+    #
+    #     delete_answer_query = f""" DELETE FROM answer WHERE question_id='{input_id}' RETURNING image """
+    #     cursor.execute(delete_answer_query)
+    #     delete_question_tag = f""" DELETE FROM question_tag WHERE question_id='{input_id}' """
+    #     cursor.execute(delete_question_tag)
+    #     # answer_images = cursor.fetchall()
+    # elif table_name == "answer":
+    #     delete_comment_query = f""" DELETE FROM comment WHERE answer_id='{input_id}' """
+    #     cursor.execute(delete_comment_query)
+    delete_query = f""" DELETE FROM {table_name} WHERE id={input_id} RETURNING image """
+    cursor.execute(delete_query)
+    # delete_image(cursor.fetchone())
 
 
 def upload_image(img_name, image_request):
