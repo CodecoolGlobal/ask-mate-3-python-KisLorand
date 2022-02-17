@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import connection
 import time
 import os
@@ -25,7 +27,7 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 
 @connection_handler
 def add_new_answer(cursor, id_input, input_text, image_file):
-    current_time = datetime.datetime.now()
+    current_time: datetime = datetime.datetime.now()
     query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
@@ -176,6 +178,24 @@ def question_editor(cursor, title, message, question_id):
 
 
 @connection_handler
+def get_question_titles_and_messages(cursor, search_phrase):
+    query = f"""SELECT  id ,title, message 
+                FROM question 
+                WHERE title LIKE '%{search_phrase}%'; """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection_handler
+def get_answers_by_id(cursor, id):
+    query = f"""SELECT message FROM answer WHERE  question_id = {id}"""
+    cursor.execute(query)
+    result = []
+    for x in (cursor.fetchall()):
+        result.append(x['message'])
+    return result
+
+
 def image_editor(cursor,table_name, data_id,image):
     query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
             """

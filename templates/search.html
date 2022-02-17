@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search result</title>
+</head>
+<body>
+    <h3>You searched for: {{ search_phrase }}</h3>
+    {% for i in range(search_results|length) %}
+        <h4>{{search_results[i].get('title') }}</h4>
+        <p>{{ search_results[i].get('message') }}</p>
+        <ul>
+            {% for message in search_results[i].get('answer_message') %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+<a href="/list">back to the questions</a>
+</body>
+</html>
