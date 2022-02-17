@@ -13,8 +13,8 @@ UPLOAD_FOLDER = 'static/images'
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
 
-MIN_QUESTION_TITLE_LEN = 6
-MIN_QUESTION_MESSAGE_LEN = 10
+MIN_QUESTION_TITLE_LEN = 3
+MIN_QUESTION_MESSAGE_LEN = 5
 
 
 @connection_handler
@@ -41,6 +41,14 @@ def add_new_answer(cursor, id_input, input_text, image_file):
 @connection_handler
 def get_all_data(cursor, table_name, order_type="submission_time", order_direction="DESC"):
     query = f""" SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
+
+
+@connection_handler
+def get_all_data_by_condition(cursor, table_name, column, col_value, order_type="submission_time", order_direction="ASC"):
+    query = f""" SELECT * FROM "{table_name}" WHERE {column}>={col_value} ORDER BY {order_type} {order_direction} """
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
@@ -159,6 +167,7 @@ def entry_editor(cursor, table_name,data_id, message):
     """
     cursor.execute(query)
 
+
 @connection_handler
 def question_editor(cursor, title, message, question_id):
     query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id} 
@@ -171,6 +180,23 @@ def image_editor(cursor,table_name, data_id,image):
     query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
             """
     cursor.execute(query)
+
+
+## refactor this to one function
+@connection_handler
+def add_new_comment_q(cursor, question_id, added_message):
+    submission_time = datetime.datetime.now()
+    comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count) 
+                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0) """
+    cursor.execute(comment_query)
+
+
+@connection_handler
+def add_new_comment_a(cursor, answer_id, added_message):
+    submission_time = datetime.datetime.now()
+    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count) 
+                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0) """
+    cursor.execute(comment_query)
 
 
 @connection_handler
