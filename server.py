@@ -46,7 +46,7 @@ def open_question(question_id):
     question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
                                  answers=answers, question_image=question_image, question_id=question_id,
-                                 question_comments=question_comments, answer_comments=answer_comments)
+                                 question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
