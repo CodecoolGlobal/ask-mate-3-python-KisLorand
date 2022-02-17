@@ -8,12 +8,16 @@
     <title>Search result</title>
 </head>
 <body>
-        {{ search_results }}
-        {% for result in search_results %}
-           {% for key, value in result.items() %}
-               <p>{{ key }}</p><p>{{ value }}</p>
-           {% endfor %}
-
-        {% endfor %}
+    <h3>You searched for: {{ search_phrase }}</h3>
+    {% for i in range(search_results|length) %}
+        <h4>{{search_results[i].get('title') }}</h4>
+        <p>{{ search_results[i].get('message') }}</p>
+        <ul>
+            {% for message in search_results[i].get('answer_message') %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+<a href="/list">back to the questions</a>
 </body>
 </html>

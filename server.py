@@ -112,8 +112,16 @@ def edit_answer(answer_id):
 @app.route('/search')
 def search_question():
     search_phrase = flask.request.args.get('search-phrase')
-    search_results = data_manager.get_question_titles_and_messages(search_phrase)
-    return flask.render_template('search.html', search_results=search_results)
+    search = data_manager.get_question_titles_and_messages(search_phrase)
+    search_result = []
+    for result in search:
+        result_dict = {}
+        for key, value in result.items():
+            result_dict[key] = value
+        result_dict['answer_message'] = list(data_manager.get_answers_by_id(result['id']))
+        search_result.append(result_dict)
+
+    return flask.render_template('search.html', search_results=search_result, search_phrase=search_phrase)
 
 
 

@@ -170,11 +170,21 @@ def question_editor(cursor, title, message, question_id):
 
 @connection_handler
 def get_question_titles_and_messages(cursor, search_phrase):
-    query = f"""SELECT question.title, question.message as "Question message",  answer.message as "Answer message"
-                FROM answer, question 
-                WHERE title LIKE '%{search_phrase}%' AND answer.question_id = question.id ; """
+    query = f"""SELECT  id ,title, message 
+                FROM question 
+                WHERE title LIKE '%{search_phrase}%'; """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection_handler
+def get_answers_by_id(cursor, id):
+    query = f"""SELECT message FROM answer WHERE  question_id = {id}"""
+    cursor.execute(query)
+    result = []
+    for x in (cursor.fetchall()):
+        result.append(x['message'])
+    return result
 
 
 def image_editor(cursor,table_name, data_id,image):
