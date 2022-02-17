@@ -13,8 +13,8 @@ UPLOAD_FOLDER = 'static/images'
 PATH_ANSWERS = "sample_data/answer.csv"
 PATH_QUESTIONS = "sample_data/question.csv"
 
-MIN_QUESTION_TITLE_LEN = 6
-MIN_QUESTION_MESSAGE_LEN = 10
+MIN_QUESTION_TITLE_LEN = 3
+MIN_QUESTION_MESSAGE_LEN = 5
 
 
 @connection_handler

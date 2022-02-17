@@ -110,7 +110,7 @@ def add_comment_to_question(question_id):
     if flask.request.method == 'POST':
         # add_new_comment_q()
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('new_comment.html')
+    return flask.render_template('new_comment.html', question_id=question_id)
 
 
 if __name__ == "__main__":
