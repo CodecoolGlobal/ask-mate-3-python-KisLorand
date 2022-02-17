@@ -132,7 +132,7 @@ def delete(cursor, question_id=None, answer_id=None):
         delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
         cursor.execute(delete_query)
         images_for_delete= cursor.fetchall()
-    delete_image(images_for_delete)
+    delete_images(images_for_delete)
 
 
 def upload_image(img_name, image_request):
