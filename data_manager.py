@@ -120,23 +120,11 @@ def delete_image(image_path):
 
 @connection_handler
 def delete(cursor, input_id, table_name, id_data_type="id"):
-    # if table_name == "question":
-    #     delete_comment_query = f""" DELETE FROM comment WHERE question_id='{input_id}' """
-    #     cursor.execute(delete_comment_query)
-    #
-    #     all_data = 11
-    #
-    #     delete_answer_query = f""" DELETE FROM answer WHERE question_id='{input_id}' RETURNING image """
-    #     cursor.execute(delete_answer_query)
-    #     delete_question_tag = f""" DELETE FROM question_tag WHERE question_id='{input_id}' """
-    #     cursor.execute(delete_question_tag)
-    #     # answer_images = cursor.fetchall()
-    # elif table_name == "answer":
-    #     delete_comment_query = f""" DELETE FROM comment WHERE answer_id='{input_id}' """
-    #     cursor.execute(delete_comment_query)
     delete_query = f""" DELETE FROM {table_name} WHERE id={input_id} RETURNING image """
     cursor.execute(delete_query)
-    # delete_image(cursor.fetchone())
+    k = cursor.fetchall()
+    delete_image(k)
+    print(k)
 
 
 def upload_image(img_name, image_request):

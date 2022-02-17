@@ -1,4 +1,6 @@
 import flask
+import requests.cookies
+import requests.sessions
 from flask import Flask
 import data_manager
 import sort
@@ -101,6 +103,14 @@ def edit_answer(answer_id):
         data_manager.get_entry_by_id(answer_id, answers, True, message, image_file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
+
+
+@app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
+def add_comment_to_question(question_id):
+    if flask.request.method == 'POST':
+        # add_new_comment_q()
+        return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('new_comment.html')
 
 
 if __name__ == "__main__":
