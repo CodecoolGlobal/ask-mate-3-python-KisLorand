@@ -116,6 +116,7 @@ def add_new_tag(question_id):
         if new_tag_name:
             added_tag_id = data_manager.add_new_tag(new_tag_name)
         data_manager.add_tag_to_question(added_tag_id, question_id)
+        return flask.redirect(f"/question/{question_id}")
     tags = data_manager.get_all_data("tag", order_type="name", order_direction="ASC")
     return flask.render_template('new_tag.html', tags=tags, question_id=question_id)
 
