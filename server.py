@@ -9,7 +9,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def main_page():
-    return flask.render_template("main_page.html")
+    questions = data_manager.latest_questions()
+    return flask.render_template("main_page.html", questions=questions)
 
 
 @app.route('/list', methods=['GET', 'POST'])

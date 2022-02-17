@@ -175,3 +175,11 @@ def image_editor(cursor,table_name, data_id,image):
     query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
             """
     cursor.execute(query)
+
+
+@connection_handler
+def latest_questions(cursor):
+    query = f""" SELECT * FROM question ORDER BY submission_time DESC  LIMIT 5"""
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
