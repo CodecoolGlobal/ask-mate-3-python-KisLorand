@@ -124,8 +124,20 @@ def search_question():
             result_dict[key] = value
         result_dict['answer_message'] = list(data_manager.get_answers_by_id(result['id']))
         search_result.append(result_dict)
-
     return flask.render_template('search.html', search_results=search_result, search_phrase=search_phrase)
+
+
+@app.route("/question/<question_id>/new-tag", methods=["GET", "POST"])
+def add_new_tag(question_id):
+    if flask.request.method == "POST":
+        added_tag_id = flask.request.form.get("tag-id")
+        new_tag_name = flask.request.form.get("new-tag-name")
+        if new_tag_name:
+            added_tag_id = data_manager.add_new_tag(new_tag_name)
+        data_manager.add_tag_to_question(added_tag_id, question_id)
+        return flask.redirect(f"/question/{question_id}")
+    tags = data_manager.get_all_data("tag", order_type="name", order_direction="ASC")
+    return flask.render_template('new_tag.html', tags=tags, question_id=question_id)
 
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])

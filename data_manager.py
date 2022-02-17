@@ -202,6 +202,23 @@ def image_editor(cursor,table_name, data_id,image):
     cursor.execute(query)
 
 
+@connection_handler
+def add_new_tag(cursor, new_tag):
+    query = f""" INSERT INTO tag(name) SELECT '{new_tag}'
+            WHERE NOT EXISTs (SELECT name FROM tag WHERE name='{new_tag}')"""
+    cursor.execute(query)
+    query = f""" SELECT id FROM tag WHERE name='{new_tag}'"""
+    cursor.execute(query)
+    return cursor.fetchone().get("id")
+
+
+@connection_handler
+def add_tag_to_question(cursor, added_tag_id, question_id):
+    query = f""" INSERT INTO question_tag(question_id,tag_id)
+            VALUES({question_id}, {added_tag_id})"""
+    cursor.execute(query)
+
+
 ## refactor this to one function
 @connection_handler
 def add_new_comment_q(cursor, question_id, added_message):
