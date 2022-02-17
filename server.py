@@ -69,13 +69,13 @@ def vote_answer_up(id_number):
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
     question_id = flask.request.args.get("question_id")
-    data_manager.delete(answer_id, "answer")
+    data_manager.delete(answer_id=answer_id)
     return flask.redirect(f'/question/{question_id}')
 
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    data_manager.delete(question_id, "question")
+    data_manager.delete(question_id=question_id)
     return flask.redirect('/list')
 
 
