@@ -11,8 +11,10 @@
     <form action="{% block action_destination %}{% endblock %}" method="POST" enctype="multipart/form-data">
         {% block title %}{% endblock %}
         {% block message %}{% endblock %}
-        <label for="avatar">Choose a profile picture:</label>
-        <input type="file" id="avatar" name="image" accept="image/png, image/jpeg">
+        {% block add_image %}
+            <label for="avatar">Choose a profile picture:</label>
+            <input type="file" id="avatar" name="image" accept="image/png, image/jpeg">
+        {% endblock %}
         {% block submit_button %}{% endblock %}
 
     </form>

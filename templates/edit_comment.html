@@ -1,0 +1,15 @@
+{% extends "add_new_form.html" %}
+{% block page_name %}Edit Answer{% endblock %}
+{% block back_to_last_page %}/question/{{ question_id }}{% endblock %}
+{% block back_to_last_page_name %}the answers{% endblock %}
+{% block action_destination %}/comment/{{ comment_id }}/edit?question_id={{ question_id }}{% endblock %}
+
+{% block message %}
+    <label for="message-input">Message:<br></label>
+    <textarea id="message-input" name="message" rows="4" cols="40">{{ comment_message }}</textarea>
+    <br><br>
+{% endblock %}
+{% block add_image %}{% endblock %}
+{% block submit_button %}
+    <button type="submit">Edit comment</button>
+{% endblock %}

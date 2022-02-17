@@ -1,0 +1,14 @@
+{% extends "add_new_form.html" %}
+{% block page_name %}Add New Comment{% endblock %}
+{% block back_to_last_page %}/question/{{ question_id }}{% endblock %}
+{% block back_to_last_page_name %}question{% endblock %}
+{% block action_destination %}/question/{{ question_id }}/new-comment{% endblock %}
+{% block message %}
+    <label for="comment-message-input">Message:<br></label>
+    <textarea id="comment-message-input" name="comment-message" rows="4" cols="40"></textarea>
+    <br><br>
+{% endblock %}
+{% block add_image %}{% endblock %}
+{% block submit_button %}
+    <button type="submit">Comment</button>
+{% endblock %}
