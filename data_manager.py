@@ -167,9 +167,18 @@ def entry_editor(id_input, message, image_file, data_type, question_title=""):
     connection.write_all_data_to_csv(data, data_type)
 
 
+## refactor this to one function
 @connection_handler
 def add_new_comment_q(cursor, question_id, added_message):
     submission_time = datetime.datetime.now()
     comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count) 
-                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0)"""
+                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0) """
+    cursor.execute(comment_query)
+
+
+@connection_handler
+def add_new_comment_a(cursor, answer_id, added_message):
+    submission_time = datetime.datetime.now()
+    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count) 
+                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0) """
     cursor.execute(comment_query)

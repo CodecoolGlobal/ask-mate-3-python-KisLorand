@@ -116,5 +116,14 @@ def add_comment_to_question(question_id):
     return flask.render_template('new_comment.html', question_id=question_id)
 
 
+@app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
+def add_comment_to_answer(answer_id, question_id):
+    if flask.request.method == 'POST':
+        comment_message = flask.request.form.get('comment-message')
+        data_manager.add_new_comment_a(question_id, comment_message)
+        return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('new_comment.html', question_id=question_id, answer_id=answer_id)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
