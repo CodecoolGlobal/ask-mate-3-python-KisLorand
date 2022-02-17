@@ -10,6 +10,32 @@
 <body>
     <h1>{% block page_name %}AskMate{% endblock %}</h1>
     <p>Welcome to the AskMate main page.</p>
+    <table>
+    <tr>
+        <th>View Number &nbsp;|</th>
+        <th>Vote Number &nbsp;| </th>
+        <th>Title &nbsp;| </th>
+        <th>Message &nbsp;|</th>
+        <th>Image</th>
+    </tr>
+    {%for data in questions  %}
+    <tr>
+        <td>{{ data['view_number'] }}</td>
+        <td>{{ data['vote_number'] }}</td>
+        <td><a href="/question/{{ data['id'] }}">{{ data['title'] }}</a></td>
+        <td>{{ data['message'] }}</td>
+        {% if data['image'] %}
+            <td><img src="{{url_for('static', filename=data['image'])}}" alt=" " width="42" height="42"></td>
+        {% else %}
+            <td></td>
+        {% endif %}
+        <td>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question">Up vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question">Down vote</a>
+        </td>
+        <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
+    </tr>
+    {% endfor %}
     <h3><a href="/add-question">Ask new question</a></h3>
     <h3><a href="/list">List all questions</a></h3>
     <form action="/add-question" method="POST">

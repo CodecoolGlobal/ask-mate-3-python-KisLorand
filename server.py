@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def main_page():
-    return flask.render_template("main_page.html")
+    questions = data_manager.latest_questions()
+    return flask.render_template("main_page.html", questions=questions)
 
 
 @app.route('/list', methods=['GET', 'POST'])
@@ -74,13 +75,13 @@ def vote_answer_up(id_number):
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
     question_id = flask.request.args.get("question_id")
-    data_manager.delete(answer_id, "answer")
+    data_manager.delete(answer_id=answer_id)
     return flask.redirect(f'/question/{question_id}')
 
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    data_manager.delete(question_id, "question")
+    data_manager.delete(question_id=question_id)
     return flask.redirect('/list')
 
 
@@ -99,8 +100,6 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
-    answers = data_manager.get_all_data('answer')
-    image_file = flask.request.files.get("image")
     answer_data = data_manager.get_entry_by_id(answer_id, "answer")
     answer_message = answer_data.get("message")
     question_id = answer_data.get("question_id")
@@ -133,6 +132,19 @@ def add_comment_to_answer(answer_id):
         data_manager.add_new_comment_a(answer_id, comment_message)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('new_comment_A.html', question_id=question_id, answer_id=answer_id)
+
+
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    comment_data = data_manager.get_entry_by_id(comment_id, "comment")
+    comment_message = comment_data.get("message")
+    question_id = flask.request.args.get('question_id')
+    if flask.request.method == 'POST':
+        message = flask.request.form.get("message")
+        data_manager.update_table_single_col("comment", "submission_time", comment_id, 1)
+        data_manager.entry_editor("comment", comment_id, message)
+        return flask.redirect(f'/question/{question_id}')
+    return flask.render_template('edit_comment.html', comment_message=comment_message, comment_id=comment_id)
 
 
 if __name__ == "__main__":

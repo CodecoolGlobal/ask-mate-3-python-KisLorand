@@ -119,20 +119,28 @@ def add_new_question(cursor, new_title, new_message, image_file):
         return True
 
 
-def delete_image(image_path):
-    if image_path != "":
-        correct_path = f"static/{image_path}"
-        if os.path.exists(correct_path):
-            os.remove(correct_path)
+def delete_images(image_paths=[]):
+    for image_path in image_paths:
+        if image_path.get("image"):
+            correct_path = f"static/{image_path.get('image')}"
+            if os.path.exists(correct_path):
+                os.remove(correct_path)
 
 
 @connection_handler
-def delete(cursor, input_id, table_name, id_data_type="id"):
-    delete_query = f""" DELETE FROM {table_name} WHERE id={input_id} RETURNING image """
-    cursor.execute(delete_query)
-    k = cursor.fetchall()
-    delete_image(k)
-    print(k)
+def delete(cursor, question_id=None, answer_id=None):
+    if question_id:
+        delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
+        cursor.execute(delete_query)
+        images_for_delete = cursor.fetchall()
+        delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
+        cursor.execute(delete_query)
+        images_for_delete.extend(cursor.fetchall())
+    elif answer_id:
+        delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
+        cursor.execute(delete_query)
+        images_for_delete= cursor.fetchall()
+    delete_images(images_for_delete)
 
 
 def upload_image(img_name, image_request):
@@ -173,6 +181,7 @@ def image_editor(cursor,table_name, data_id,image):
             """
     cursor.execute(query)
 
+
 ## refactor this to one function
 @connection_handler
 def add_new_comment_q(cursor, question_id, added_message):
@@ -188,3 +197,11 @@ def add_new_comment_a(cursor, answer_id, added_message):
     comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count) 
                          VALUES ({answer_id}, '{added_message}', '{submission_time}', 0) """
     cursor.execute(comment_query)
+
+
+@connection_handler
+def latest_questions(cursor):
+    query = f""" SELECT * FROM question ORDER BY submission_time DESC  LIMIT 5"""
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
