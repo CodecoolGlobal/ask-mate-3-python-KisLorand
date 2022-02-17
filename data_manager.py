@@ -171,3 +171,11 @@ def image_editor(cursor,table_name, data_id,image):
     query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
             """
     cursor.execute(query)
+
+
+def add_new_tag(new_tag):
+    return None
+
+
+def add_tag_to_question(added_tag, question_id):
+    return None
