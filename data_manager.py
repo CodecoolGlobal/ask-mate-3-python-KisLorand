@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import connection
 import time
 import os
@@ -25,7 +27,7 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 
 @connection_handler
 def add_new_answer(cursor, id_input, input_text, image_file):
-    current_time = datetime.datetime.now()
+    current_time: datetime = datetime.datetime.now()
     query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
@@ -162,7 +164,7 @@ def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", imag
 
 
 @connection_handler
-def entry_editor(cursor, table_name,data_id, message):
+def entry_editor(cursor, table_name, data_id, message):
     query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
     """
     cursor.execute(query)
@@ -176,9 +178,44 @@ def question_editor(cursor, title, message, question_id):
 
 
 @connection_handler
-def image_editor(cursor,table_name, data_id,image):
-    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
-            """
+def get_question_titles_and_messages(cursor, search_phrase):
+    query = f"""SELECT  id ,title, message 
+                FROM question 
+                WHERE title LIKE '%{search_phrase}%'; """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection_handler
+def get_answers_by_id(cursor, id):
+    query = f"""SELECT message FROM answer WHERE  question_id = {id}"""
+    cursor.execute(query)
+    result = []
+    for x in (cursor.fetchall()):
+        result.append(x['message'])
+    return result
+
+
+@connection_handler
+def image_editor(cursor, table_name, data_id, image):
+    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} """
+    cursor.execute(query)
+
+
+@connection_handler
+def add_new_tag(cursor, new_tag):
+    query = f""" INSERT INTO tag(name) SELECT '{new_tag}'
+            WHERE NOT EXISTs (SELECT name FROM tag WHERE name='{new_tag}')"""
+    cursor.execute(query)
+    query = f""" SELECT id FROM tag WHERE name='{new_tag}'"""
+    cursor.execute(query)
+    return cursor.fetchone().get("id")
+
+
+@connection_handler
+def add_tag_to_question(cursor, added_tag_id, question_id):
+    query = f""" INSERT INTO question_tag(question_id,tag_id)
+            VALUES({question_id}, {added_tag_id})"""
     cursor.execute(query)
 
 
@@ -197,6 +234,7 @@ def add_new_comment_a(cursor, answer_id, added_message):
     comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count) 
                          VALUES ({answer_id}, '{added_message}', '{submission_time}', 0) """
     cursor.execute(comment_query)
+## refactor this to one function
 
 
 @connection_handler
