@@ -39,11 +39,13 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
-    question_comments = data_manager.get_all_data('comment')
+    question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
+    answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
-                                 answers=answers, question_image=question_image, question_id=question_id, question_comments=question_comments)
+                                 answers=answers, question_image=question_image, question_id=question_id,
+                                 question_comments=question_comments, answer_comments=answer_comments)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -89,7 +91,7 @@ def edit_question(question_id):
         question_title = flask.request.form.get("title")
         image_file = flask.request.files.get('image')
         message = flask.request.form.get("message")
-        data_manager.entry_editor(question_id, message, image_file, 'questions', question_title)
+        data_manager.question_editor(question_title, message, question_id)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_question.html', question_title=question_title, message=message,
                                  question_id=question_id)
@@ -99,12 +101,17 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     answers = data_manager.get_all_data('answer')
     image_file = flask.request.files.get("image")
-    answer_message, question_id = data_manager.get_entry_by_id(answer_id, answers, False)
+    answer_data = data_manager.get_entry_by_id(answer_id, "answer")
+    answer_message = answer_data.get("message")
+    question_id = answer_data.get("question_id")
+    print(answer_data)
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
-        data_manager.get_entry_by_id(answer_id, answers, True, message, image_file)
+        image =flask.request.form.get("image")
+        data_manager.entry_editor("answer", answer_id, message)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
+    return flask.render_template('edit_answer.html', answer_message=answer_message, question_id=question_id,
+                                 answer_id=answer_id)
 
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
@@ -117,12 +124,15 @@ def add_comment_to_question(question_id):
 
 
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
-def add_comment_to_answer(answer_id, question_id):
+def add_comment_to_answer(answer_id):
+    question_id = flask.request.args.get('question_id')
+    print(question_id)
     if flask.request.method == 'POST':
+        print(question_id)
         comment_message = flask.request.form.get('comment-message')
-        data_manager.add_new_comment_a(question_id, comment_message)
+        data_manager.add_new_comment_a(answer_id, comment_message)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('new_comment.html', question_id=question_id, answer_id=answer_id)
+    return flask.render_template('new_comment_A.html', question_id=question_id, answer_id=answer_id)
 
 
 if __name__ == "__main__":

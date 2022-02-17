@@ -16,10 +16,11 @@
             <p></p>
         {% endif %}
         <br><br>
-        <a href="/question/{{ question_id }}/new-comment">Comment</a>
+        <a href="/question/{{ question_id }}/new-comment">Add Comment</a>
         <br><br>
         <table id="question-comment-table">
             {% for comment in question_comments %}
+
                 <tr>
                     <td>{{ comment['message'] }}</td>
                     <td>{{ comment['submission_time'] }}</td>
@@ -54,8 +55,22 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><a href="/answer/<answer_id>/new-comment">Comment</a></td>
+                    <table>
+                        {% for comment in answer_comments %}
+                            {% if comment['answer_id'] == answer['id'] %}
+                            <tr>
+                                <td>{{ comment['message'] }}</td>
+                                <td>{{ comment['submission_time'] }}</td>
+                                <td>edited {{ comment['edited_count'] }} times</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
                 </tr>
+                <tr>
+                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question_id }}">Comment to {{ answer['id'] }}</a></td>
+                </tr>
+                <br><br>
             {% endfor %}
         </table>
         <br><br>

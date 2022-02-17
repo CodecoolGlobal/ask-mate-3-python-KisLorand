@@ -47,6 +47,14 @@ def get_all_data(cursor, table_name, order_type="submission_time", order_directi
 
 
 @connection_handler
+def get_all_data_by_condition(cursor, table_name, column, col_value, order_type="submission_time", order_direction="ASC"):
+    query = f""" SELECT * FROM "{table_name}" WHERE {column}>={col_value} ORDER BY {order_type} {order_direction} """
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
+
+
+@connection_handler
 def question_opener(cursor, question_id):
     question_query = f""" SELECT * FROM question WHERE id='{question_id}' """
     cursor.execute(question_query)
@@ -138,34 +146,32 @@ def upload_image(img_name, image_request):
     return f'{splitted_path[1]}/{img_name}'
 
 
-def get_entry_by_id(entry_id, answers, entry_post, message="", image_file=""):
-    for row in answers:
-        if row['id'] == entry_id:
-            answer_message = row['message']
-            question_id = row['question_id']
-            if entry_post:
-                row['message'] = message
-                entry_editor(entry_id, message, image_file, 'answers')
-            else:
-                return answer_message, question_id
+@connection_handler
+def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
+    query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
+    cursor.execute(query)
+    return cursor.fetchone()
 
 
-def entry_editor(id_input, message, image_file, data_type, question_title=""):
-    data = get_all_data(data_type)
-    for row in data:
-        if data_type == "questions":
-            if row['id'] == id_input:
-                delete_image(row["image"])
-                row["image"] = upload_image(f"Q_{row['id']}", image_file)
-                row['title'] = question_title
-                row['message'] = message
-        elif data_type == "answers":
-            if row['id'] == id_input:
-                delete_image(row["image"])
-                row["image"] = upload_image(f"A_{row['id']}", image_file)
-                row['message'] = message
-    connection.write_all_data_to_csv(data, data_type)
+@connection_handler
+def entry_editor(cursor, table_name,data_id, message):
+    query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
+    """
+    cursor.execute(query)
 
+
+@connection_handler
+def question_editor(cursor, title, message, question_id):
+    query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id} 
+        """
+    cursor.execute(query)
+
+
+@connection_handler
+def image_editor(cursor,table_name, data_id,image):
+    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
+            """
+    cursor.execute(query)
 
 ## refactor this to one function
 @connection_handler
