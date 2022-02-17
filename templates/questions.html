@@ -18,34 +18,44 @@
         <br><br>
         <a href="/question/{{ question_id }}/new-comment">Comment</a>
         <br><br>
+        <table id="question-comment-table">
+            {% for comment in question_comments %}
+                <tr>
+                    <td>{{ comment['message'] }}</td>
+                    <td>{{ comment['submission_time'] }}</td>
+                    <td>edited {{ comment['edited_count'] }} times</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br><br>
 
-    <table>
-        <tr>
-            <th>Vote <br> Number &nbsp;</th>
-            <th>Answer &nbsp;</th>
-            <th>Image &nbsp;</th>
-        </tr>
-        {% for answer in answers %}
+        <table>
             <tr>
-                <td>{{ answer['vote_number'] }}</td>
-                <td>{{ answer['message'] }}</td>
-                {% if answer['image'] %}
-                    <td><img src="{{url_for('static', filename=answer['image'])}}" alt=" " width="42" height="42"></td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>
-                    <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=1&table=answer" > Up vote</a>
-                    <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=-1&table=answer" >Down vote</a>
-                    <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question_id }}">Delete</a>
-                    <a href='/answer/{{ answer['id'] }}/edit'>Edit</a>
-
-                </td>
+                <th>Vote <br> Number &nbsp;</th>
+                <th>Answer &nbsp;</th>
+                <th>Image &nbsp;</th>
             </tr>
-        {% endfor %}
-    </table>
-    <br><br>
-    <a href="/question/{{ question_id }}/new-answer?question_id={{ question_id }}">Add new answer</a><br>
-    <a href="/list">back to the questions</a>
+            {% for answer in answers %}
+                <tr>
+                    <td>{{ answer['vote_number'] }}</td>
+                    <td>{{ answer['message'] }}</td>
+                    {% if answer['image'] %}
+                        <td><img src="{{url_for('static', filename=answer['image'])}}" alt=" " width="42" height="42"></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=1&table=answer" > Up vote</a>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=-1&table=answer" >Down vote</a>
+                        <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question_id }}">Delete</a>
+                        <a href='/answer/{{ answer['id'] }}/edit'>Edit</a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br><br>
+        <a href="/question/{{ question_id }}/new-answer?question_id={{ question_id }}">Add new answer</a><br>
+        <a href="/list">back to the questions</a>
     </body>
 </html>

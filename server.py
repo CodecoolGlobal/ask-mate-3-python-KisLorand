@@ -39,10 +39,11 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
+    question_comments = data_manager.get_all_data('comment')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
     return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
-                                 answers=answers, question_image=question_image, question_id=question_id)
+                                 answers=answers, question_image=question_image, question_id=question_id, question_comments=question_comments)
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -90,7 +91,8 @@ def edit_question(question_id):
         message = flask.request.form.get("message")
         data_manager.entry_editor(question_id, message, image_file, 'questions', question_title)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_question.html', question_title=question_title, message=message, question_id=question_id)
+    return flask.render_template('edit_question.html', question_title=question_title, message=message,
+                                 question_id=question_id)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
@@ -108,7 +110,8 @@ def edit_answer(answer_id):
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
     if flask.request.method == 'POST':
-        # add_new_comment_q()
+        comment_message = flask.request.form.get('comment-message')
+        data_manager.add_new_comment_q(question_id, comment_message)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('new_comment.html', question_id=question_id)
 
