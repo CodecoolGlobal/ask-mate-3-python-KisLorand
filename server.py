@@ -103,5 +103,13 @@ def edit_answer(answer_id):
     return flask.render_template('edit_answer.html', answer_message=answer_message, answer_id=answer_id, question_id=question_id)
 
 
+@app.route('/search')
+def search_question():
+    search_phrase = flask.request.args.get('search-phrase')
+    search_results = data_manager.get_question_titles_and_messages(search_phrase)
+    return flask.render_template('search.html', search_results=search_results)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)

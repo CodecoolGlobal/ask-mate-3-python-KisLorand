@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import connection
 import time
 import os
@@ -25,7 +27,7 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 
 @connection_handler
 def add_new_answer(cursor, id_input, input_text, image_file):
-    current_time = datetime.datetime.now()
+    current_time: datetime = datetime.datetime.now()
     query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
@@ -120,20 +122,6 @@ def delete_image(image_path):
 
 @connection_handler
 def delete(cursor, input_id, table_name, id_data_type="id"):
-    # if table_name == "question":
-    #     delete_comment_query = f""" DELETE FROM comment WHERE question_id='{input_id}' """
-    #     cursor.execute(delete_comment_query)
-    #
-    #     all_data = 11
-    #
-    #     delete_answer_query = f""" DELETE FROM answer WHERE question_id='{input_id}' RETURNING image """
-    #     cursor.execute(delete_answer_query)
-    #     delete_question_tag = f""" DELETE FROM question_tag WHERE question_id='{input_id}' """
-    #     cursor.execute(delete_question_tag)
-    #     # answer_images = cursor.fetchall()
-    # elif table_name == "answer":
-    #     delete_comment_query = f""" DELETE FROM comment WHERE answer_id='{input_id}' """
-    #     cursor.execute(delete_comment_query)
     delete_query = f""" DELETE FROM {table_name} WHERE id={input_id} RETURNING image """
     cursor.execute(delete_query)
     # delete_image(cursor.fetchone())
@@ -178,3 +166,11 @@ def entry_editor(id_input, message, image_file, data_type, question_title=""):
                 row['message'] = message
     connection.write_all_data_to_csv(data, data_type)
 
+
+@connection_handler
+def get_question_titles_and_messages(cursor, search_phrase):
+    query = f"""SELECT question.title, question.message as "Question message",  answer.message as "Answer message"
+                FROM answer, question 
+                WHERE title LIKE '%{search_phrase}%' AND answer.question_id = question.id ; """
+    cursor.execute(query)
+    return cursor.fetchall()
