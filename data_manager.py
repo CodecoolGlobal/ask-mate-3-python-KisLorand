@@ -113,18 +113,28 @@ def add_new_question(cursor, new_title, new_message, image_file):
         return True
 
 
-def delete_image(image_path):
-    if image_path != "":
-        correct_path = f"static/{image_path}"
-        if os.path.exists(correct_path):
-            os.remove(correct_path)
+def delete_images(image_paths=[]):
+    for image_path in image_paths:
+        if image_path.get("image"):
+            correct_path = f"static/{image_path.get('image')}"
+            if os.path.exists(correct_path):
+                os.remove(correct_path)
 
 
 @connection_handler
-def delete(cursor, input_id, table_name, id_data_type="id"):
-    delete_query = f""" DELETE FROM {table_name} WHERE id={input_id} RETURNING image """
-    cursor.execute(delete_query)
-    # delete_image(cursor.fetchone())
+def delete(cursor, question_id=None, answer_id=None):
+    if question_id:
+        delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
+        cursor.execute(delete_query)
+        images_for_delete = cursor.fetchall()
+        delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
+        cursor.execute(delete_query)
+        images_for_delete.extend(cursor.fetchall())
+    elif answer_id:
+        delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
+        cursor.execute(delete_query)
+        images_for_delete= cursor.fetchall()
+    delete_images(images_for_delete)
 
 
 def upload_image(img_name, image_request):
@@ -138,33 +148,24 @@ def upload_image(img_name, image_request):
     return f'{splitted_path[1]}/{img_name}'
 
 
-def get_entry_by_id(entry_id, answers, entry_post, message="", image_file=""):
-    for row in answers:
-        if row['id'] == entry_id:
-            answer_message = row['message']
-            question_id = row['question_id']
-            if entry_post:
-                row['message'] = message
-                entry_editor(entry_id, message, image_file, 'answers')
-            else:
-                return answer_message, question_id
+@connection_handler
+def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
+    query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
+    cursor.execute(query)
+    return cursor.fetchone()
 
 
-def entry_editor(id_input, message, image_file, data_type, question_title=""):
-    data = get_all_data(data_type)
-    for row in data:
-        if data_type == "questions":
-            if row['id'] == id_input:
-                delete_image(row["image"])
-                row["image"] = upload_image(f"Q_{row['id']}", image_file)
-                row['title'] = question_title
-                row['message'] = message
-        elif data_type == "answers":
-            if row['id'] == id_input:
-                delete_image(row["image"])
-                row["image"] = upload_image(f"A_{row['id']}", image_file)
-                row['message'] = message
-    connection.write_all_data_to_csv(data, data_type)
+@connection_handler
+def entry_editor(cursor, table_name,data_id, message):
+    query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
+    """
+    cursor.execute(query)
+
+@connection_handler
+def question_editor(cursor, title, message, question_id):
+    query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id} 
+        """
+    cursor.execute(query)
 
 
 @connection_handler
@@ -174,3 +175,17 @@ def get_question_titles_and_messages(cursor, search_phrase):
                 WHERE title LIKE '%{search_phrase}%' AND answer.question_id = question.id ; """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+def image_editor(cursor,table_name, data_id,image):
+    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} 
+            """
+    cursor.execute(query)
+
+
+@connection_handler
+def latest_questions(cursor):
+    query = f""" SELECT * FROM question ORDER BY submission_time DESC  LIMIT 5"""
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
