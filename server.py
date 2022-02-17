@@ -92,9 +92,9 @@ def edit_question(question_id):
         question_title = flask.request.form.get("title")
         image = flask.request.files.get('image')
         image_file = data_manager.upload_image(f"Q_{question_id}", image)
+        data_manager.image_editor("question", question_id, image_file)
         message = flask.request.form.get("message")
         data_manager.question_editor(question_title, message, question_id)
-        data_manager.image_editor("question", question_id, image_file)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_question.html', question_title=question_title, message=message,
                                  question_id=question_id)
@@ -105,10 +105,11 @@ def edit_answer(answer_id):
     answer_data = data_manager.get_entry_by_id(answer_id, "answer")
     answer_message = answer_data.get("message")
     question_id = answer_data.get("question_id")
-    print(answer_data)
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
-        image =flask.request.form.get("image")
+        image = flask.request.files.get('image')
+        image_file = data_manager.upload_image(f"A_{answer_id}", image)
+        data_manager.image_editor("answer", answer_id, image_file)
         data_manager.entry_editor("answer", answer_id, message)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('edit_answer.html', answer_message=answer_message, question_id=question_id,
