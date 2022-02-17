@@ -108,5 +108,9 @@ def edit_answer(answer_id):
                                  answer_id=answer_id)
 
 
+@app.route("/question/<question_id>/new-tag")
+def add_new_tag(question_id):
+    pass
+
 if __name__ == "__main__":
     app.run(debug=True)
