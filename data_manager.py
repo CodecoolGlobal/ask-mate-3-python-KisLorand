@@ -238,6 +238,12 @@ def add_new_comment_a(cursor, answer_id, added_message):
 
 
 @connection_handler
+def delete_comment(cursor, table_name, column_type, column_value):
+    delete_comment_query =  f""" DELETE FROM {table_name} WHERE {column_type}={column_value}"""
+    cursor.execute(delete_comment_query)
+
+
+@connection_handler
 def latest_questions(cursor):
     query = f""" SELECT * FROM question ORDER BY submission_time DESC  LIMIT 5"""
     cursor.execute(query)

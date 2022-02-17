@@ -175,5 +175,12 @@ def edit_comment(comment_id):
     return flask.render_template('edit_comment.html', comment_message=comment_message, comment_id=comment_id, question_id=question_id)
 
 
+@app.route('/comment/<comment_id>/delete', methods=['GET', 'POST'])
+def delete_comment(comment_id):
+    question_id = flask.request.args.get('question_id')
+    data_manager.delete_comment("comment", "id", comment_id)
+    return flask.redirect(f'/question/{question_id}')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
