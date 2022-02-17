@@ -186,4 +186,6 @@ def add_new_tag(cursor, new_tag):
 
 @connection_handler
 def add_tag_to_question(cursor, added_tag_id, question_id):
-    return None
+    query = f""" INSERT INTO question_tag(question_id,tag_id)
+            VALUES({question_id}, {added_tag_id})"""
+    cursor.execute(query)
