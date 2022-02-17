@@ -6,11 +6,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Welecome | Ask Me</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+<div id="main-container">
     <h1>Ask Me</h1>
-    <a href="/add-question">Ask new question</a><br><br>
-    <form>
+    <a href="/add-question" class="btn add-new">Ask new question</a><br><br>
+    <div id="sort">
+        <form>
         <form action = "/list">
                 <label for="questions_order">Sort questions by:</label>
                 <select id="questions_order" name="questions_order">
@@ -27,14 +33,20 @@
                   <option value="ASC">ascending</option>
                 </select>
         <form action = "/list">
-                <button type="submit">Sort</button>
-    </form>
-<table>
+                <button type="submit" class="btn">Sort</button>
+        </form>
+       <form action="/search">
+            <label for="search">Search in questions</label>
+            <input type="text" id="search" name="search-phrase">
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+    <table id="listing-table" cellpadding="0" cellspacing="0">
     <tr>
-        <th>View Number &nbsp;|</th>
-        <th>Vote Number &nbsp;| </th>
-        <th>Title &nbsp;| </th>
-        <th>Message &nbsp;|</th>
+        <th>View Number</th>
+        <th>Vote Number</th>
+        <th>Title</th>
+        <th>Message</th>
         <th>Image</th>
     </tr>
     {%for data in all_questions  %}
@@ -49,17 +61,14 @@
             <td></td>
         {% endif %}
         <td>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question">Up vote</a><br>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question">Down vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question" class="btn vote-up">Up vote</a><br>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question" class="btn vote-down">Down vote</a>
         </td>
-        <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
+        <td><a href="/question/{{ data['id'] }}/delete" class="btn">Delete</a></td>
     </tr>
     {% endfor %}
-</table>
-            <form action="/search">
-                <label for="search">Search in questions</label>
-                <input type="text" id="search" name="search-phrase">
-                <button type="submit">Search</button>
-            </form>
+    </table>
+
+</div>
 </body>
 </html>
