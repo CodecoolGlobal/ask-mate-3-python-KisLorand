@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add Tag</title>
 </head>
 <body>
-
+    <form action="/question/{{ question_id }}/new-tag" method="POST">
+        <label for="tag-names">TAGS:</label>
+        <select id="tag-names" name="tag-id">
+            {% for tag in tags%}
+                <option value="{{ tag.get('id') }}">{{ tag.get('name') }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Choose tag</button>
+    </form>
+    <br>
+    <form action="/question/{{ question_id }}/new-tag" method="POST">
+        <label for="new-tag-name">NEW TAG:</label><br>
+        <input id="new-tag-name" type="text" name="new-tag-name">
+        <button type="submit">Add new tag</button>
+    </form>
 </body>
 </html>

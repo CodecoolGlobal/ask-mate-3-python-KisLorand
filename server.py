@@ -110,7 +110,8 @@ def edit_answer(answer_id):
 
 @app.route("/question/<question_id>/new-tag")
 def add_new_tag(question_id):
-    pass
+    tags = data_manager.get_all_data("tag", order_type="name", order_direction="ASC")
+    return flask.render_template('new_tag.html', tags=tags, question_id=question_id)
 
 if __name__ == "__main__":
     app.run(debug=True)
