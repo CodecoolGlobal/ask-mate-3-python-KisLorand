@@ -173,9 +173,17 @@ def image_editor(cursor,table_name, data_id,image):
     cursor.execute(query)
 
 
-def add_new_tag(new_tag):
-    return None
+@connection_handler
+def add_new_tag(cursor, new_tag):
+    query = f""" INSERT INTO tag(name) SELECT '{new_tag}'
+            WHERE NOT EXISTs (SELECT name FROM tag WHERE name='{new_tag}')"""
+    cursor.execute(query)
+    query = f""" SELECT id FROM tag WHERE name='{new_tag}'"""
+    cursor.execute(query)
+    return cursor.fetchone().get("id")
 
 
-def add_tag_to_question(added_tag, question_id):
+
+@connection_handler
+def add_tag_to_question(cursor, added_tag_id, question_id):
     return None

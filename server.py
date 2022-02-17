@@ -110,7 +110,7 @@ def edit_answer(answer_id):
 
 @app.route("/question/<question_id>/new-tag", methods=["GET", "POST"])
 def add_new_tag(question_id):
-    if flask.request.methods == "POST":
+    if flask.request.method == "POST":
         added_tag_id = flask.request.form.get("tag-id")
         new_tag_name = flask.request.form.get("new-tag-name")
         if new_tag_name:
