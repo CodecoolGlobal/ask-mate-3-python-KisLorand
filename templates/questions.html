@@ -19,12 +19,13 @@
         <a href="/question/{{ question_id }}/new-comment">Add Comment</a>
         <br><br>
         <table id="question-comment-table">
-            {% for comment in question_comments %}
 
+            {% for comment in question_comments %}
                 <tr>
                     <td>{{ comment['message'] }}</td>
                     <td>{{ comment['submission_time'] }}</td>
                     <td>edited {{ comment['edited_count'] }} times</td>
+                    <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question_id }}">Edit Comment</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -62,13 +63,14 @@
                                 <td>{{ comment['message'] }}</td>
                                 <td>{{ comment['submission_time'] }}</td>
                                 <td>edited {{ comment['edited_count'] }} times</td>
+                                <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question_id }}">Edit Comment</a></td>
                             </tr>
                             {% endif %}
                         {% endfor %}
                     </table>
                 </tr>
                 <tr>
-                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question_id }}">Comment to {{ answer['id'] }}</a></td>
+                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question_id }}">Comment</a></td>
                 </tr>
                 <br><br>
             {% endfor %}

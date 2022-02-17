@@ -125,9 +125,7 @@ def add_comment_to_question(question_id):
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_answer(answer_id):
     question_id = flask.request.args.get('question_id')
-    print(question_id)
     if flask.request.method == 'POST':
-        print(question_id)
         comment_message = flask.request.form.get('comment-message')
         data_manager.add_new_comment_a(answer_id, comment_message)
         return flask.redirect(f'/question/{question_id}')
@@ -141,10 +139,10 @@ def edit_comment(comment_id):
     question_id = flask.request.args.get('question_id')
     if flask.request.method == 'POST':
         message = flask.request.form.get("message")
-        data_manager.update_table_single_col("comment", "submission_time", comment_id, 1)
+        data_manager.update_table_single_col("comment", "edited_count", comment_id, 1)
         data_manager.entry_editor("comment", comment_id, message)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_comment.html', comment_message=comment_message, comment_id=comment_id)
+    return flask.render_template('edit_comment.html', comment_message=comment_message, comment_id=comment_id, question_id=question_id)
 
 
 if __name__ == "__main__":
