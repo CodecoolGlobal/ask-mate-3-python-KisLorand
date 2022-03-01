@@ -249,3 +249,17 @@ def latest_questions(cursor):
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
+
+
+@connection_handler
+def get_user_data(cursor, email, password):
+    query = f""" SELECT * FROM users WHERE user_name = {email} AND user_password={password}"""
+    cursor.execute(query)
+    table_data = cursor.fetchall()
+    return table_data
+
+
+def validate_login(email, password, users_login_data):
+    if email == users_login_data['user_name'] and password == users_login_data['user_password']:
+        return True
+    return False

@@ -182,5 +182,19 @@ def delete_comment(comment_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route('login', method=['GET', 'POST'])
+def login_user():
+    user_email = flask.request.form.get('user_email')
+    user_password = flask.request.form.get('user_password')
+    users_data = data_manager.get_user_data(user_email, user_password)
+    if data_manager.validate_login(user_email, user_password, users_data):
+        session = {}
+        session["user_name"] = user_email
+        session["user_password"] = user_password
+        print(user_email)
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
