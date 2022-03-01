@@ -1,5 +1,5 @@
 {% extends 'base_layout.html' %}
-{% block title %}{% endblock %}
+{% block title %}Home Page{% endblock %}
 {% block content %}
     <h1>{% block page_name %}AskMate{% endblock %}</h1>
     <p>Welcome to the AskMate main page.</p>
@@ -29,11 +29,12 @@
         <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
     </tr>
     {% endfor %}
+    </table>
     <h3><a href="/add-question">Ask new question</a></h3>
     <h3><a href="/list">List all questions</a></h3>
     <form action="/add-question" method="POST">
-    {% block title %}{% endblock %}
     {% block message %}meaningful message{% endblock %}
     {% block submit_question %}{% endblock %}
     </form>
+        <a href="/registration">Sign up</a>
 {% endblock %}
