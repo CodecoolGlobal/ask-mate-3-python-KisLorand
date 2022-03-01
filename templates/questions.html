@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Opened Question</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
-    </head>
-    <body>
+{% extends 'base_layout.html' %}
+{% block title %} Question {% endblock %}
+{% block content %}
         <h1>{{ question_title }}</h1>
         <p>{{ question_message }}
             <br><br>
@@ -35,6 +27,7 @@
                     </tr>
                 {% endif %}
             {% endfor %}
+
         </table>
         <br><br>
 
@@ -83,8 +76,8 @@
                 <br><br>
             {% endfor %}
         </table>
-        <br><br>
         <a href="/question/{{ question_id }}/new-answer?question_id={{ question_id }}">Add new answer</a><br>
         <a href="/list">back to the questions</a>
-    </body>
-</html>
+
+{% endblock %}
+
