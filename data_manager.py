@@ -256,8 +256,9 @@ def latest_questions(cursor):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    query = f""" INSERT INTO users (user_name, user_password, registartion_date)
-    VALUES ({name}, {hashed_password}, {datetime.datetime.now()} )
+    print(hashed_password)
+    query = f""" INSERT INTO users (user_name, user_password, registration_date)
+    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
     """
     cursor.execute(query)
 
