@@ -187,6 +187,7 @@ def registration_page():
     if flask.request.methods == "POST":
         new_user_name = flask.request.form.get("new-user-name")
         new_password = flask.request.form.get("new-password")
+        data_manager.add_new_user(new_user_name, new_password)
         return flask.redirect('/')
     return flask.render_template('registration.html')
 

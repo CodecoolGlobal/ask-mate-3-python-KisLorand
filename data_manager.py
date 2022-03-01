@@ -249,3 +249,8 @@ def latest_questions(cursor):
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
+
+
+@connection_handler
+def add_new_user(cursor, name, password):
+    pass
