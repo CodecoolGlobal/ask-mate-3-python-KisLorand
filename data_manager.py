@@ -30,13 +30,8 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 def add_new_answer(cursor, id_input, input_text, image_file, user_name):
     user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
-<<<<<<< HEAD
-    query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message)
-     VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
-=======
     query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id) 
                 VALUES ('{current_time}', 0, '{id_input}', '{input_text}', {user_id}) """
->>>>>>> 6c98daedd09c572a78e1eaacb3281394b4eb53ab
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
     cursor.execute(select_query)
