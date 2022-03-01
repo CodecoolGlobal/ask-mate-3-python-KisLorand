@@ -188,22 +188,32 @@ def delete_comment(comment_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route('/registration', methods=['GET', 'POST'])
+def registration_page():
+    if flask.request.method == "POST":
+        new_user_name = flask.request.form.get("new-user-name")
+        new_password = flask.request.form.get("new-password")
+        data_manager.add_new_user(new_user_name, new_password)
+        return flask.redirect('/')
+    return flask.render_template('registration.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
-    user_email = flask.request.form.get('user_email')
-    user_password = flask.request.form.get('user_password')
-    users_data = data_manager.get_user_data(user_email, user_password)
-    if data_manager.validate_login(user_email, user_password, users_data):
-        session["user_name"] = user_email
-        session["user_password"] = user_password
-        print(user_email)
+    if flask.request.method == "POST":
+        input_email = flask.request.form.get('new-user-name')
+        input_password = flask.request.form.get('new-password')
+        valid_password = data_manager.get_user_password(input_email).get("user_password")
+        if data_manager.validate_login(input_password, valid_password):
+            session["user_name"] = input_email
+            return flask.redirect('/')
+    return flask.render_template('login.html')
 
 
 def get_username():
     if 'username' in session:
         user_name = session['username']
         return user_name
-
 
 
 if __name__ == "__main__":
