@@ -1,11 +1,13 @@
 import flask
 import requests.cookies
 import requests.sessions
-from flask import Flask
+from flask import Flask, session
 import data_manager
+import random
 
 
 app = Flask(__name__)
+app.secret_key = str(random.randint(0, 16))
 
 
 @app.route("/")
@@ -29,10 +31,11 @@ def list_all_questions():
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     if flask.request.method == "POST":
+        user_name = get_username()
         new_title = flask.request.form['title']
         new_message = flask.request.form['message']
         image_file = flask.request.files.get('image')
-        data_manager.add_new_question(new_title, new_message, image_file)
+        data_manager.add_new_question(new_title, new_message, image_file, user_name)
         return flask.redirect('/list')
     return flask.render_template("add_question.html")
 
@@ -52,9 +55,10 @@ def open_question(question_id):
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
     if flask.request.method == "POST":
+        user_name = get_username()
         file = flask.request.files.get("image")
         new_message = flask.request.form.get("message")
-        data_manager.add_new_answer(question_id, new_message, file)
+        data_manager.add_new_answer(question_id, new_message, file, user_name)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template("add_answer.html", question_id=question_id)
 
@@ -146,8 +150,9 @@ def add_new_tag(question_id):
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
     if flask.request.method == 'POST':
+        user_name = get_username()
         comment_message = flask.request.form.get('comment-message')
-        data_manager.add_new_comment_q(question_id, comment_message)
+        data_manager.add_new_comment_q(question_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('new_comment.html', question_id=question_id)
 
@@ -156,8 +161,9 @@ def add_comment_to_question(question_id):
 def add_comment_to_answer(answer_id):
     question_id = flask.request.args.get('question_id')
     if flask.request.method == 'POST':
+        user_name = get_username()
         comment_message = flask.request.form.get('comment-message')
-        data_manager.add_new_comment_a(answer_id, comment_message)
+        data_manager.add_new_comment_a(answer_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
     return flask.render_template('new_comment_A.html', question_id=question_id, answer_id=answer_id)
 
@@ -182,17 +188,21 @@ def delete_comment(comment_id):
     return flask.redirect(f'/question/{question_id}')
 
 
-@app.route('login', method=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login_user():
     user_email = flask.request.form.get('user_email')
     user_password = flask.request.form.get('user_password')
     users_data = data_manager.get_user_data(user_email, user_password)
     if data_manager.validate_login(user_email, user_password, users_data):
-        session = {}
         session["user_name"] = user_email
         session["user_password"] = user_password
         print(user_email)
 
+
+def get_username():
+    if 'username' in session:
+        user_name = session['username']
+        return user_name
 
 
 

@@ -1,17 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Main Page</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
+{% extends 'base_layout.html' %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
     <h1>{% block page_name %}AskMate{% endblock %}</h1>
     <p>Welcome to the AskMate main page.</p>
     <table>
@@ -40,12 +29,12 @@
         <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
     </tr>
     {% endfor %}
+    </table>
     <h3><a href="/add-question">Ask new question</a></h3>
     <h3><a href="/list">List all questions</a></h3>
     <form action="/add-question" method="POST">
-    {% block title %}{% endblock %}
     {% block message %}meaningful message{% endblock %}
     {% block submit_question %}{% endblock %}
     </form>
-</body>
-</html>
+        <a href="/registration">Sign up</a>
+{% endblock %}
