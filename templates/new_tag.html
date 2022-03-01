@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Tag</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
+{% extends 'base_layout.html' %}
+{% block title %}New tag{% endblock %}
     <form action="/question/{{ question_id }}/new-tag" method="POST">
         <label for="tag-names">TAGS:</label>
         <select id="tag-names" name="tag-id">
@@ -24,5 +15,3 @@
         <input id="new-tag-name" type="text" name="new-tag-name">
         <button type="submit">Add new tag</button>
     </form>
-</body>
-</html>
