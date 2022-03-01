@@ -1,11 +1,13 @@
 import flask
 import requests.cookies
 import requests.sessions
-from flask import Flask
+from flask import Flask, session
 import data_manager
+import random
 
 
 app = Flask(__name__)
+app.secret_key = str(random.randint(0, 16))
 
 
 @app.route("/")
@@ -194,6 +196,18 @@ def registration_page():
         data_manager.add_new_user(new_user_name, new_password)
         return flask.redirect('/')
     return flask.render_template('registration.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_user():
+    if flask.request.method == "POST":
+        input_email = flask.request.form.get('new-user-name')
+        input_password = flask.request.form.get('new-password')
+        valid_password = data_manager.get_user_password(input_email).get("user_password")
+        if data_manager.validate_login(input_password, valid_password):
+            session["user_name"] = input_email
+            return flask.redirect('/')
+    return flask.render_template('login.html')
 
 
 def get_username():

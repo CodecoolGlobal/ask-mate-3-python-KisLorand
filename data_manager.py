@@ -258,6 +258,20 @@ def latest_questions(cursor):
 
 
 @connection_handler
+def get_user_password(cursor, email):
+    query = f""" SELECT user_password FROM users WHERE user_name = '{email}' """
+    cursor.execute(query)
+    table_data = cursor.fetchone()
+    return table_data
+
+
+def validate_login(input_password, valid_password):
+    hashed_password = valid_password.encode('UTF-8')
+    hashed_input = input_password.encode('UTF-8')
+    return bcrypt.checkpw(hashed_input, hashed_password)
+
+
+@connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
     print(hashed_password)
