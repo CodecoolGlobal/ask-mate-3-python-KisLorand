@@ -266,9 +266,10 @@ def search_user_id(cursor, user_name):
 
 @connection_handler
 def search_user_data(cursor, user_name):
-    query = f"""SELECT * FROM user
-                Where user_name = {user_name}
+    query = """SELECT * FROM user
+                Where user_name = %(user_name)s
         """
-    cursor.execute(query)
+    select_by = {'user_name':user_name}
+    cursor.execute(query,select_by)
     user_data = cursor.fetchone()
     return user_data
