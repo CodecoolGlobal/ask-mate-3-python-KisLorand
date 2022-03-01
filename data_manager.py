@@ -26,9 +26,11 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 
 
 @connection_handler
-def add_new_answer(cursor, id_input, input_text, image_file):
+def add_new_answer(cursor, id_input, input_text, image_file, user_name):
+    user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
-    query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message) VALUES ('{current_time}', 0, '{id_input}', '{input_text}') """
+    query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id) 
+                VALUES ('{current_time}', 0, '{id_input}', '{input_text}', {user_id}) """
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
     cursor.execute(select_query)
@@ -105,11 +107,12 @@ def format_new_question(all_question_data, new_title, new_message, image_file):
 
 
 @connection_handler
-def add_new_question(cursor, new_title, new_message, image_file):
+def add_new_question(cursor, new_title, new_message, image_file, user_name):
     if is_new_question_valid(new_title, new_message):
+        user_id = search_user_id(user_name)
         current_time = datetime.datetime.now()
-        insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message) 
-                                   VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}') """
+        insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message, user_id) 
+                                   VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}', {user_id}) """
         cursor.execute(insert_new_question)
         select_query = f""" SELECT id FROM question ORDER BY id DESC LIMIT 1 """
         cursor.execute(select_query)
@@ -221,18 +224,20 @@ def add_tag_to_question(cursor, added_tag_id, question_id):
 
 ## refactor this to one function
 @connection_handler
-def add_new_comment_q(cursor, question_id, added_message):
+def add_new_comment_q(cursor, question_id, added_message, user_name):
+    user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count) 
-                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0) """
+    comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count, user_id) 
+                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
     cursor.execute(comment_query)
 
 
 @connection_handler
-def add_new_comment_a(cursor, answer_id, added_message):
+def add_new_comment_a(cursor, answer_id, added_message, user_name):
+    user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count) 
-                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0) """
+    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id) 
+                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
     cursor.execute(comment_query)
 ## refactor this to one function
 
@@ -249,3 +254,21 @@ def latest_questions(cursor):
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
+
+@connection_handler
+def search_user_id(cursor, user_name):
+    query = f"""SELECT * FROM user
+                Where user_name = {user_name}
+        """
+    cursor.execute(query)
+    user_id = cursor.fetchone().get('id')
+    return user_id
+
+@connection_handler
+def search_user_data(cursor, user_name):
+    query = f"""SELECT * FROM user
+                Where user_name = {user_name}
+        """
+    cursor.execute(query)
+    user_data = cursor.fetchone()
+    return user_data
