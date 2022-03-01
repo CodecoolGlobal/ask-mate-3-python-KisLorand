@@ -185,7 +185,8 @@ def delete_comment(comment_id):
 @app.route('/registration', methods=['GET', 'POST'])
 def registration_page():
     if flask.request.methods == "POST":
-        pass
+        new_user_name = flask.request.form.get("new-user-name")
+        new_password = flask.request.form.get("new-password")
         return flask.redirect('/')
     return flask.render_template('registration.html')
 
