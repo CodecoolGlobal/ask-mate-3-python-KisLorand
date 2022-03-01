@@ -6,6 +6,7 @@ import os
 import flask
 import datetime
 from sql_connection import connection_handler
+import bcrypt
 
 
 # image path
@@ -254,8 +255,14 @@ def latest_questions(cursor):
 
 @connection_handler
 def add_new_user(cursor, name, password):
-    hashed_password = password
+    hashed_password = convert_to_hash(password)
     query = f""" INSERT INTO users (user_name, user_password, registartion_date)
     VALUES ({name}, {hashed_password}, {datetime.datetime.now()} )
     """
     cursor.execute(query)
+
+
+def convert_to_hash(input_string):
+    hashed_bytes = bcrypt.hashpw(input_string.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
