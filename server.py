@@ -7,7 +7,9 @@ import random
 
 
 app = Flask(__name__)
-app.secret_key = str(random.randint(0, 16))
+# app.secret_key = str(random.randint(0, 16))
+# app.secret_key = b'_5#y2L"F4Q8z\xec]/'
+app.secret_key = b'_5#y2L"F4Q8z/n&nx7c]/'
 
 
 @app.route("/")
@@ -30,8 +32,9 @@ def list_all_questions():
 
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
+    print(session)
     if flask.request.method == "POST":
-        user_name = get_username()
+        user_name = session.get('user_name')
         new_title = flask.request.form['title']
         new_message = flask.request.form['message']
         image_file = flask.request.files.get('image')
@@ -205,14 +208,20 @@ def login_user():
         input_password = flask.request.form.get('new-password')
         valid_password = data_manager.get_user_password(input_email).get("user_password")
         if data_manager.validate_login(input_password, valid_password):
-            session["user_name"] = input_email
+            session['user_name'] = input_email
             return flask.redirect('/')
     return flask.render_template('login.html')
 
 
+@app.route('/logout', methods=['GET', 'POST'])
+def logout_user():
+    session.clear()
+    return flask.redirect('/')
+
+
 def get_username():
-    if 'username' in session:
-        user_name = session['username']
+    if 'user_name' in session:
+        user_name = session['user_name']
         return user_name
 
 

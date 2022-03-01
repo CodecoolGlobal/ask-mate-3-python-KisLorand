@@ -37,4 +37,10 @@
     {% block submit_question %}{% endblock %}
     </form>
         <a href="/registration">Sign up</a>
+        <br><br>
+        {% if session["user_name"] %}
+            <a href="/logout">LOG OUT</a>
+        {% else %}
+            <a href="/login">LOG IN</a>
+        {% endif %}
 {% endblock %}

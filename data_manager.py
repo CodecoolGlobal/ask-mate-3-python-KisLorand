@@ -274,7 +274,6 @@ def validate_login(input_password, valid_password):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    print(hashed_password)
     query = f""" INSERT INTO users (user_name, user_password, registration_date)
     VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
     """
@@ -288,8 +287,8 @@ def convert_to_hash(input_string):
 
 @connection_handler
 def search_user_id(cursor, user_name):
-    query = f"""SELECT * FROM user
-                Where user_name = {user_name}
+    query = f"""SELECT * FROM users
+                Where user_name = '{user_name}'
         """
     cursor.execute(query)
     user_id = cursor.fetchone().get('id')
