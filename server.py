@@ -182,5 +182,13 @@ def delete_comment(comment_id):
     return flask.redirect(f'/question/{question_id}')
 
 
+@app.route('/registration', methods=['GET', 'POST'])
+def registration_page():
+    if flask.request.methods == "POST":
+        pass
+        return flask.redirect('/')
+    return flask.render_template('registration.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
