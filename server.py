@@ -51,11 +51,9 @@ def open_question(question_id):
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
     user_id = session.get('id')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
-    question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
-                                 answers=answers, question_image=question_image, question_id=question_id,
-                                 question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id),
-                                 user_id=user_id)
+    question, answers = data_manager.question_opener(question_id)
+    return flask.render_template("questions.html", question=question, answers=answers,
+                                 question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
