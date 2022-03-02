@@ -23,24 +23,26 @@
             <td></td>
         {% endif %}
         <td>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question">Up vote</a>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question">Down vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question&reputation=5">Up vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question&reputation=-2">Down vote</a>
         </td>
         <td><a href="/question/{{ data['id'] }}/delete">Delete</a></td>
     </tr>
     {% endfor %}
     </table>
-    <h3><a href="/add-question">Ask new question</a></h3>
-    <h3><a href="/list">List all questions</a></h3>
+    <h3><a href="/add-question" class="btn add-new">Ask new question</a></h3>
+    <h3><a href="/list" class="btn add-new">List all questions</a></h3>
     <form action="/add-question" method="POST">
     {% block message %}meaningful message{% endblock %}
     {% block submit_question %}{% endblock %}
     </form>
-        <a href="/registration">Sign up</a>
-        <br><br>
         {% if session["user_name"] %}
-            <a href="/logout">LOG OUT</a>
+            <br><br>
+            <a href="/logout" class="btn add-new">LOG OUT</a>
         {% else %}
-            <a href="/login">LOG IN</a>
+            <br><br>
+            <a href="/registration" class="btn add-new">Sign up</a>
+            <br><br>
+            <a href="/login" class="btn add-new">LOG IN</a>
         {% endif %}
 {% endblock %}

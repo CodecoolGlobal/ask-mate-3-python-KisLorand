@@ -10,7 +10,7 @@ import bcrypt
 
 
 # image path
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = 'static/images/'
 
 # data path
 PATH_ANSWERS = "sample_data/answer.csv"
@@ -69,7 +69,7 @@ def question_opener(cursor, question_id):
     cursor.execute(answer_query)
     answers = cursor.fetchall()
 
-    return question_data['title'], question_data['message'], question_data['image'], answers
+    return question_data, answers
 
 
 def count_view_number(question_id):
@@ -275,7 +275,7 @@ def validate_login(input_password, valid_password):
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
     query = f""" INSERT INTO users (user_name, user_password, registration_date)
-    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
+    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}')
     """
     cursor.execute(query)
 
@@ -333,4 +333,34 @@ def get_answer_comment_by_id(cursor, id):
     select_by = {'id': id}
     cursor.execute(query, select_by)
     return cursor.fetchone()
+
+
+def change_answer_accept_to(cursor, answer_id, value):
+    query = f"""UPDATE answer SET accepted='{value}' WHERE id = '{answer_id}'
+    """
+    cursor.execute(query)
+
+
+@connection_handler
+def reputation_editor(cursor, user_id, reputation_value):
+    query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
+    cursor.execute(query)
+
+
+@connection_handler
+def search_table_user_id(cursor, data_id, table_name):
+    query = f"""SELECT user_id FROM {table_name}
+                Where id = {data_id}
+        """
+    cursor.execute(query)
+    user_id = cursor.fetchone().get('user_id')
+    return user_id
+
+@connection_handler
+def get_question_tag_by_id(cursor, question_id):
+    query = f"""SELECT tag.name FROM question_tag  
+    JOIN tag ON question_tag.tag_id = tag.id 
+    WHERE question_id='{question_id}'
+    """
+    cursor.execute(query)
 

@@ -33,6 +33,8 @@ def list_all_questions():
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     print(session)
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == "POST":
         user_name = session.get('user_name')
         new_title = flask.request.form['title']
@@ -47,18 +49,24 @@ def add_question():
 def open_question(question_id):
     question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
-    # question_tags = data_manager.get_all_data_by_condition('question_tag', "question_id", 0)
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
-    question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
-                                 answers=answers, question_image=question_image, question_id=question_id,
-                                 question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
+    question, answers = data_manager.question_opener(question_id)
+    question_tags = data_manager.get_question_tag_by_id(question_id)
+    print(question_tags)
+    if question:
+        return flask.render_template("questions.html", question=question, answers=answers, question_tags=question_tags,
+                                 question_comments=question_comments, answer_comments=answer_comments,
+                                     comment_condition=int(question_id))
+    else:
+        return flask.redirect('/')
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == "POST":
-        user_name = get_username()
+        user_name = session.get('user_name')
         file = flask.request.files.get("image")
         new_message = flask.request.form.get("message")
         data_manager.add_new_answer(question_id, new_message, file, user_name)
@@ -71,7 +79,10 @@ def new_answer(question_id):
 def vote_answer_up(id_number):
     table_name = flask.request.args.get("table")
     vote_up = flask.request.args.get("vote-up")
+    reputation_value = flask.request.args.get("reputation")
     data_manager.update_table_single_col(table_name, "vote_number", id_number, vote_up)
+    user_id = data_manager.search_table_user_id(id_number, table_name)
+    data_manager.reputation_editor(user_id, reputation_value)
     if table_name == "answer":
         question_id = flask.request.args.get("question_id")
         return flask.redirect(f'/question/{question_id}')
@@ -152,8 +163,10 @@ def add_new_tag(question_id):
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == 'POST':
-        user_name = get_username()
+        user_name = session.get('user_name')
         comment_message = flask.request.form.get('comment-message')
         data_manager.add_new_comment_q(question_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
@@ -163,8 +176,10 @@ def add_comment_to_question(question_id):
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_answer(answer_id):
     question_id = flask.request.args.get('question_id')
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == 'POST':
-        user_name = get_username()
+        user_name = session.get('user_name')
         comment_message = flask.request.form.get('comment-message')
         data_manager.add_new_comment_a(answer_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
@@ -193,6 +208,8 @@ def delete_comment(comment_id):
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration_page():
+    if "user_name" in session:
+        return flask.redirect("/")
     if flask.request.method == "POST":
         new_user_name = flask.request.form.get("new-user-name")
         new_password = flask.request.form.get("new-password")
@@ -209,6 +226,7 @@ def login_user():
         valid_password = data_manager.get_user_password(input_email).get("user_password")
         if data_manager.validate_login(input_password, valid_password):
             session['user_name'] = input_email
+            session['id'] = data_manager.search_user_id(input_email)
             return flask.redirect('/')
     return flask.render_template('login.html')
 
@@ -225,10 +243,23 @@ def user_info(user_id):
 
 
 
-def get_username():
+@app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])
+def answer_accept_page(answer_id):
+    if flask.request.method == "POST":
+        question_id = flask.request.args.get("question_id")
+        acceptance_value = flask.request.form.get("accepted")
+        user_id = data_manager.search_table_user_id(answer_id, 'answer')
+        added_reputation = 15 if acceptance_value == "true" else -15
+        data_manager.reputation_editor(user_id, added_reputation)
+        data_manager.change_answer_accept_to(answer_id, acceptance_value )
+        return flask.redirect(f"/question/{question_id}")
+    return flask.redirect("/question")
+
+
+def check_session():
     if 'user_name' in session:
-        user_name = session['user_name']
-        return user_name
+        return True
+    return False
 
 
 if __name__ == "__main__":
