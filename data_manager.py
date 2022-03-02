@@ -6,6 +6,7 @@ import os
 import flask
 import datetime
 from sql_connection import connection_handler
+import bcrypt
 
 
 # image path
@@ -255,14 +256,44 @@ def latest_questions(cursor):
     table_data = cursor.fetchall()
     return table_data
 
+
+@connection_handler
+def get_user_password(cursor, email):
+    query = f""" SELECT user_password FROM users WHERE user_name = '{email}' """
+    cursor.execute(query)
+    table_data = cursor.fetchone()
+    return table_data
+
+
+def validate_login(input_password, valid_password):
+    hashed_password = valid_password.encode('UTF-8')
+    hashed_input = input_password.encode('UTF-8')
+    return bcrypt.checkpw(hashed_input, hashed_password)
+
+
+@connection_handler
+def add_new_user(cursor, name, password):
+    hashed_password = convert_to_hash(password)
+    query = f""" INSERT INTO users (user_name, user_password, registration_date)
+    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
+    """
+    cursor.execute(query)
+
+
+def convert_to_hash(input_string):
+    hashed_bytes = bcrypt.hashpw(input_string.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
 @connection_handler
 def search_user_id(cursor, user_name):
-    query = f"""SELECT * FROM user
-                Where user_name = {user_name}
+    query = f"""SELECT * FROM users
+                Where user_name = '{user_name}'
         """
     cursor.execute(query)
     user_id = cursor.fetchone().get('id')
     return user_id
+
 
 @connection_handler
 def search_user_data(cursor, user_name):
@@ -273,6 +304,7 @@ def search_user_data(cursor, user_name):
     cursor.execute(query,select_by)
     user_data = cursor.fetchone()
     return user_data
+
 
 @connection_handler
 def get_user_blog_info(cursor, user_name):

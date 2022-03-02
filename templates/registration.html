@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Registration{% endblock %}</title>
+</head>
+<body>
+    <h1>{% block page_title %}REGISTRATION{% endblock %}</h1><br>
+    <form action="{% block action_dest %}/registration{% endblock action_dest %}" method="post">
+        <label for="user-name">USERNAME:</label><br>
+        <input id="user-name" type="text" name="new-user-name"><br>
+        <br>
+        <label for="password">PASSWORD:</label><br>
+        <input id="password" type="password" name="new-password"><br>
+        <br>
+        <button type="submit">{% block button_text %}REGISTER{% endblock %}</button>
+    </form>
+
+</body>
+</html>
