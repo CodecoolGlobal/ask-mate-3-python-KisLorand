@@ -227,6 +227,14 @@ def logout_user():
     return flask.redirect('/')
 
 
+@app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])
+def answer_accept_page(answer_id):
+    if flask.request.method == "POST":
+        question_id = requests.args.get("question_id")
+        return flask.redirect(f"/question/{question_id}")
+    return flask.redirect("/question")
+
+
 def check_session():
     if 'user_name' in session:
         return True
