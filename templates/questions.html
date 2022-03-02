@@ -19,6 +19,11 @@
             <a href="/question/{{ question["id"] }}/new-comment">Add Comment</a>
             <br><br>
         {% endif %}
+    <div id="tags">
+        {% for question_tag in question_tags %}
+        <span>#{{ question_tag.get("name") }} </span>
+        {% endfor %}
+    </div>
         <table id="question-comment-table">
             {% for q_comment in question_comments %}
                 {% if q_comment['question_id'] == comment_condition %}
