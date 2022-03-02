@@ -69,7 +69,7 @@ def question_opener(cursor, question_id):
     cursor.execute(answer_query)
     answers = cursor.fetchall()
 
-    return question_data['title'], question_data['message'], question_data['image'], answers
+    return question_data, answers
 
 
 def count_view_number(question_id):
