@@ -274,8 +274,8 @@ def validate_login(input_password, valid_password):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    query = f""" INSERT INTO users (user_name, user_password, registration_date)
-    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
+    query = f""" INSERT INTO users (user_name, user_password, registration_date,)
+    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}')
     """
     cursor.execute(query)
 
@@ -304,3 +304,19 @@ def search_user_data(cursor, user_name):
     cursor.execute(query,select_by)
     user_data = cursor.fetchone()
     return user_data
+
+
+@connection_handler
+def reputation_editor(cursor, user_id, reputation_value):
+    query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
+    cursor.execute(query)
+
+
+@connection_handler
+def search_table_user_id(cursor, data_id, table_name):
+    query = f"""SELECT user_id FROM {table_name}
+                Where id = {data_id}
+        """
+    cursor.execute(query)
+    user_id = cursor.fetchone().get('user_id')
+    return user_id
