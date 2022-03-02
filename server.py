@@ -33,6 +33,8 @@ def list_all_questions():
 @app.route("/add-question", methods=['GET', 'POST'])
 def add_question():
     print(session)
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == "POST":
         user_name = session.get('user_name')
         new_title = flask.request.form['title']
@@ -57,8 +59,10 @@ def open_question(question_id):
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
 def new_answer(question_id):
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == "POST":
-        user_name = get_username()
+        user_name = session.get('user_name')
         file = flask.request.files.get("image")
         new_message = flask.request.form.get("message")
         data_manager.add_new_answer(question_id, new_message, file, user_name)
@@ -152,8 +156,10 @@ def add_new_tag(question_id):
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == 'POST':
-        user_name = get_username()
+        user_name = session.get('user_name')
         comment_message = flask.request.form.get('comment-message')
         data_manager.add_new_comment_q(question_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
@@ -163,8 +169,10 @@ def add_comment_to_question(question_id):
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_answer(answer_id):
     question_id = flask.request.args.get('question_id')
+    if not check_session():
+        return flask.redirect('/login')
     if flask.request.method == 'POST':
-        user_name = get_username()
+        user_name = session.get('user_name')
         comment_message = flask.request.form.get('comment-message')
         data_manager.add_new_comment_a(answer_id, comment_message, user_name)
         return flask.redirect(f'/question/{question_id}')
@@ -219,10 +227,10 @@ def logout_user():
     return flask.redirect('/')
 
 
-def get_username():
+def check_session():
     if 'user_name' in session:
-        user_name = session['user_name']
-        return user_name
+        return True
+    return False
 
 
 if __name__ == "__main__":
