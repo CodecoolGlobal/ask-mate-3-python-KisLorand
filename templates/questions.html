@@ -38,12 +38,14 @@
 
         <table>
             <tr>
+                <th>GOOD ANSWER</th>
                 <th>Vote <br> Number &nbsp;</th>
                 <th>Answer &nbsp;</th>
                 <th>Image &nbsp;</th>
             </tr>
             {% for answer in answers %}
                 <tr>
+                    <td>{{ answer['accepted'] }}</td>
                     <td>{{ answer['vote_number'] }}</td>
                     <td>{{ answer['message'] }}</td>
                     {% if answer['image'] %}
@@ -65,7 +67,11 @@
                     </td>
                     <td>
                         <form action="/answer/{{ answer['id'] }}/accept?question_id={{ question["id"] }}" method="POST">
-                            <button type="submit" value="True">ACCEPT</button>
+                            {% if answer["accepted"] == False %}
+                            <button type="submit" name="accepted" value="true">ACCEPT</button>
+                            {% else %}
+                            <button type="submit" name="accepted" value="false">UNACCEPT</button>
+                            {% endif %}
                         </form>
                     </td>
                 </tr>

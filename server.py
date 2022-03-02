@@ -239,13 +239,11 @@ def logout_user():
 def answer_accept_page(answer_id):
     if flask.request.method == "POST":
         question_id = flask.request.args.get("question_id")
-        reputation_value = flask.request.args.get("reputation")
+        acceptance_value = flask.request.form.get("accepted")
         user_id = data_manager.search_table_user_id(answer_id, 'answer')
-        # ha accpeteled
-        data_manager.reputation_editor(user_id, 15)
-        # ha unaccept
-        data_manager.reputation_editor(user_id, -15)
-        data_manager.change_answer_accept_to(answer_id, "true")
+        added_reputation = 15 if acceptance_value == "true" else -15
+        data_manager.reputation_editor(user_id, added_reputation)
+        data_manager.change_answer_accept_to(answer_id, acceptance_value )
         return flask.redirect(f"/question/{question_id}")
     return flask.redirect("/question")
 
