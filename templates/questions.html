@@ -26,7 +26,7 @@
                         <td>{{ q_comment['message'] }}</td>
                         <td>{{ q_comment['submission_time'] }}</td>
                         <td>edited {{ q_comment['edited_count'] }} times</td>
-                        {% if 'user_name' in session  and session["id"] == question["user_id"] %}
+                        {% if 'user_name' in session  and session["id"] == q_comment["user_id"] %}
                             <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question_id }}">Edit Comment</a></td>
                             <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question_id }}">Delete Comment</a></td>
                         {% endif %}
@@ -43,7 +43,7 @@
                 <th>Image &nbsp;</th>
             </tr>
             {% for answer in answers %}
-                <tr></tr>
+                <tr>
                     <td>{{ answer['vote_number'] }}</td>
                     <td>{{ answer['message'] }}</td>
                     {% if answer['image'] %}
@@ -54,17 +54,20 @@
                     <td>
                         <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=1&table=answer&reputation=10" > Up vote</a>
                         <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=-1&table=answer&reputation=-2" >Down vote</a>
+                    {% if 'user_name' in session  and session["id"] == answer["user_id"] %}
                     <td>
                         <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question["id"] }}">Delete</a>
                         <a href="/answer/{{ answer['id'] }}/edit">Edit</a>
+                    {% else %}
+                        <p></p>
+                        <p></p>
+                    {% endif %}
                     </td>
-                    {% if 'user_name' in session  and session["id"] == question["user_id"] %}
                     <td>
                         <form action="/answer/{{ answer['id'] }}/accept?question_id={{ question["id"] }}" method="POST">
                             <button type="submit" value="True">ACCEPT</button>
                         </form>
                     </td>
-                    {% endif %}
                 </tr>
                 <tr>
                     <table>
@@ -74,8 +77,13 @@
                                 <td>{{ comment['message'] }}</td>
                                 <td>{{ comment['submission_time'] }}</td>
                                 <td>edited {{ comment['edited_count'] }} times</td>
-                                <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question["id"] }}">Edit Comment</a></td>
-                                <td><a href="/comment/{{ comment['id'] }}/delete?question_id={{ question["id"] }}">Delete Comment</a></td>
+                                {% if 'user_name' in session  and session["id"] == comment["user_id"] %}
+                                    <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question["id"] }}">Edit Comment</a></td>
+                                    <td><a href="/comment/{{ comment['id'] }}/delete?question_id={{ question["id"] }}">Delete Comment</a></td>
+                                {% else %}
+                                    <td></td>
+                                    <td></td>
+                                {% endif %}
                             </tr>
                             {% endif %}
                         {% endfor %}
