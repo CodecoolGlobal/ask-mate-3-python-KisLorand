@@ -49,7 +49,6 @@ def add_question():
 def open_question(question_id):
     question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
-    user_id = session.get('id')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
     if question:

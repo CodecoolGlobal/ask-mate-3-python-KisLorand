@@ -327,3 +327,12 @@ def search_table_user_id(cursor, data_id, table_name):
     cursor.execute(query)
     user_id = cursor.fetchone().get('user_id')
     return user_id
+
+@connection_handler
+def get_question_tag_by_id(cursor, question_id):
+    query = f"""SELECT tag_id FROM question_tag  
+    JOIN tag ON question_tag.tag_id = tag.id 
+    WHERE question_id='{question_id}'
+    """
+    cursor.execute(query)
+    return cursor.fetchall
