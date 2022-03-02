@@ -80,7 +80,6 @@ def vote_answer_up(id_number):
     reputation_value = flask.request.args.get("reputation")
     data_manager.update_table_single_col(table_name, "vote_number", id_number, vote_up)
     user_id = data_manager.search_table_user_id(id_number, table_name)
-    print(user_id)
     data_manager.reputation_editor(user_id, reputation_value)
     if table_name == "answer":
         question_id = flask.request.args.get("question_id")
@@ -240,6 +239,12 @@ def logout_user():
 def answer_accept_page(answer_id):
     if flask.request.method == "POST":
         question_id = flask.request.args.get("question_id")
+        reputation_value = flask.request.args.get("reputation")
+        user_id = data_manager.search_table_user_id(answer_id, 'answer')
+        # ha accpeteled
+        data_manager.reputation_editor(user_id, 15)
+        # ha unaccept
+        data_manager.reputation_editor(user_id, -15)
         data_manager.change_answer_accept_to(answer_id, "true")
         return flask.redirect(f"/question/{question_id}")
     return flask.redirect("/question")
