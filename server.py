@@ -49,7 +49,6 @@ def add_question():
 def open_question(question_id):
     question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
-    user_id = session.get('id')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
     if question:
@@ -103,7 +102,7 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    question_title, message, question_image, answers = data_manager.question_opener(question_id)
+    question, answers = data_manager.question_opener(question_id)
     if flask.request.method == 'POST':
         question_title = flask.request.form.get("title")
         image = flask.request.files.get('image')
@@ -112,7 +111,7 @@ def edit_question(question_id):
         message = flask.request.form.get("message")
         data_manager.question_editor(question_title, message, question_id)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_question.html', question_title=question_title, message=message,
+    return flask.render_template('edit_question.html', question_title=question['title'], message=question['message'],
                                  question_id=question_id)
 
 
