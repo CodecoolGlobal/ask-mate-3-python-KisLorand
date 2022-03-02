@@ -1,0 +1,17 @@
+{% extends 'base_layout.html' %}
+{% block title %}TAGS{% endblock %}
+{% block content %}
+    <table>
+    <tr>
+        <th>TAG NAME</th>
+        <th>QUESTION COUNT</th>
+    </tr>
+    {% for tag in all_tags %}
+        <tr>
+            <td>{{ tag.get("name") }}</td>
+            <td>{{ tag.get("questions")}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <a href="/">Back to main page</a>
+{% endblock %}

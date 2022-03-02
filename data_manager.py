@@ -363,4 +363,18 @@ def get_question_tag_by_id(cursor, question_id):
     WHERE question_id='{question_id}'
     """
     cursor.execute(query)
+<<<<<<< HEAD
 
+=======
+    return cursor.fetchall()
+
+
+@connection_handler
+def get_all_tags(cursor):
+    query = f"""SELECT tag.name, count(question_tag.tag_id) as questions FROM tag
+    LEFT JOIN question_tag ON tag.id = question_tag.tag_id
+    GROUP BY tag.name ORDER BY count(question_tag.tag_id) DESC
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+>>>>>>> 8a160f67b32d5a1483017858f9db7f648cacad09

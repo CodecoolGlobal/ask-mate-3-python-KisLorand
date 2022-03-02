@@ -256,6 +256,14 @@ def answer_accept_page(answer_id):
     return flask.redirect("/question")
 
 
+@app.route('/tags')
+def list_tag_page():
+    if "user_name" in session:
+        all_tag = data_manager.get_all_tags()
+        return flask.render_template("list_tags.html", all_tags=all_tag)
+    return flask.redirect("/")
+
+
 def check_session():
     if 'user_name' in session:
         return True
