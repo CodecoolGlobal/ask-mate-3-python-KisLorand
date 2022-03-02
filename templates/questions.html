@@ -18,9 +18,11 @@
             <a href="/question/{{ question["id"] }}/new-comment" class="btn add-new">Add Comment</a>
         {% endif %}
     <div id="tags">
+    {% if question_tags %}
         {% for question_tag in question_tags %}
         <span>#{{ question_tag.get("name") }} </span>
-        {% endfor %}
+    {% endfor %}
+    {% endif %}
     </div>
         <table id="question-comment-table">
             {% for q_comment in question_comments %}

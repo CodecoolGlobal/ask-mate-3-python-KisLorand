@@ -3,12 +3,12 @@
 {% block content %}
     <h1>{% block page_name %}AskMate{% endblock %}</h1>
     <p>Welcome to the AskMate main page.</p>
-    <table>
+    <table class="listing-table">
     <tr>
-        <th>View Number &nbsp;|</th>
-        <th>Vote Number &nbsp;| </th>
-        <th>Title &nbsp;| </th>
-        <th>Message &nbsp;|</th>
+        <th>View Number</th>
+        <th>Vote Number</th>
+        <th>Title</th>
+        <th>Message</th>
         <th>Image</th>
     </tr>
     {%for data in questions  %}
@@ -30,19 +30,14 @@
     </tr>
     {% endfor %}
     </table>
-    <h3><a href="/add-question" class="btn add-new">Ask new question</a></h3>
-    <h3><a href="/list" class="btn add-new">List all questions</a></h3>
-    <form action="/add-question" method="POST">
-    {% block message %}meaningful message{% endblock %}
-    {% block submit_question %}{% endblock %}
-    </form>
+    <div id="login-options">
+    <a href="/add-question" class="btn">Ask new question</a>
+    <a href="/list" class="btn">List all questions</a>
         {% if session["user_name"] %}
-            <br><br>
-            <a href="/logout" class="btn add-new">LOG OUT</a>
+            <a href="/logout" class="btn">LOG OUT</a>
         {% else %}
-            <br><br>
-            <a href="/registration" class="btn add-new">Sign up</a>
-            <br><br>
-            <a href="/login" class="btn add-new">LOG IN</a>
+            <a href="/registration" class="btn">Sign up</a>
+            <a href="/login" class="btn ">LOG IN</a>
         {% endif %}
+    </div>
 {% endblock %}

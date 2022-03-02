@@ -13,30 +13,31 @@ html{
 
 }
 
-#listing-table{
-    width: 100%;
+.listing-table{
+    min-width: 100%;
     text-align: left;
     margin:3rem 0;
     border: solid black 2px;
     border-radius: 10px;
+    border-spacing: 0px;
 
 }
 
 
-#listing-table tr th,td{
+.listing-table tr th,td{
     padding:  0.5rem 1rem;
 }
-#listing-table tr:nth-child(even) {
+.listing-table tr:nth-child(even) {
     background:#c2c2d6;
     width:100%;
 }
 
-#listing-table tr:nth-last-child(1) td:nth-child(1){
+.listing-table tr:nth-last-child(1) td:nth-child(1){
     border-bottom-left-radius: 10px;
 }
 
 
-#listing-table tr:nth-last-child(1) td:nth-last-child(1){
+.listing-table tr:nth-last-child(1) td:nth-last-child(1){
     border-bottom-right-radius: 10px;
 }
 a, button{
@@ -68,9 +69,11 @@ a, button{
     margin: 3rem 3rem 0 0;
 }
 #sort{
+    min-width: 100%;
     display: block;
     background: #c2c2d6;
-     padding:  0.5rem 1rem;
+    margin: 3rem 3rem 0 0;
+    padding:  0.5rem 1rem;
     border-radius: 10px;
 }
 #sort .btn{
@@ -80,4 +83,15 @@ a, button{
 
 #sort form{
     display: inline;
+}
+
+#login-options{
+    width: 50%;
+    margin: auto;
+}
+
+#login-options .btn{
+    width: 50%;
+    margin:  1.5rem auto;
+    font-weight: 600;
 }

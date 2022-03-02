@@ -1,0 +1,14 @@
+    <div id="login-options">
+    <a href="/add-question" class="btn">Ask new question</a>
+    <a href="/list" class="btn">List all questions</a>
+    <form action="/add-question" method="POST">
+    {% block submit_question %}{% endblock %}
+    </form>
+
+        {% if session["user_name"] %}
+            <a href="/logout" class="btn">LOG OUT</a>
+        {% else %}
+            <a href="/registration" class="btn">Sign up</a>
+            <a href="/login" class="btn">LOG IN</a>
+        {% endif %}
+    </div>
