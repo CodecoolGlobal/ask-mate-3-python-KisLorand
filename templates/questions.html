@@ -63,7 +63,11 @@
                     {% if 'user_name' in session  and session["id"] == question["user_id"] %}
                     <td>
                         <form action="/answer/{{ answer['id'] }}/accept?question_id={{ question["id"] }}" method="POST">
-                            <button type="submit" value="True">ACCEPT</button>
+                            {% if answer["accepted"] == False %}
+                            <button type="submit" name="accepted" value="true">ACCEPT</button>
+                            {% else %}
+                            <button type="submit" name="accepted" value="false">UNACCEPT</button>
+                            {% endif %}
                         </form>
                     </td>
                     {% endif %}
