@@ -230,7 +230,8 @@ def logout_user():
 @app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])
 def answer_accept_page(answer_id):
     if flask.request.method == "POST":
-        question_id = requests.args.get("question_id")
+        question_id = flask.request.args.get("question_id")
+        data_manager.change_answer_accept_to(answer_id, "true")
         return flask.redirect(f"/question/{question_id}")
     return flask.redirect("/question")
 
