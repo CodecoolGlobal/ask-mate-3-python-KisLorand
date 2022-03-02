@@ -344,5 +344,5 @@ def get_all_tags(cursor):
     LEFT JOIN question_tag ON tag.id = question_tag.tag_id
     GROUP BY tag.name ORDER BY count(question_tag.tag_id) DESC
     """
-    cursor.exectue(query)
+    cursor.execute(query)
     return cursor.fetchall()
