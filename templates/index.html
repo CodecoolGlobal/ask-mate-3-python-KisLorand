@@ -50,10 +50,16 @@
             <td></td>
         {% endif %}
         <td>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question" class="btn vote-up">Up vote</a><br>
-            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question" class="btn vote-down">Down vote</a>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question&reputation=5" class="btn vote-up">Up vote</a><br>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question&reputation=-2" class="btn vote-down">Down vote</a>
         </td>
-        <td><a href="/question/{{ data['id'] }}/delete" class="btn">Delete</a></td>
+        <td>
+        {% if session['id'] == data['user_id'] %}
+            <a href="/question/{{ data['id'] }}/delete" class="btn">Delete</a>
+        {% else %}
+            <p></p>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
     </table>

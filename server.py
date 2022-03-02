@@ -49,11 +49,14 @@ def add_question():
 def open_question(question_id):
     question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
-    # question_tags = data_manager.get_all_data_by_condition('question_tag', "question_id", 0)
+    user_id = session.get('id')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question=question, answers=answers,
+    if question:
+        return flask.render_template("questions.html", question=question, answers=answers,
                                  question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
+    else:
+        return flask.redirect('/')
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])
@@ -74,7 +77,11 @@ def new_answer(question_id):
 def vote_answer_up(id_number):
     table_name = flask.request.args.get("table")
     vote_up = flask.request.args.get("vote-up")
+    reputation_value = flask.request.args.get("reputation")
     data_manager.update_table_single_col(table_name, "vote_number", id_number, vote_up)
+    user_id = data_manager.search_table_user_id(id_number, table_name)
+    print(user_id)
+    data_manager.reputation_editor(user_id, reputation_value)
     if table_name == "answer":
         question_id = flask.request.args.get("question_id")
         return flask.redirect(f'/question/{question_id}')

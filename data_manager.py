@@ -10,7 +10,7 @@ import bcrypt
 
 
 # image path
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = 'static/images/'
 
 # data path
 PATH_ANSWERS = "sample_data/answer.csv"
@@ -274,8 +274,8 @@ def validate_login(input_password, valid_password):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    query = f""" INSERT INTO users (user_name, user_password, registration_date)
-    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}' )
+    query = f""" INSERT INTO users (user_name, user_password, registration_date,)
+    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}')
     """
     cursor.execute(query)
 
@@ -311,3 +311,19 @@ def change_answer_accept_to(cursor, answer_id, value):
     query = f"""UPDATE answer SET accepted='{value}' WHERE id = '{answer_id}'
     """
     cursor.execute(query)
+
+
+@connection_handler
+def reputation_editor(cursor, user_id, reputation_value):
+    query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
+    cursor.execute(query)
+
+
+@connection_handler
+def search_table_user_id(cursor, data_id, table_name):
+    query = f"""SELECT user_id FROM {table_name}
+                Where id = {data_id}
+        """
+    cursor.execute(query)
+    user_id = cursor.fetchone().get('user_id')
+    return user_id
