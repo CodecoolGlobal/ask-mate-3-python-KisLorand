@@ -14,11 +14,14 @@
             <p></p>
         {% endif %}
         {% if 'user_name' in session  and session["id"] == question["user_id"] %}
-            <br><br>
-            <a href="/question/{{ question["id"]}}/new-tag">Add tag</a><br>
-            <a href="/question/{{ question["id"] }}/new-comment">Add Comment</a>
-            <br><br>
+            <a href="/question/{{ question["id"]}}/new-tag" class="btn add-new">Add tag</a>
+            <a href="/question/{{ question["id"] }}/new-comment" class="btn add-new">Add Comment</a>
         {% endif %}
+    <div id="tags">
+        {% for question_tag in question_tags %}
+        <span>#{{ question_tag.get("name") }} </span>
+        {% endfor %}
+    </div>
         <table id="question-comment-table">
             {% for q_comment in question_comments %}
                 {% if q_comment['question_id'] == comment_condition %}
@@ -68,9 +71,9 @@
                     <td>
                         <form action="/answer/{{ answer['id'] }}/accept?question_id={{ question["id"] }}" method="POST">
                             {% if answer["accepted"] == False %}
-                            <button type="submit" name="accepted" value="true">ACCEPT</button>
+                            <button type="submit" name="accepted" value="true" class="btn add-new">ACCEPT</button>
                             {% else %}
-                            <button type="submit" name="accepted" value="false">UNACCEPT</button>
+                            <button type="submit" name="accepted" value="false" class="btn add-new">UNACCEPT</button>
                             {% endif %}
                         </form>
                     </td>
@@ -96,13 +99,12 @@
                     </table>
                 </tr>
                 <tr>
-                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question["id"] }}">Comment</a></td>
+                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question["id"] }}" class="btn add-new">Comment</a></td>
                 </tr>
-                <br><br>
             {% endfor %}
         </table>
-        <a href="/question/{{ question["id"] }}/new-answer?question_id={{ question["id"] }}">Add new answer</a><br>
-        <a href="/list">back to the questions</a>
+        <a href="/question/{{ question["id"] }}/new-answer?question_id={{ question["id"] }}" class="btn add-new">Add new answer</a><br>
+        <a href="/list" class="btn add-new">back to the questions</a>
 
 {% endblock %}
 

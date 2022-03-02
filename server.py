@@ -51,9 +51,12 @@ def open_question(question_id):
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
+    question_tags = data_manager.get_question_tag_by_id(question_id)
+    print(question_tags)
     if question:
-        return flask.render_template("questions.html", question=question, answers=answers,
-                                 question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
+        return flask.render_template("questions.html", question=question, answers=answers, question_tags=question_tags,
+                                 question_comments=question_comments, answer_comments=answer_comments,
+                                     comment_condition=int(question_id))
     else:
         return flask.redirect('/')
 
