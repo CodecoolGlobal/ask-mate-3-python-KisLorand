@@ -250,6 +250,11 @@ def answer_accept_page(answer_id):
     return flask.redirect("/question")
 
 
+@app.route('/tags')
+def list_tag_page():
+    return "NOT READY"
+
+
 def check_session():
     if 'user_name' in session:
         return True
