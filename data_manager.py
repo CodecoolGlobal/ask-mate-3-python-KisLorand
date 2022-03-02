@@ -10,7 +10,7 @@ import bcrypt
 
 
 # image path
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = 'static/images/'
 
 # data path
 PATH_ANSWERS = "sample_data/answer.csv"
