@@ -207,6 +207,8 @@ def delete_comment(comment_id):
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration_page():
+    if "user_name" in session:
+        return flask.redirect("/")
     if flask.request.method == "POST":
         new_user_name = flask.request.form.get("new-user-name")
         new_password = flask.request.form.get("new-password")
@@ -232,6 +234,15 @@ def login_user():
 def logout_user():
     session.clear()
     return flask.redirect('/')
+
+
+@app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])
+def answer_accept_page(answer_id):
+    if flask.request.method == "POST":
+        question_id = flask.request.args.get("question_id")
+        data_manager.change_answer_accept_to(answer_id, "true")
+        return flask.redirect(f"/question/{question_id}")
+    return flask.redirect("/question")
 
 
 def check_session():

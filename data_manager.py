@@ -307,6 +307,13 @@ def search_user_data(cursor, user_name):
 
 
 @connection_handler
+def change_answer_accept_to(cursor, answer_id, value):
+    query = f"""UPDATE answer SET accepted='{value}' WHERE id = '{answer_id}'
+    """
+    cursor.execute(query)
+
+
+@connection_handler
 def reputation_editor(cursor, user_id, reputation_value):
     query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
     cursor.execute(query)
