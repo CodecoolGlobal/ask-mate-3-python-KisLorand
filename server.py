@@ -252,7 +252,8 @@ def answer_accept_page(answer_id):
 
 @app.route('/tags')
 def list_tag_page():
-    return "NOT READY"
+    re
+    return flask.render_template("list_tags.html")
 
 
 def check_session():
