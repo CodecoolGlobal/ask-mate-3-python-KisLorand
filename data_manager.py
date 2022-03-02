@@ -273,3 +273,8 @@ def search_user_data(cursor, user_name):
     cursor.execute(query,select_by)
     user_data = cursor.fetchone()
     return user_data
+
+@connection_handler
+def get_user_blog_info(cursor, user_name):
+    pass
+
