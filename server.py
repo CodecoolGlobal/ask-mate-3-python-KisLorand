@@ -236,6 +236,12 @@ def logout_user():
     session.clear()
     return flask.redirect('/')
 
+@app.route('/user/<user_id>')
+def user_info(user_id):
+    datas = data_manager.get_user_blog_info(user_id)
+        #{questions: [{anwer:[comment,comment]}, {answer:[comment,comment]},question_commet]}
+
+
 
 @app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])
 def answer_accept_page(answer_id):
@@ -248,6 +254,14 @@ def answer_accept_page(answer_id):
         data_manager.change_answer_accept_to(answer_id, acceptance_value )
         return flask.redirect(f"/question/{question_id}")
     return flask.redirect("/question")
+
+
+@app.route('/tags')
+def list_tag_page():
+    if "user_name" in session:
+        all_tag = data_manager.get_all_tags()
+        return flask.render_template("list_tags.html", all_tags=all_tag)
+    return flask.redirect("/")
 
 
 def check_session():
