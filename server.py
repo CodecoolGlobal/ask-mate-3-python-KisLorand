@@ -218,6 +218,12 @@ def logout_user():
     session.clear()
     return flask.redirect('/')
 
+@app.route('/user/<user_id>')
+def user_info(user_id):
+    datas = data_manager.get_user_blog_info(user_id)
+        #{questions: [{anwer:[comment,comment]}, {answer:[comment,comment]},question_commet]}
+
+
 
 def get_username():
     if 'user_name' in session:

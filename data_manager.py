@@ -307,6 +307,30 @@ def search_user_data(cursor, user_name):
 
 
 @connection_handler
-def get_user_blog_info(cursor, user_name):
-    pass
+def get_user_blog_info(cursor, user_id):
+    query = """SELECT  distinct user_name,
+                a.message as answer,
+                a.id as answer_id,
+                q.message as question,
+                c.message as comment, 
+                c.question_id,
+                c.answer_id as comment_answer_id
+    FROM users inner join answer a on users.id = a.user_id
+                inner join comment c on users.id = c.user_id
+                inner join question q on users.id = q.user_id
+    WHERE users.id = %(user_id)s
+    """
+    select_by = {'user_id': user_id}
+    cursor.execute(query,select_by)
+    return cursor.fetchall()
+
+
+@connection_handler
+def get_answer_comment_by_id(cursor, id):
+    query = """SELECT * 
+               FROM  comment 
+               WHERE answer_id = %(id)s"""
+    select_by = {'id': id}
+    cursor.execute(query, select_by)
+    return cursor.fetchone()
 
