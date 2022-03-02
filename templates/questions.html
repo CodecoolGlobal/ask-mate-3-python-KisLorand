@@ -38,12 +38,14 @@
 
         <table>
             <tr>
+                <th>GOOD ANSWER</th>
                 <th>Vote <br> Number &nbsp;</th>
                 <th>Answer &nbsp;</th>
                 <th>Image &nbsp;</th>
             </tr>
             {% for answer in answers %}
-                <tr></tr>
+                <tr>
+                    <td>{{ answer['accepted'] }}</td>
                     <td>{{ answer['vote_number'] }}</td>
                     <td>{{ answer['message'] }}</td>
                     {% if answer['image'] %}
