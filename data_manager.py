@@ -336,3 +336,13 @@ def get_question_tag_by_id(cursor, question_id):
     """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection_handler
+def get_all_tags(cursor):
+    query = f"""SELECT tag.name, count(question_tag.tag_id) as questions FROM tag
+    LEFT JOIN question_tag ON tag.id = question_tag.tag_id
+    GROUP BY tag.name ORDER BY count(question_tag.tag_id) DESC
+    """
+    cursor.exectue(query)
+    return cursor.fetchall()
