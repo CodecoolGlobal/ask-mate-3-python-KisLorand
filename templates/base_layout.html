@@ -10,6 +10,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
 </head>
 <body>
+{% if "user_name" in session %}
+<div id="login-info">
+    <h4>{{ session['user_name'] }}</h4>
+</div>
+{% endif %}
 <div id="main-container">
 {% block content %}
 {% endblock %}

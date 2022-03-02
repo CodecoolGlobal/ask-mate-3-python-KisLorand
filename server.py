@@ -51,9 +51,8 @@ def open_question(question_id):
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
     # question_tags = data_manager.get_all_data_by_condition('question_tag', "question_id", 0)
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
-    question_title, question_message, question_image, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question_title=question_title, question_message=question_message,
-                                 answers=answers, question_image=question_image, question_id=question_id,
+    question, answers = data_manager.question_opener(question_id)
+    return flask.render_template("questions.html", question=question, answers=answers,
                                  question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
 
 
@@ -221,6 +220,7 @@ def login_user():
         valid_password = data_manager.get_user_password(input_email).get("user_password")
         if data_manager.validate_login(input_password, valid_password):
             session['user_name'] = input_email
+            session['id'] = data_manager.search_user_id(input_email)
             return flask.redirect('/')
     return flask.render_template('login.html')
 
