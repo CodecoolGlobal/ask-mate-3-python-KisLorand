@@ -52,8 +52,11 @@ def open_question(question_id):
     user_id = session.get('id')
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
-    return flask.render_template("questions.html", question=question, answers=answers,
+    if question:
+        return flask.render_template("questions.html", question=question, answers=answers,
                                  question_comments=question_comments, answer_comments=answer_comments, comment_condition=int(question_id))
+    else:
+        return flask.redirect('/')
 
 
 @app.route("/question/<question_id>/new-answer", methods=["GET", "POST"])

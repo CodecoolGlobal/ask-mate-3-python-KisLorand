@@ -54,7 +54,7 @@
             <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question&reputation=-2" class="btn vote-down">Down vote</a>
         </td>
         <td>
-        {% if session['id'] == question['user_id'] %}
+        {% if session['id'] == data['user_id'] %}
             <a href="/question/{{ data['id'] }}/delete" class="btn">Delete</a>
         {% else %}
             <p></p>

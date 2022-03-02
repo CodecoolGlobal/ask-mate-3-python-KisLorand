@@ -1,22 +1,22 @@
 {% extends 'base_layout.html' %}
 {% block title %} Question {% endblock %}
 {% block content %}
-        <h1>{{ question_title }}</h1>
-        <p>{{ question_message }}
-            {% if session['id'] == user_id %}
+        <h1>{{ question['title'] }}</h1>
+        <p>{{ question['message'] }}
+            {% if 'user_name' in session  and session["id"] == question["user_id"] %}
                 <br><br>
-                <a href="/question/{{ question_id }}/edit" class="btn add-new">Edit</a>
+                <a href="/question/{{ question["id"] }}/edit" class="btn add-new">Edit</a>
             {% endif %}
         </p>
-        {% if question_image %}
+        {% if question['image'] %}
             <img src="{{ url_for('static', filename=question["image"])}}" alt="" width="100" height="100">
         {% else %}
             <p></p>
         {% endif %}
-        {% if session['id'] == user_id %}
+        {% if 'user_name' in session  and session["id"] == question["user_id"] %}
             <br><br>
-            <a href="/question/{{ question_id }}/new-tag">Add tag</a><br>
-            <a href="/question/{{ question_id }}/new-comment">Add Comment</a>
+            <a href="/question/{{ question["id"]}}/new-tag">Add tag</a><br>
+            <a href="/question/{{ question["id"] }}/new-comment">Add Comment</a>
             <br><br>
         {% endif %}
         <table id="question-comment-table">
@@ -26,7 +26,7 @@
                         <td>{{ q_comment['message'] }}</td>
                         <td>{{ q_comment['submission_time'] }}</td>
                         <td>edited {{ q_comment['edited_count'] }} times</td>
-                        {% if session['id'] == user_id %}
+                        {% if 'user_name' in session  and session["id"] == question["user_id"] %}
                             <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question_id }}">Edit Comment</a></td>
                             <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question_id }}">Delete Comment</a></td>
                         {% endif %}
@@ -52,8 +52,8 @@
                         <td></td>
                     {% endif %}
                     <td>
-                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=1&table=answer&reputation=10" > Up vote</a>
-                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question_id }}&vote-up=-1&table=answer&reputation=-2" >Down vote</a>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=1&table=answer&reputation=10" > Up vote</a>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=-1&table=answer&reputation=-2" >Down vote</a>
                     <td>
                         <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question["id"] }}">Delete</a>
                         <a href="/answer/{{ answer['id'] }}/edit">Edit</a>
