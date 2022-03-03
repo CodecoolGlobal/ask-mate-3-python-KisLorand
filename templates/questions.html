@@ -33,8 +33,8 @@
                         <td>{{ q_comment['submission_time'] }}</td>
                         <td>edited {{ q_comment['edited_count'] }} times</td>
                         {% if 'user_name' in session  and session["id"] == q_comment["user_id"] %}
-                            <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question_id }}">Edit Comment</a></td>
-                            <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question_id }}">Delete Comment</a></td>
+                            <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question["id"] }}">Edit Comment</a></td>
+                            <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question["id"] }}">Delete Comment</a></td>
                         {% endif %}
                 {% endif %}
             {% endfor %}
