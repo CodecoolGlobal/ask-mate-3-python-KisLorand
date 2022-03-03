@@ -181,8 +181,8 @@ def upload_image(img_name, image_request):
 @connection_handler
 def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
     # query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
-    query = SQL(' SELECT * FROM {} WHERE id=%s ').format(Identifier(table_name))
-    cursor.execute(query, [entry_id])
+    query = SQL(' SELECT * FROM {} WHERE id={} ').format(Identifier(table_name), Literal(entry_id))
+    cursor.execute(query)
     return cursor.fetchone()
 
 
@@ -190,7 +190,7 @@ def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", imag
 def entry_editor(cursor, table_name, data_id, message):
     # query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
     # """
-    query = SQL(' UPDATE {} SET message=%s WHERE id=%s ').format(Identifier(table_name))
+    query = SQL(' UPDATE {} SET message=%s WHERE id=%s ').format(Identifier(table_name), )
     cursor.execute(query, [message, data_id])
 
 
@@ -198,15 +198,18 @@ def entry_editor(cursor, table_name, data_id, message):
 def question_editor(cursor, title, message, question_id):
     # query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id}
     #     """
-    query = SQL(' UPDATE question SET title={}, message={} WHERE id=%s ').format(Literal(title), Literal(message))
-    cursor.execute(query, [question_id])
+    query = SQL(' UPDATE question SET title={}, message={} WHERE id={} ').format(Literal(title), Literal(message), Literal(question_id))
+    cursor.execute(query)
 
 
 @connection_handler
 def get_question_titles_and_messages(cursor, search_phrase):
-    query = f"""SELECT  id ,title, message 
-                FROM question 
-                WHERE title LIKE '%{search_phrase}%'; """
+    # query = f"""SELECT  id ,title, message
+    #             FROM question
+    #             WHERE title LIKE '%{search_phrase}%'; """
+    joined_search_phrase = '%' + search_phrase + '%'
+    query = SQL(' SELECT  id ,title, message FROM question WHERE title LIKE {} ')\
+        .format( Literal(joined_search_phrase) )
     cursor.execute(query)
     return cursor.fetchall()
 
