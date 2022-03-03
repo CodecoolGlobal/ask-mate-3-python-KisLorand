@@ -271,7 +271,8 @@ def add_new_comment_a(cursor, answer_id, added_message, user_name):
 
 @connection_handler
 def delete_comment(cursor, table_name, column_type, column_value):
-    delete_comment_query =  f""" DELETE FROM {table_name} WHERE {column_type}={column_value}"""
+    delete_comment_query =  SQL(' DELETE FROM {} WHERE {}={} ')\
+        .format(Identifier(table_name), Identifier(column_type), Literal(column_value))
     cursor.execute(delete_comment_query)
 
 
@@ -285,7 +286,7 @@ def latest_questions(cursor):
 
 @connection_handler
 def get_user_password(cursor, email):
-    query = f""" SELECT user_password FROM users WHERE user_name = '{email}' """
+    query = SQL(' SELECT user_password FROM users WHERE user_name = {} ').format(Literal(email))
     cursor.execute(query)
     table_data = cursor.fetchone()
     return table_data
