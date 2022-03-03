@@ -236,11 +236,11 @@ def logout_user():
     session.clear()
     return flask.redirect('/')
 
-@app.route('/user/<user_id>')
-def user_info(user_id):
-    datas = data_manager.get_user_blog_info(user_id)
-        #{questions: [{anwer:[comment,comment]}, {answer:[comment,comment]},question_commet]}
 
+@app.route('/users')
+def list_users():
+    users = data_manager.get_uer_datas()
+    return flask.render_template('list_users.html', users=users)
 
 
 @app.route('/answer/<answer_id>/accept', methods=['GET', 'POST'])

@@ -307,32 +307,22 @@ def search_user_data(cursor, user_name):
 
 
 @connection_handler
-def get_user_blog_info(cursor, user_id):
-    query = """SELECT  distinct user_name,
-                a.message as answer,
-                a.id as answer_id,
-                q.message as question,
-                c.message as comment, 
-                c.question_id,
-                c.answer_id as comment_answer_id
-    FROM users inner join answer a on users.id = a.user_id
-                inner join comment c on users.id = c.user_id
-                inner join question q on users.id = q.user_id
-    WHERE users.id = %(user_id)s
-    """
-    select_by = {'user_id': user_id}
-    cursor.execute(query,select_by)
+def get_uer_datas(cursor):
+    query = """
+        SELECT users.id,
+        users.user_name as username,
+        users.reputation,
+        to_char(users.registration_date, 'YY.MM.DD') as registration_date,
+        count( distinct q.id) as number_of_questions,
+        COUNT( distinct a.id) as number_of_answers,
+        COUNT(distinct c.id) as number_of_comments
+from users inner join question q on users.id = q.user_id
+            inner join comment c on users.id = c.user_id
+            inner join answer a on users.id = a.user_id
+group by users.user_name, users.reputation, to_char(users.registration_date, 'YY.MM.DD'),users.id
+        """
+    cursor.execute(query)
     return cursor.fetchall()
-
-
-@connection_handler
-def get_answer_comment_by_id(cursor, id):
-    query = """SELECT * 
-               FROM  comment 
-               WHERE answer_id = %(id)s"""
-    select_by = {'id': id}
-    cursor.execute(query, select_by)
-    return cursor.fetchone()
 
 
 def change_answer_accept_to(cursor, answer_id, value):
@@ -356,6 +346,7 @@ def search_table_user_id(cursor, data_id, table_name):
     user_id = cursor.fetchone().get('user_id')
     return user_id
 
+
 @connection_handler
 def get_question_tag_by_id(cursor, question_id):
     query = f"""SELECT tag.name FROM question_tag  
@@ -363,9 +354,6 @@ def get_question_tag_by_id(cursor, question_id):
     WHERE question_id='{question_id}'
     """
     cursor.execute(query)
-<<<<<<< HEAD
-
-=======
     return cursor.fetchall()
 
 
@@ -377,4 +365,4 @@ def get_all_tags(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
->>>>>>> 8a160f67b32d5a1483017858f9db7f648cacad09
+
