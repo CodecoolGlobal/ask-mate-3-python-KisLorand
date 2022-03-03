@@ -316,8 +316,8 @@ def search_user_id(cursor, user_name):
     # query = f"""SELECT * FROM users
     #             Where user_name = '{user_name}'
     #     """
-    query = SQL(' SELECT * FROM users WHERE user_name=%s ')
-    cursor.execute(query, [user_name])
+    query = SQL(' SELECT * FROM users WHERE user_name={} ').format(Literal(user_name))
+    cursor.execute(query)
     user_id = cursor.fetchone().get('id')
     return user_id
 
