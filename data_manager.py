@@ -232,10 +232,10 @@ def image_editor(cursor, table_name, data_id, image):
 
 @connection_handler
 def add_new_tag(cursor, new_tag):
-    query = f""" INSERT INTO tag(name) SELECT '{new_tag}'
-            WHERE NOT EXISTs (SELECT name FROM tag WHERE name='{new_tag}')"""
+    query = SQL(' INSERT INTO tag(name) SELECT {} WHERE NOT EXISTs (SELECT name FROM tag WHERE name={}) ')\
+        .format(Identifier(new_tag), Identifier(new_tag))
     cursor.execute(query)
-    query = f""" SELECT id FROM tag WHERE name='{new_tag}'"""
+    query = SQL(' SELECT id FROM tag WHERE name={} ').format(Identifier(new_tag))
     cursor.execute(query)
     return cursor.fetchone().get("id")
 
