@@ -107,7 +107,7 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    question_title, message, question_image, answers = data_manager.question_opener(question_id)
+    question, answers = data_manager.question_opener(question_id)
     if flask.request.method == 'POST':
         question_title = flask.request.form.get("title")
         image = flask.request.files.get('image')
@@ -116,7 +116,7 @@ def edit_question(question_id):
         message = flask.request.form.get("message")
         data_manager.question_editor(question_title, message, question_id)
         return flask.redirect(f'/question/{question_id}')
-    return flask.render_template('edit_question.html', question_title=question_title, message=message,
+    return flask.render_template('edit_question.html', question_title=question['title'], message=question['message'],
                                  question_id=question_id)
 
 

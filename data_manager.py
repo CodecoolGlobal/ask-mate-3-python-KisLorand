@@ -23,7 +23,8 @@ MIN_QUESTION_MESSAGE_LEN = 5
 
 @connection_handler
 def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
-    query = f""" UPDATE {table_name} SET {col_name}={col_name}+{vote_up} WHERE id={id_number} """
+    query = SQL('UPDATE {} SET {}={}+{} WHERE id={}')\
+        .format(Identifier(table_name), Identifier(col_name), Identifier(col_name), Literal(vote_up), Literal(id_number) )
     cursor.execute(query)
 
 
@@ -31,22 +32,22 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 def add_new_answer(cursor, id_input, input_text, image_file, user_name):
     user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
-    query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id) 
-                VALUES ('{current_time}', 0, '{id_input}', '{input_text}', {user_id}) """
+    query = SQL('INSERT INTO answer (submission_time, vote_number, question_id, message, user_id) VALUES ({}, {}, {}, {}, {})')\
+        .format(Literal(current_time), Literal(0), Literal(id_input), Literal(input_text), Literal(user_id))
     cursor.execute(query)
     select_query = f""" SELECT id FROM answer ORDER BY id DESC LIMIT 1 """
     cursor.execute(select_query)
 
     image_index = cursor.fetchone().get('id')
     image_path = upload_image(f"A_{image_index}", image_file)
-    new_answer_query = f""" UPDATE answer SET image='{image_path}' WHERE id='{image_index}' """
+    new_answer_query = SQL(' UPDATE answer SET image={} WHERE id={} ').format(Literal(image_path), Literal(image_index))
     cursor.execute(new_answer_query)
     return True
 
 
 @connection_handler
-def get_all_data(cursor, table_name, order_type="submission_time", order_direction="DESC"):
-    query = f""" SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
+def get_all_data(cursor, table_name, order_type='submission_time', order_direction='DESC'):
+    query = SQL(' SELECT * FROM {} ORDER BY {} DESC ').format(Identifier(table_name), Identifier(order_type)) #, Literal(order_direction))
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
@@ -54,7 +55,8 @@ def get_all_data(cursor, table_name, order_type="submission_time", order_directi
 
 @connection_handler
 def get_all_data_by_condition(cursor, table_name, column, col_value, order_type="submission_time", order_direction="ASC"):
-    query = f""" SELECT * FROM "{table_name}" WHERE {column}>={col_value} ORDER BY {order_type} {order_direction} """
+    query = SQL(' SELECT * FROM {} WHERE {}>={} ORDER BY {} ASC ')\
+        .format(Identifier(table_name), Identifier(column), Literal(col_value), Identifier(order_type)) #, Literal(order_direction))
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
@@ -62,11 +64,11 @@ def get_all_data_by_condition(cursor, table_name, column, col_value, order_type=
 
 @connection_handler
 def question_opener(cursor, question_id):
-    question_query = f""" SELECT * FROM question WHERE id='{question_id}' """
+    question_query = SQL(' SELECT * FROM question WHERE id={} ').format(Literal(question_id))
     cursor.execute(question_query)
     question_data = cursor.fetchone()
 
-    answer_query = f""" SELECT * FROM answer WHERE question_id = '{question_id}' """
+    answer_query = SQL(' SELECT * FROM answer WHERE question_id={} ').format(Literal(question_id))
     cursor.execute(answer_query)
     answers = cursor.fetchall()
 
@@ -113,15 +115,16 @@ def add_new_question(cursor, new_title, new_message, image_file, user_name):
     if is_new_question_valid(new_title, new_message):
         user_id = search_user_id(user_name)
         current_time = datetime.datetime.now()
-        insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message, user_id) 
-                                   VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}', {user_id}) """
+        values = [current_time, 0, 0, new_title, new_message, user_id]
+        insert_new_question =SQL(' INSERT INTO question (submission_time, view_number, vote_number, title, message, user_id) '
+                                 'VALUES  {inserted_values}').format( inserted_values=SQL(', ').join([Identifier(value) for value in values]) )
         cursor.execute(insert_new_question)
         select_query = f""" SELECT id FROM question ORDER BY id DESC LIMIT 1 """
         cursor.execute(select_query)
 
         image_index = cursor.fetchone().get('id')
         image_path = upload_image(f"Q_{image_index}", image_file)
-        new_answer_query = f""" UPDATE question SET image='{image_path}' WHERE id='{image_index}' """
+        new_answer_query = SQL(' UPDATE question SET image={} WHERE id={} ').format(Literal(image_path), Literal(image_index))
         cursor.execute(new_answer_query)
         return True
 
@@ -137,14 +140,14 @@ def delete_images(image_paths=[]):
 @connection_handler
 def delete(cursor, question_id=None, answer_id=None):
     if question_id:
-        delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
+        delete_query = SQL(' DELETE FROM answer WHERE question_id={} RETURNING image ').format(Literal(question_id))
         cursor.execute(delete_query)
         images_for_delete = cursor.fetchall()
-        delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
+        delete_query = SQL(' DELETE FROM question WHERE id={} RETURNING image ').format(Literal(question_id))
         cursor.execute(delete_query)
         images_for_delete.extend(cursor.fetchall())
     elif answer_id:
-        delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
+        delete_query = SQL(' DELETE FROM answer WHERE id={} RETURNING image ').format(Literal(question_id))
         cursor.execute(delete_query)
         images_for_delete= cursor.fetchall()
     delete_images(images_for_delete)
@@ -163,37 +166,35 @@ def upload_image(img_name, image_request):
 
 @connection_handler
 def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
-    query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
+    query = SQL(' SELECT * FROM {} WHERE id={} ').format(Identifier(table_name), Literal(entry_id))
     cursor.execute(query)
     return cursor.fetchone()
 
 
 @connection_handler
 def entry_editor(cursor, table_name, data_id, message):
-    query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
-    """
+    query = SQL(' UPDATE {} SET message={} WHERE id={} ').format(Identifier(table_name), Literal(message), Literal(data_id))
     cursor.execute(query)
 
 
 @connection_handler
 def question_editor(cursor, title, message, question_id):
-    query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id} 
-        """
+    query = SQL(' UPDATE question SET title={}, message={} WHERE id={} ').format(Literal(title), Literal(message), Literal(question_id))
     cursor.execute(query)
 
 
 @connection_handler
 def get_question_titles_and_messages(cursor, search_phrase):
-    query = f"""SELECT  id ,title, message 
-                FROM question 
-                WHERE title LIKE '%{search_phrase}%'; """
+    joined_search_phrase = '%' + search_phrase + '%'
+    query = SQL(' SELECT  id ,title, message FROM question WHERE title LIKE {} ')\
+        .format( Literal(joined_search_phrase) )
     cursor.execute(query)
     return cursor.fetchall()
 
 
 @connection_handler
 def get_answers_by_id(cursor, id):
-    query = f"""SELECT message FROM answer WHERE  question_id = {id}"""
+    query = SQL(' SELECT message FROM answer WHERE  question_id = {} ').format(Literal(id))
     cursor.execute(query)
     result = []
     for x in (cursor.fetchall()):
@@ -203,24 +204,24 @@ def get_answers_by_id(cursor, id):
 
 @connection_handler
 def image_editor(cursor, table_name, data_id, image):
-    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} """
+    query = SQL(' UPDATE {} SET image ={} WHERE id={} ').format(Identifier(table_name), Literal(image), Literal(data_id))
     cursor.execute(query)
 
 
 @connection_handler
 def add_new_tag(cursor, new_tag):
-    query = f""" INSERT INTO tag(name) SELECT '{new_tag}'
-            WHERE NOT EXISTs (SELECT name FROM tag WHERE name='{new_tag}')"""
+    query = SQL(' INSERT INTO tag(name) SELECT {} WHERE NOT EXISTs (SELECT name FROM tag WHERE name={}) ')\
+        .format(Identifier(new_tag), Identifier(new_tag))
     cursor.execute(query)
-    query = f""" SELECT id FROM tag WHERE name='{new_tag}'"""
+    query = SQL(' SELECT id FROM tag WHERE name={} ').format(Identifier(new_tag))
     cursor.execute(query)
     return cursor.fetchone().get("id")
 
 
 @connection_handler
 def add_tag_to_question(cursor, added_tag_id, question_id):
-    query = f""" INSERT INTO question_tag(question_id,tag_id)
-            VALUES({question_id}, {added_tag_id})"""
+    query = SQL(' INSERT INTO question_tag(question_id,tag_id) VALUES({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join( [Literal(question_id), Literal(added_tag_id)] ) )
     cursor.execute(query)
 
 
@@ -229,8 +230,9 @@ def add_tag_to_question(cursor, added_tag_id, question_id):
 def add_new_comment_q(cursor, question_id, added_message, user_name):
     user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count, user_id) 
-                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
+    values = [question_id, added_message, submission_time, 0, user_id]
+    comment_query = SQL(' INSERT INTO comment (question_id, message, submission_time, edited_count, user_id) VALUES ({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join([Literal(value) for value in values]) )
     cursor.execute(comment_query)
 
 
@@ -238,15 +240,17 @@ def add_new_comment_q(cursor, question_id, added_message, user_name):
 def add_new_comment_a(cursor, answer_id, added_message, user_name):
     user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id) 
-                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
+    a_values = [answer_id, added_message, submission_time, 0, user_id]
+    comment_query = SQL(' INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id) VALUES ({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join([Literal(value) for value in a_values]) )
     cursor.execute(comment_query)
 ## refactor this to one function
 
 
 @connection_handler
 def delete_comment(cursor, table_name, column_type, column_value):
-    delete_comment_query =  f""" DELETE FROM {table_name} WHERE {column_type}={column_value}"""
+    delete_comment_query =  SQL(' DELETE FROM {} WHERE {}={} ')\
+        .format(Identifier(table_name), Identifier(column_type), Literal(column_value))
     cursor.execute(delete_comment_query)
 
 
@@ -260,7 +264,7 @@ def latest_questions(cursor):
 
 @connection_handler
 def get_user_password(cursor, email):
-    query = f""" SELECT user_password FROM users WHERE user_name = '{email}' """
+    query = SQL(' SELECT user_password FROM users WHERE user_name = {} ').format(Literal(email))
     cursor.execute(query)
     table_data = cursor.fetchone()
     return table_data
@@ -275,9 +279,8 @@ def validate_login(input_password, valid_password):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    query = f""" INSERT INTO users (user_name, user_password, registration_date)
-    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}')
-    """
+    values = [name, hashed_password, datetime.datetime.now()]
+    query = SQL(' INSERT INTO users (user_name, user_password, registration_date) VALUES ({}) ').format( inserted_values=SQL(', ').join([Literal(value) for value in values]))
     cursor.execute(query)
 
 
@@ -288,9 +291,7 @@ def convert_to_hash(input_string):
 
 @connection_handler
 def search_user_id(cursor, user_name):
-    query = f"""SELECT * FROM users
-                Where user_name = '{user_name}'
-        """
+    query = SQL(' SELECT * FROM users WHERE user_name={} ').format(Literal(user_name))
     cursor.execute(query)
     user_id = cursor.fetchone().get('id')
     return user_id
@@ -298,9 +299,7 @@ def search_user_id(cursor, user_name):
 
 @connection_handler
 def search_user_data(cursor, user_name):
-    query = """SELECT * FROM user
-                Where user_name = %(user_name)s
-        """
+    query = SQL(' SELECT * FROM users WHERE user_name={} ').format(Literal(user_name))
     select_by = {'user_name':user_name}
     cursor.execute(query,select_by)
     user_data = cursor.fetchone()
@@ -323,36 +322,48 @@ from users inner join question q on users.id = q.user_id
 group by users.user_name, users.reputation, to_char(users.registration_date, 'YY.MM.DD'),users.id
         """
     cursor.execute(query)
+
+
+def get_user_blog_info(cursor, user_id):
+    query = SQL(' SELECT  distinct user_name, '
+                'a.message as answer, '
+                'a.id as answer_id, '
+                'q.message as question, '
+                'c.message as comment, '
+                'c.question_id, '
+                'c.answer_id as comment_answer_id '
+                'FROM users '
+                'inner join answer a on users.id = a.user_id '
+                'inner join comment c on users.id = c.user_id '
+                'inner join question q on users.id = q.user_id '
+                'WHERE users.id = {} ').format(Literal(user_id))
+    select_by = {'user_id': user_id}
+    cursor.execute(query,select_by)
     return cursor.fetchall()
 
 
 @connection_handler
 def get_answer_comment_by_id(cursor, id):
-    query = """SELECT * 
-               FROM  comment 
-               WHERE answer_id = %(id)s"""
+    query = SQL(' SELECT * FROM comment WHERE answer_id={} ').format(Literal(id))
     select_by = {'id': id}
     cursor.execute(query, select_by)
     return cursor.fetchone()
 
 @connection_handler
 def change_answer_accept_to(cursor, answer_id, value):
-    query = f"""UPDATE answer SET accepted={value} WHERE id = {answer_id}
-    """
+    query = SQL(' UPDATE answer SET accepted={} WHERE id = {} ').format(Literal(value), Literal(answer_id))
     cursor.execute(query)
 
 
 @connection_handler
 def reputation_editor(cursor, user_id, reputation_value):
-    query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
+    query = SQL(' UPDATE users SET reputation = reputation + {} WHERE id={} ').format(Literal(reputation_value), Literal(user_id))
     cursor.execute(query)
 
 
 @connection_handler
 def search_table_user_id(cursor, data_id, table_name):
-    query = f"""SELECT user_id FROM {table_name}
-                Where id = {data_id}
-        """
+    query = SQL(' SELECT user_id FROM {} Where id = {} ').format(Identifier(table_name), Literal(data_id))
     cursor.execute(query)
     user_id = cursor.fetchone().get('user_id')
     return user_id
@@ -360,10 +371,7 @@ def search_table_user_id(cursor, data_id, table_name):
 
 @connection_handler
 def get_question_tag_by_id(cursor, question_id):
-    query = f"""SELECT tag.name FROM question_tag  
-    JOIN tag ON question_tag.tag_id = tag.id 
-    WHERE question_id='{question_id}'
-    """
+    query = SQL(' SELECT tag.name FROM question_tag JOIN tag ON question_tag.tag_id = tag.id WHERE question_id={} ').format(Literal(question_id))
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -396,4 +404,3 @@ def filter_bonus_question(bonus_question, search):
             if new_search not in question['title']:
                 filtered_list.append(question)
     return filtered_list
-

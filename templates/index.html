@@ -18,8 +18,8 @@
         <form action = "/list">
                 <label for="order_direction">Order:</label>
                 <select id="order_direction" name="order_direction">
-                  <option value="DESC">descending</option>
-                  <option value="ASC">ascending</option>
+                  <option value='DESC'>descending</option>
+                  <option value='ASC'>ascending</option>
                 </select>
         <form action = "/list">
                 <button type="submit" class="btn">Sort</button>
@@ -57,8 +57,9 @@
         {% if session['id'] == data['user_id'] %}
             <a href="/question/{{ data['id'] }}/delete" class="btn">Delete</a>
         {% else %}
-        </td>
+            <p></p>
         {% endif %}
+        </td>
     </tr>
     {% endfor %}
     </table>
