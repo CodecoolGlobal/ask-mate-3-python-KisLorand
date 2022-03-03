@@ -71,13 +71,13 @@ def get_all_data_by_condition(cursor, table_name, column, col_value, order_type=
 @connection_handler
 def question_opener(cursor, question_id):
     # question_query = f""" SELECT * FROM question WHERE id='{question_id}' """
-    question_query = SQL(' SELECT * FROM question WHERE id=%s ')
-    cursor.execute(question_query, [question_id])
+    question_query = SQL(' SELECT * FROM question WHERE id={} ').format(Literal(question_id))
+    cursor.execute(question_query)
     question_data = cursor.fetchone()
 
     # answer_query = f""" SELECT * FROM answer WHERE question_id = '{question_id}' """
-    answer_query = SQL(' SELECT * FROM answer WHERE question_id = %s ')
-    cursor.execute(answer_query, [question_id])
+    answer_query = SQL(' SELECT * FROM answer WHERE question_id={} ').format(Literal(question_id))
+    cursor.execute(answer_query)
     answers = cursor.fetchall()
 
     return question_data, answers
@@ -135,8 +135,8 @@ def add_new_question(cursor, new_title, new_message, image_file, user_name):
         image_index = cursor.fetchone().get('id')
         image_path = upload_image(f"Q_{image_index}", image_file)
         # new_answer_query = f""" UPDATE question SET image='{image_path}' WHERE id='{image_index}' """
-        new_answer_query = SQL(' UPDATE question SET image=%s WHERE id=%s ')
-        cursor.execute(new_answer_query, [image_path, image_index])
+        new_answer_query = SQL(' UPDATE question SET image={} WHERE id={} ').format(Literal(image_path), Literal(image_index))
+        cursor.execute(new_answer_query)
         return True
 
 
@@ -190,8 +190,8 @@ def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", imag
 def entry_editor(cursor, table_name, data_id, message):
     # query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
     # """
-    query = SQL(' UPDATE {} SET message=%s WHERE id=%s ').format(Identifier(table_name), )
-    cursor.execute(query, [message, data_id])
+    query = SQL(' UPDATE {} SET message={} WHERE id={} ').format(Identifier(table_name), Literal(message), Literal(data_id))
+    cursor.execute(query)
 
 
 @connection_handler
@@ -242,8 +242,8 @@ def add_new_tag(cursor, new_tag):
 
 @connection_handler
 def add_tag_to_question(cursor, added_tag_id, question_id):
-    query = f""" INSERT INTO question_tag(question_id,tag_id)
-            VALUES({question_id}, {added_tag_id})"""
+    query = SQL(' INSERT INTO question_tag(question_id,tag_id) VALUES({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join( [Literal(question_id), Literal(added_tag_id)] ) )
     cursor.execute(query)
 
 
