@@ -1,5 +1,6 @@
 {% extends 'base_layout.html' %}
 {% block title %}New tag{% endblock %}
+{% block content %}
     <form action="/question/{{ question_id }}/new-tag" method="POST">
         <label for="tag-names">TAGS:</label>
         <select id="tag-names" name="tag-id">
@@ -15,3 +16,4 @@
         <input id="new-tag-name" type="text" name="new-tag-name">
         <button type="submit">Add new tag</button>
     </form>
+{% endblock %}
