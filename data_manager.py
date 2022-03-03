@@ -216,7 +216,7 @@ def get_question_titles_and_messages(cursor, search_phrase):
 
 @connection_handler
 def get_answers_by_id(cursor, id):
-    query = f"""SELECT message FROM answer WHERE  question_id = {id}"""
+    query = SQL(' SELECT message FROM answer WHERE  question_id = {} ').format(Literal(id))
     cursor.execute(query)
     result = []
     for x in (cursor.fetchall()):
