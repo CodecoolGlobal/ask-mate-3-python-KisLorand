@@ -365,7 +365,7 @@ def change_answer_accept_to(cursor, answer_id, value):
 
 @connection_handler
 def reputation_editor(cursor, user_id, reputation_value):
-    query = f""" UPDATE users SET reputation =reputation + {reputation_value} WHERE id={user_id} """
+    query = SQL(' UPDATE users SET reputation =reputation + {} WHERE id={} ').format(Literal(reputation_value), Literal(user_id))
     cursor.execute(query)
 
 
