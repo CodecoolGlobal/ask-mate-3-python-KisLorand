@@ -301,9 +301,8 @@ def validate_login(input_password, valid_password):
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    query = f""" INSERT INTO users (user_name, user_password, registration_date)
-    VALUES ('{name}', '{hashed_password}', '{datetime.datetime.now()}')
-    """
+    values = [name, hashed_password, datetime.datetime.now()]
+    query = SQL(' INSERT INTO users (user_name, user_password, registration_date) VALUES ({}) ').format( inserted_values=SQL(', ').join([Literal(value) for value in values]))
     cursor.execute(query)
 
 
