@@ -51,7 +51,7 @@
             </tr>
             {% for answer in answers %}
                 <tr>
-                    {% if answer['accepted'] == True %}
+                    {% if answer['accepted'] %}
                         <td>accepted</td>
                     {% else %}
                         <td></td>
