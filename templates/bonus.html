@@ -1,0 +1,46 @@
+{% extends 'base_layout.html' %}
+{% block title %}Bonus questions{% endblock %}
+{% block content %}
+    <h1>Bonus Questions</h1>
+    <a href="/" class="btn add-new">Back to main page</a>
+
+       <form action="/bonus-question" method="POST">
+            <label for="search">Search in questions</label>
+            <input type="text" id="search" name="search-phrase">
+            <button type="submit" id="search-btn" class="btn">Search</button>
+        </form>
+
+<script>
+$(document).ready(function() {
+
+   function RefreshTable() {
+       $( "#question-table" ).load( "bonus.html #question-table" );
+   }
+
+   $("#search-btn").on("click", RefreshTable);
+
+});
+</script>
+
+    </div>
+    <table id="question-table" class="listing-table" cellpadding="0" cellspacing="0">
+    <tr>
+        <th>View Number</th>
+        <th>Vote Number</th>
+        <th>Title</th>
+        <th>description</th>
+    </tr>
+    {%for data in bonus_question  %}
+    <tr>
+        <td>{{ data['view_number'] }}</td>
+        <td>{{ data['vote_number'] }}</td>
+        <td>{{ data['title'] }}</td>
+        <td>{{ data['description'] }}</td>
+        <td>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=1&table=question&reputation=5" class="btn vote-up">Up vote</a><br>
+            <a href="/question/{{ data['id'] }}/vote?vote-up=-1&table=question&reputation=-2" class="btn vote-down">Down vote</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -23,7 +23,6 @@ MIN_QUESTION_MESSAGE_LEN = 5
 
 @connection_handler
 def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
-    # query = f""" UPDATE {table_name} SET {col_name}={col_name}+{vote_up} WHERE id={id_number} """
     query = SQL('UPDATE {} SET {}={}+{} WHERE id={}')\
         .format(Identifier(table_name), Identifier(col_name), Identifier(col_name), Literal(vote_up), Literal(id_number) )
     cursor.execute(query)
@@ -33,8 +32,6 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 def add_new_answer(cursor, id_input, input_text, image_file, user_name):
     user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
-    # query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id)
-    #             VALUES ('{current_time}', 0, '{id_input}', '{input_text}', {user_id}) """
     query = SQL('INSERT INTO answer (submission_time, vote_number, question_id, message, user_id) VALUES ({}, {}, {}, {}, {})')\
         .format(Literal(current_time), Literal(0), Literal(id_input), Literal(input_text), Literal(user_id))
     cursor.execute(query)
@@ -43,7 +40,6 @@ def add_new_answer(cursor, id_input, input_text, image_file, user_name):
 
     image_index = cursor.fetchone().get('id')
     image_path = upload_image(f"A_{image_index}", image_file)
-    # new_answer_query = f""" UPDATE answer SET image='{image_path}' WHERE id='{image_index}' """
     new_answer_query = SQL(' UPDATE answer SET image={} WHERE id={} ').format(Literal(image_path), Literal(image_index))
     cursor.execute(new_answer_query)
     return True
@@ -51,7 +47,6 @@ def add_new_answer(cursor, id_input, input_text, image_file, user_name):
 
 @connection_handler
 def get_all_data(cursor, table_name, order_type='submission_time', order_direction='DESC'):
-    # query = f""" SELECT * FROM "{table_name}" ORDER BY {order_type} {order_direction} """
     query = SQL(' SELECT * FROM {} ORDER BY {} DESC ').format(Identifier(table_name), Identifier(order_type)) #, Literal(order_direction))
     cursor.execute(query)
     table_data = cursor.fetchall()
@@ -60,7 +55,6 @@ def get_all_data(cursor, table_name, order_type='submission_time', order_directi
 
 @connection_handler
 def get_all_data_by_condition(cursor, table_name, column, col_value, order_type="submission_time", order_direction="ASC"):
-    # query = f""" SELECT * FROM "{table_name}" WHERE {column}>={col_value} ORDER BY {order_type} {order_direction} """
     query = SQL(' SELECT * FROM {} WHERE {}>={} ORDER BY {} ASC ')\
         .format(Identifier(table_name), Identifier(column), Literal(col_value), Identifier(order_type)) #, Literal(order_direction))
     cursor.execute(query)
@@ -70,12 +64,10 @@ def get_all_data_by_condition(cursor, table_name, column, col_value, order_type=
 
 @connection_handler
 def question_opener(cursor, question_id):
-    # question_query = f""" SELECT * FROM question WHERE id='{question_id}' """
     question_query = SQL(' SELECT * FROM question WHERE id={} ').format(Literal(question_id))
     cursor.execute(question_query)
     question_data = cursor.fetchone()
 
-    # answer_query = f""" SELECT * FROM answer WHERE question_id = '{question_id}' """
     answer_query = SQL(' SELECT * FROM answer WHERE question_id={} ').format(Literal(question_id))
     cursor.execute(answer_query)
     answers = cursor.fetchall()
@@ -123,8 +115,6 @@ def add_new_question(cursor, new_title, new_message, image_file, user_name):
     if is_new_question_valid(new_title, new_message):
         user_id = search_user_id(user_name)
         current_time = datetime.datetime.now()
-        # insert_new_question = f""" INSERT INTO question (submission_time, view_number, vote_number, title, message, user_id)
-        #                            VALUES ('{current_time}', 0, 0, '{new_title}', '{new_message}', {user_id}) """
         values = [current_time, 0, 0, new_title, new_message, user_id]
         insert_new_question =SQL(' INSERT INTO question (submission_time, view_number, vote_number, title, message, user_id) '
                                  'VALUES  {inserted_values}').format( inserted_values=SQL(', ').join([Identifier(value) for value in values]) )
@@ -134,7 +124,6 @@ def add_new_question(cursor, new_title, new_message, image_file, user_name):
 
         image_index = cursor.fetchone().get('id')
         image_path = upload_image(f"Q_{image_index}", image_file)
-        # new_answer_query = f""" UPDATE question SET image='{image_path}' WHERE id='{image_index}' """
         new_answer_query = SQL(' UPDATE question SET image={} WHERE id={} ').format(Literal(image_path), Literal(image_index))
         cursor.execute(new_answer_query)
         return True
@@ -151,18 +140,15 @@ def delete_images(image_paths=[]):
 @connection_handler
 def delete(cursor, question_id=None, answer_id=None):
     if question_id:
-        # delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
-        delete_query = SQL(' DELETE FROM answer WHERE question_id=%s RETURNING image ')
-        cursor.execute(delete_query, [question_id])
+        delete_query = SQL(' DELETE FROM answer WHERE question_id={} RETURNING image ').format(Literal(question_id))
+        cursor.execute(delete_query)
         images_for_delete = cursor.fetchall()
-        # delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
-        delete_query = SQL(' DELETE FROM question WHERE id=%s RETURNING image ')
-        cursor.execute(delete_query, [question_id])
+        delete_query = SQL(' DELETE FROM question WHERE id={} RETURNING image ').format(Literal(question_id))
+        cursor.execute(delete_query)
         images_for_delete.extend(cursor.fetchall())
     elif answer_id:
-        # delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
-        delete_query = SQL(' DELETE FROM answer WHERE id=%s RETURNING image ')
-        cursor.execute(delete_query, [question_id])
+        delete_query = SQL(' DELETE FROM answer WHERE id={} RETURNING image ').format(Literal(question_id))
+        cursor.execute(delete_query)
         images_for_delete= cursor.fetchall()
     delete_images(images_for_delete)
 
@@ -180,7 +166,6 @@ def upload_image(img_name, image_request):
 
 @connection_handler
 def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
-    # query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
     query = SQL(' SELECT * FROM {} WHERE id={} ').format(Identifier(table_name), Literal(entry_id))
     cursor.execute(query)
     return cursor.fetchone()
@@ -188,25 +173,18 @@ def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", imag
 
 @connection_handler
 def entry_editor(cursor, table_name, data_id, message):
-    # query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
-    # """
     query = SQL(' UPDATE {} SET message={} WHERE id={} ').format(Identifier(table_name), Literal(message), Literal(data_id))
     cursor.execute(query)
 
 
 @connection_handler
 def question_editor(cursor, title, message, question_id):
-    # query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id}
-    #     """
     query = SQL(' UPDATE question SET title={}, message={} WHERE id={} ').format(Literal(title), Literal(message), Literal(question_id))
     cursor.execute(query)
 
 
 @connection_handler
 def get_question_titles_and_messages(cursor, search_phrase):
-    # query = f"""SELECT  id ,title, message
-    #             FROM question
-    #             WHERE title LIKE '%{search_phrase}%'; """
     joined_search_phrase = '%' + search_phrase + '%'
     query = SQL(' SELECT  id ,title, message FROM question WHERE title LIKE {} ')\
         .format( Literal(joined_search_phrase) )
@@ -313,9 +291,6 @@ def convert_to_hash(input_string):
 
 @connection_handler
 def search_user_id(cursor, user_name):
-    # query = f"""SELECT * FROM users
-    #             Where user_name = '{user_name}'
-    #     """
     query = SQL(' SELECT * FROM users WHERE user_name={} ').format(Literal(user_name))
     cursor.execute(query)
     user_id = cursor.fetchone().get('id')
@@ -357,7 +332,7 @@ def get_answer_comment_by_id(cursor, id):
     cursor.execute(query, select_by)
     return cursor.fetchone()
 
-
+@connection_handler
 def change_answer_accept_to(cursor, answer_id, value):
     query = SQL(' UPDATE answer SET accepted={} WHERE id = {} ').format(Literal(value), Literal(answer_id))
     cursor.execute(query)
@@ -391,3 +366,22 @@ def get_all_tags(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection_handler
+def search_user_by_id(cursor, user_id):
+    query= SQL(' SELECT * FROM users WHERE id = {} ').format(Literal(user_id))
+    cursor.execute(query)
+    return cursor.fetchone()
+
+def filter_bonus_question(bonus_question, search):
+    filtered_list = []
+    for question in bonus_question:
+        if search in question['title']:
+            filtered_list.append(question)
+            return filtered_list
+        if '!' in search:
+            new_search = search.replace('! ', "")
+            if new_search not in question['title']:
+                filtered_list.append(question)
+    return filtered_list
