@@ -359,8 +359,7 @@ def get_answer_comment_by_id(cursor, id):
 
 
 def change_answer_accept_to(cursor, answer_id, value):
-    query = f"""UPDATE answer SET accepted='{value}' WHERE id = '{answer_id}'
-    """
+    query = SQL(' UPDATE answer SET accepted={} WHERE id = {} ').format(Literal(value), Literal(answer_id))
     cursor.execute(query)
 
 
