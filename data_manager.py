@@ -24,12 +24,12 @@ MIN_QUESTION_MESSAGE_LEN = 5
 @connection_handler
 def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
     # query = f""" UPDATE {table_name} SET {col_name}={col_name}+{vote_up} WHERE id={id_number} """
-    query = SQL('UPDATE {} SET {}={}+{} WHERE id={}').format(Identifier(table_name), Identifier(col_name), Identifier(col_name), Literal(vote_up), Literal(id_number) )
-    cursor.execute(query)
+    query = SQL('UPDATE {} SET {}={}+%s WHERE id=%s').format(Identifier(table_name), Identifier(col_name), Identifier(col_name) )
+    cursor.execute(query, [id_number, vote_up])
 
 
 @connection_handler
-def update_table_single_col(cursor, id_input, input_text, image_file, user_name):
+def add_new_answer(cursor, id_input, input_text, image_file, user_name):
     user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
     # query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id)
@@ -179,16 +179,18 @@ def upload_image(img_name, image_request):
 
 @connection_handler
 def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", image_file=""):
-    query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
-    cursor.execute(query)
+    # query = f"""SELECT * FROM {table_name} WHERE id={entry_id}"""
+    query = SQL(' SELECT * FROM {} WHERE id=%s ').format(Identifier(table_name))
+    cursor.execute(query, [entry_id])
     return cursor.fetchone()
 
 
 @connection_handler
 def entry_editor(cursor, table_name, data_id, message):
-    query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
-    """
-    cursor.execute(query)
+    # query = f""" UPDATE {table_name} SET message='{message}' WHERE id={data_id}
+    # """
+    query = SQL(' UPDATE {} SET message=%s WHERE id=%s ').format(Identifier(table_name))
+    cursor.execute(query, [message, data_id])
 
 
 @connection_handler
@@ -304,10 +306,11 @@ def convert_to_hash(input_string):
 
 @connection_handler
 def search_user_id(cursor, user_name):
-    query = f"""SELECT * FROM users
-                Where user_name = '{user_name}'
-        """
-    cursor.execute(query)
+    # query = f"""SELECT * FROM users
+    #             Where user_name = '{user_name}'
+    #     """
+    query = SQL(' SELECT * FROM users WHERE user_name=%s ')
+    cursor.execute(query, [user_name])
     user_id = cursor.fetchone().get('id')
     return user_id
 
