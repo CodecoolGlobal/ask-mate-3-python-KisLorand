@@ -29,7 +29,7 @@ def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
 
 
 @connection_handler
-def add_new_answer(cursor, id_input, input_text, image_file, user_name):
+def update_table_single_col(cursor, id_input, input_text, image_file, user_name):
     user_id = search_user_id(user_name)
     current_time: datetime = datetime.datetime.now()
     # query = f""" INSERT INTO answer (submission_time, vote_number, question_id, message, user_id)
@@ -150,14 +150,17 @@ def delete_images(image_paths=[]):
 @connection_handler
 def delete(cursor, question_id=None, answer_id=None):
     if question_id:
-        delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
-        cursor.execute(delete_query)
+        # delete_query = f""" DELETE FROM answer WHERE question_id={question_id} RETURNING image"""
+        delete_query = SQL(' DELETE FROM answer WHERE question_id=%s RETURNING image ')
+        cursor.execute(delete_query, [question_id])
         images_for_delete = cursor.fetchall()
-        delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
+        # delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
+        delete_query = SQL(' DELETE FROM question WHERE id=%s RETURNING image ')
         cursor.execute(delete_query)
         images_for_delete.extend(cursor.fetchall())
     elif answer_id:
-        delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
+        # delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
+        delete_query = SQL(' DELETE FROM answer WHERE id=%s RETURNING image ')
         cursor.execute(delete_query)
         images_for_delete= cursor.fetchall()
     delete_images(images_for_delete)
