@@ -252,8 +252,9 @@ def add_tag_to_question(cursor, added_tag_id, question_id):
 def add_new_comment_q(cursor, question_id, added_message, user_name):
     user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (question_id, message, submission_time, edited_count, user_id) 
-                         VALUES ({question_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
+    values = [question_id, added_message, submission_time, 0, user_id]
+    comment_query = SQL(' INSERT INTO comment (question_id, message, submission_time, edited_count, user_id) VALUES ({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join([Literal(value) for value in values]) )
     cursor.execute(comment_query)
 
 
@@ -261,8 +262,9 @@ def add_new_comment_q(cursor, question_id, added_message, user_name):
 def add_new_comment_a(cursor, answer_id, added_message, user_name):
     user_id = search_user_id(user_name)
     submission_time = datetime.datetime.now()
-    comment_query = f""" INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id) 
-                         VALUES ({answer_id}, '{added_message}', '{submission_time}', 0, {user_id}) """
+    a_values = [answer_id, added_message, submission_time, 0, user_id]
+    comment_query = SQL(' INSERT INTO comment (answer_id, message, submission_time, edited_count, user_id) VALUES ({inserted_values}) ')\
+        .format( inserted_values=SQL(', ').join([Literal(value) for value in a_values]) )
     cursor.execute(comment_query)
 ## refactor this to one function
 
