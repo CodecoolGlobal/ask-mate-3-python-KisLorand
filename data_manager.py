@@ -8,6 +8,7 @@ import datetime
 from sql_connection import connection_handler
 import bcrypt
 
+from psycopg2.sql import SQL, Literal, Identifier
 
 # image path
 UPLOAD_FOLDER = 'static/images/'
@@ -325,8 +326,18 @@ group by users.user_name, users.reputation, to_char(users.registration_date, 'YY
     return cursor.fetchall()
 
 
+@connection_handler
+def get_answer_comment_by_id(cursor, id):
+    query = """SELECT * 
+               FROM  comment 
+               WHERE answer_id = %(id)s"""
+    select_by = {'id': id}
+    cursor.execute(query, select_by)
+    return cursor.fetchone()
+
+@connection_handler
 def change_answer_accept_to(cursor, answer_id, value):
-    query = f"""UPDATE answer SET accepted='{value}' WHERE id = '{answer_id}'
+    query = f"""UPDATE answer SET accepted={value} WHERE id = {answer_id}
     """
     cursor.execute(query)
 
@@ -365,4 +376,24 @@ def get_all_tags(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection_handler
+def search_user_by_id(cursor, user_id):
+    query= SQL(' SELECT * FROM users WHERE id = {} ').format(Literal(user_id))
+    cursor.execute(query)
+    return cursor.fetchone()
+
+
+def filter_bonus_question(bonus_question, search):
+    filtered_list = []
+    for question in bonus_question:
+        if search in question['title']:
+            filtered_list.append(question)
+            return filtered_list
+        if '!' in search:
+            new_search = search.replace('! ', "")
+            if new_search not in question['title']:
+                filtered_list.append(question)
+    return filtered_list
 

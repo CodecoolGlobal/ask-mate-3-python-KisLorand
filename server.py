@@ -3,6 +3,7 @@ import requests.cookies
 import requests.sessions
 from flask import Flask, session
 import data_manager
+import bonus_questions
 import random
 
 
@@ -47,15 +48,16 @@ def add_question():
 
 @app.route('/question/<question_id>', methods=['GET', 'POST'])
 def open_question(question_id):
+    user_id = data_manager.search_table_user_id(question_id, "question")
+    user_data_question = data_manager.search_user_by_id(user_id)
     question_comments = data_manager.get_all_data_by_condition('comment', "question_id", 0)
     answer_comments = data_manager.get_all_data_by_condition('comment', "answer_id", 0)
     data_manager.update_table_single_col("question", "view_number", question_id, 1)
     question, answers = data_manager.question_opener(question_id)
     question_tags = data_manager.get_question_tag_by_id(question_id)
-    print(question_tags)
     if question:
         return flask.render_template("questions.html", question=question, answers=answers, question_tags=question_tags,
-                                 question_comments=question_comments, answer_comments=answer_comments,
+                                 question_comments=question_comments, answer_comments=answer_comments, user_data_question=user_data_question,
                                      comment_condition=int(question_id))
     else:
         return flask.redirect('/')
@@ -249,7 +251,10 @@ def answer_accept_page(answer_id):
         question_id = flask.request.args.get("question_id")
         acceptance_value = flask.request.form.get("accepted")
         user_id = data_manager.search_table_user_id(answer_id, 'answer')
-        added_reputation = 15 if acceptance_value == "true" else -15
+        if acceptance_value == "true":
+            added_reputation = 15
+        else:
+            added_reputation =  -15
         data_manager.reputation_editor(user_id, added_reputation)
         data_manager.change_answer_accept_to(answer_id, acceptance_value )
         return flask.redirect(f"/question/{question_id}")
@@ -262,6 +267,16 @@ def list_tag_page():
         all_tag = data_manager.get_all_tags()
         return flask.render_template("list_tags.html", all_tags=all_tag)
     return flask.redirect("/")
+
+
+@app.route('/bonus-question', methods=['GET', 'POST'])
+def bonus_question():
+    bonus_question = bonus_questions.SAMPLE_QUESTIONS
+    if flask.request.method == 'POST':
+        search = flask.request.form.get('search-phrase')
+        bonus_question = data_manager.filter_bonus_question(bonus_question, search)
+    return flask.render_template('bonus.html', bonus_question=bonus_question)
+
 
 
 def check_session():

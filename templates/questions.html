@@ -8,6 +8,7 @@
                 <a href="/question/{{ question["id"] }}/edit" class="btn add-new">Edit</a>
             {% endif %}
         </p>
+    <p>Posted by: {{ user_data_question['user_name'] }}</p>
         {% if question['image'] %}
             <img src="{{ url_for('static', filename=question["image"])}}" alt="" width="100" height="100">
         {% else %}
@@ -43,14 +44,18 @@
 
         <table>
             <tr>
-                <th>GOOD ANSWER</th>
+                <th></th>
                 <th>Vote <br> Number &nbsp;</th>
                 <th>Answer &nbsp;</th>
                 <th>Image &nbsp;</th>
             </tr>
             {% for answer in answers %}
                 <tr>
-                    <td>{{ answer['accepted'] }}</td>
+                    {% if answer['accepted'] %}
+                        <td>accepted</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                     <td>{{ answer['vote_number'] }}</td>
                     <td>{{ answer['message'] }}</td>
                     {% if answer['image'] %}
