@@ -24,8 +24,9 @@ MIN_QUESTION_MESSAGE_LEN = 5
 @connection_handler
 def update_table_single_col(cursor, table_name, col_name, id_number, vote_up):
     # query = f""" UPDATE {table_name} SET {col_name}={col_name}+{vote_up} WHERE id={id_number} """
-    query = SQL('UPDATE {} SET {}={}+%s WHERE id=%s').format(Identifier(table_name), Identifier(col_name), Identifier(col_name) )
-    cursor.execute(query, [id_number, vote_up])
+    query = SQL('UPDATE {} SET {}={}+{} WHERE id={}')\
+        .format(Identifier(table_name), Identifier(col_name), Identifier(col_name), Literal(vote_up), Literal(id_number) )
+    cursor.execute(query)
 
 
 @connection_handler
@@ -156,12 +157,12 @@ def delete(cursor, question_id=None, answer_id=None):
         images_for_delete = cursor.fetchall()
         # delete_query = f""" DELETE FROM question WHERE id={question_id} RETURNING image """
         delete_query = SQL(' DELETE FROM question WHERE id=%s RETURNING image ')
-        cursor.execute(delete_query)
+        cursor.execute(delete_query, [question_id])
         images_for_delete.extend(cursor.fetchall())
     elif answer_id:
         # delete_query = f""" DELETE FROM answer WHERE id={answer_id} RETURNING image"""
         delete_query = SQL(' DELETE FROM answer WHERE id=%s RETURNING image ')
-        cursor.execute(delete_query)
+        cursor.execute(delete_query, [question_id])
         images_for_delete= cursor.fetchall()
     delete_images(images_for_delete)
 
@@ -195,9 +196,10 @@ def entry_editor(cursor, table_name, data_id, message):
 
 @connection_handler
 def question_editor(cursor, title, message, question_id):
-    query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id} 
-        """
-    cursor.execute(query)
+    # query = f""" UPDATE question SET title='{title}', message='{message}' WHERE id={question_id}
+    #     """
+    query = SQL(' UPDATE question SET title={}, message={} WHERE id=%s ').format(Literal(title), Literal(message))
+    cursor.execute(query, [question_id])
 
 
 @connection_handler
