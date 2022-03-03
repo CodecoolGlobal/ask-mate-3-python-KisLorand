@@ -35,9 +35,10 @@
     <a href="/list" class="btn">List all questions</a>
     <a href="/bonus-question" class="btn">Bonus questions</a>
         {% if session["user_name"] %}
-            <br><br>
-            <a href="/tags" class="btn add-new">TAGS</a>
-            <a href="/logout" class="btn add-new">LOG OUT</a>
+            <a href="/tags" class="btn">TAGS</a>
+            <a href="/users" class="btn">User List</a>
+            <a href="/logout" class="btn">LOG OUT</a>
+
         {% else %}
             <a href="/registration" class="btn">Sign up</a>
             <a href="/login" class="btn ">LOG IN</a>

@@ -1,0 +1,27 @@
+{% extends 'base_layout.html' %}
+{% block title %}
+Lis all users
+{% endblock %}
+{% block content %}
+    <table class="listing-table">
+    <tr>
+        <th>Username</th>
+        <th>Reputation</th>
+        <th>Registration date</th>
+        <th>Questions</th>
+        <th>Answers</th>
+        <th>Comments</th>
+    </tr>
+    <tr>
+    {% for user in users %}
+         <td><a href="/user/{{ user['id'] }}"> {{ user['username'] }}</a></td>
+         <td>{{ user['reputation'] }}</td>
+         <td>{{ user['registration_date'] }}</td>
+         <td>{{ user['number_of_questions'] }}</td>
+         <td>{{ user['number_of_answers'] }}</td>
+         <td>{{ user['number_of_comments'] }}</td>
+    {% endfor %}
+    </tr>
+    </table>
+    <a href="/list" class="btn">back to the questions</a>
+{% endblock %}
