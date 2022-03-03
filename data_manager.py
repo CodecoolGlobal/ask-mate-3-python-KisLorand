@@ -324,9 +324,7 @@ def search_user_id(cursor, user_name):
 
 @connection_handler
 def search_user_data(cursor, user_name):
-    query = """SELECT * FROM user
-                Where user_name = %(user_name)s
-        """
+    query = SQL(' SELECT * FROM users WHERE user_name={} ').format(Literal(user_name))
     select_by = {'user_name':user_name}
     cursor.execute(query,select_by)
     user_data = cursor.fetchone()
@@ -335,18 +333,18 @@ def search_user_data(cursor, user_name):
 
 @connection_handler
 def get_user_blog_info(cursor, user_id):
-    query = """SELECT  distinct user_name,
-                a.message as answer,
-                a.id as answer_id,
-                q.message as question,
-                c.message as comment, 
-                c.question_id,
-                c.answer_id as comment_answer_id
-    FROM users inner join answer a on users.id = a.user_id
-                inner join comment c on users.id = c.user_id
-                inner join question q on users.id = q.user_id
-    WHERE users.id = %(user_id)s
-    """
+    query = SQL(' SELECT  distinct user_name, '
+                'a.message as answer, '
+                'a.id as answer_id, '
+                'q.message as question, '
+                'c.message as comment, '
+                'c.question_id, '
+                'c.answer_id as comment_answer_id '
+                'FROM users '
+                'inner join answer a on users.id = a.user_id '
+                'inner join comment c on users.id = c.user_id '
+                'inner join question q on users.id = q.user_id '
+                'WHERE users.id = {} ').format(Literal(user_id))
     select_by = {'user_id': user_id}
     cursor.execute(query,select_by)
     return cursor.fetchall()
@@ -354,9 +352,7 @@ def get_user_blog_info(cursor, user_id):
 
 @connection_handler
 def get_answer_comment_by_id(cursor, id):
-    query = """SELECT * 
-               FROM  comment 
-               WHERE answer_id = %(id)s"""
+    query = SQL(' SELECT * FROM comment WHERE answer_id={} ').format(Literal(id))
     select_by = {'id': id}
     cursor.execute(query, select_by)
     return cursor.fetchone()
