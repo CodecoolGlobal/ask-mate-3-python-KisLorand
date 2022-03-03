@@ -226,7 +226,7 @@ def get_answers_by_id(cursor, id):
 
 @connection_handler
 def image_editor(cursor, table_name, data_id, image):
-    query = f""" UPDATE {table_name} SET image ='{image}' WHERE id={data_id} """
+    query = SQL(' UPDATE {} SET image ={} WHERE id={} ').format(Identifier(table_name), Literal(image), Literal(data_id))
     cursor.execute(query)
 
 
