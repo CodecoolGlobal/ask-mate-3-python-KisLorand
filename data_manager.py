@@ -365,15 +365,13 @@ def change_answer_accept_to(cursor, answer_id, value):
 
 @connection_handler
 def reputation_editor(cursor, user_id, reputation_value):
-    query = SQL(' UPDATE users SET reputation =reputation + {} WHERE id={} ').format(Literal(reputation_value), Literal(user_id))
+    query = SQL(' UPDATE users SET reputation = reputation + {} WHERE id={} ').format(Literal(reputation_value), Literal(user_id))
     cursor.execute(query)
 
 
 @connection_handler
 def search_table_user_id(cursor, data_id, table_name):
-    query = f"""SELECT user_id FROM {table_name}
-                Where id = {data_id}
-        """
+    query = SQL(' SELECT user_id FROM {} Where id = {} ').format(Identifier(table_name), Literal(data_id))
     cursor.execute(query)
     user_id = cursor.fetchone().get('user_id')
     return user_id
