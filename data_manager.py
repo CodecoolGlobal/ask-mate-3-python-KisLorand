@@ -363,9 +363,6 @@ def get_question_tag_by_id(cursor, question_id):
     WHERE question_id='{question_id}'
     """
     cursor.execute(query)
-<<<<<<< HEAD
-
-=======
     return cursor.fetchall()
 
 
@@ -377,4 +374,15 @@ def get_all_tags(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
->>>>>>> 8a160f67b32d5a1483017858f9db7f648cacad09
+
+def filter_bonus_question(bonus_question, search):
+    filtered_list = []
+    for question in bonus_question:
+        if search in question['title']:
+            filtered_list.append(question)
+            return filtered_list
+        if '!' in search:
+            new_search = search.replace('! ', "")
+            if new_search not in question['title']:
+                filtered_list.append(question)
+    return filtered_list

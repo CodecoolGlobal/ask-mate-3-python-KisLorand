@@ -3,6 +3,7 @@ import requests.cookies
 import requests.sessions
 from flask import Flask, session
 import data_manager
+import bonus_questions
 import random
 
 
@@ -262,6 +263,16 @@ def list_tag_page():
         all_tag = data_manager.get_all_tags()
         return flask.render_template("list_tags.html", all_tags=all_tag)
     return flask.redirect("/")
+
+
+@app.route('/bonus-question', methods=['GET', 'POST'])
+def bonus_question():
+    bonus_question = bonus_questions.SAMPLE_QUESTIONS
+    if flask.request.method == 'POST':
+        search = flask.request.form.get('search-phrase')
+        bonus_question = data_manager.filter_bonus_question(bonus_question, search)
+    return flask.render_template('bonus.html', bonus_question=bonus_question)
+
 
 
 def check_session():
