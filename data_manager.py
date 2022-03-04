@@ -96,6 +96,7 @@ def write_all_data(data_type, all_data):
 def is_new_question_valid(question_title, question_message):
     if len(question_title) > MIN_QUESTION_TITLE_LEN and len(question_message) > MIN_QUESTION_MESSAGE_LEN:
         return True
+
     return False
 
 
@@ -276,13 +277,13 @@ def validate_login(input_password, valid_password):
     hashed_password = valid_password.encode('UTF-8')
     hashed_input = input_password.encode('UTF-8')
     return bcrypt.checkpw(hashed_input, hashed_password)
-
+question
 
 @connection_handler
 def add_new_user(cursor, name, password):
     hashed_password = convert_to_hash(password)
-    values = [name, hashed_password, datetime.datetime.now()]
-    query = SQL(' INSERT INTO users (user_name, user_password, registration_date) VALUES ({}) ').format( inserted_values=SQL(', ').join([Literal(value) for value in values]))
+    values = []
+    query = SQL(' INSERT INTO users (user_name, user_password, registration_date) VALUES ({}, {}, {})  ').format( Literal(name), Literal(hashed_password), Literal(datetime.datetime.now()))
     cursor.execute(query)
 
 
