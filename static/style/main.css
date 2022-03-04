@@ -173,3 +173,7 @@ a, button{
     margin-bottom: 3rem;
 }
 
+.answer-table th{
+    text-align: left;
+}
+
