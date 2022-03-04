@@ -173,13 +173,15 @@ def get_entry_by_id(cursor, entry_id, table_name, entry_post=0, message="", imag
 
 @connection_handler
 def entry_editor(cursor, table_name, data_id, message):
-    query = SQL(' UPDATE {} SET message={} WHERE id={} ').format(Identifier(table_name), Literal(message), Literal(data_id))
+    query = SQL(' UPDATE {} SET message={} WHERE id={} ')\
+        .format(Identifier(table_name), Literal(message), Literal(data_id))
     cursor.execute(query)
 
 
 @connection_handler
 def question_editor(cursor, title, message, question_id):
-    query = SQL(' UPDATE question SET title={}, message={} WHERE id={} ').format(Literal(title), Literal(message), Literal(question_id))
+    query = SQL(' UPDATE question SET title={}, message={} WHERE id={} ')\
+        .format(Literal(title), Literal(message), Literal(question_id))
     cursor.execute(query)
 
 
