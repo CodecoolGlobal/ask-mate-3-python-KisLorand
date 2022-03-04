@@ -171,6 +171,7 @@ a, button{
  border: solid black 2px;
     border-radius: 25px;
     margin-bottom: 3rem;
+    width: 100%;
 }
 
 .answer-table th{
