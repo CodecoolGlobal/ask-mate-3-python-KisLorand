@@ -1,31 +1,38 @@
 {% extends 'base_layout.html' %}
 {% block title %} Question {% endblock %}
 {% block content %}
-        <h1>{{ question['title'] }}</h1>
-        <p>{{ question['message'] }}
-            {% if 'user_name' in session  and session["id"] == question["user_id"] %}
-                <br><br>
-                <a href="/question/{{ question["id"] }}/edit" class="btn add-new">Edit</a>
+<!-- header -->
+    <h1>Question</h1 >
+    <div id="question-header">
+        <div id="question-text">
+            <h1>{{ question['title'] }}</h1>
+            {% if question['image'] %}
+            <img src="{{ url_for('static', filename=question["image"])}}">
+        {% endif %}
+            <p>{{ question['message'] }}</p>
+            <h4>Posted by: {{ user_data_question['user_name'] }}</h4>
+        </div>
+        <div id="tags">
+            {% if question_tags %}
+                {% for question_tag in question_tags %}
+                <span>#{{ question_tag.get("name") }} </span>
+            {% endfor %}
             {% endif %}
-        </p>
-    <p>Posted by: {{ user_data_question['user_name'] }}</p>
-        {% if question['image'] %}
-            <img src="{{ url_for('static', filename=question["image"])}}" alt="" width="100" height="100">
-        {% else %}
-            <p></p>
-        {% endif %}
+        </div>
+    <div id="question-buttons">
         {% if 'user_name' in session  and session["id"] == question["user_id"] %}
-            <a href="/question/{{ question["id"]}}/new-tag" class="btn add-new">Add tag</a>
-            <a href="/question/{{ question["id"] }}/new-comment" class="btn add-new">Add Comment</a>
+            <a href="/question/{{ question["id"]}}/new-tag" class="btn" >Add tag</a>
+            <a href="/question/{{ question["id"] }}/new-comment" class="btn">Add Comment</a>
+            <a href="/question/{{ question["id"] }}/edit" class="btn">Edit</a>
+            <a href="/question/{{ question["id"] }}/new-answer?question_id={{ question["id"] }}" class="btn">Add new answer</a>
+
         {% endif %}
-    <div id="tags">
-    {% if question_tags %}
-        {% for question_tag in question_tags %}
-        <span>#{{ question_tag.get("name") }} </span>
-    {% endfor %}
-    {% endif %}
     </div>
-        <table id="question-comment-table">
+    </div>
+
+<!-- question comment -->
+<h2>comments</h2>
+            <table id="question-comment">
             {% for q_comment in question_comments %}
                 {% if q_comment['question_id'] == comment_condition %}
                     <tr>
@@ -33,43 +40,44 @@
                         <td>{{ q_comment['submission_time'] }}</td>
                         <td>edited {{ q_comment['edited_count'] }} times</td>
                         {% if 'user_name' in session  and session["id"] == q_comment["user_id"] %}
-                            <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question["id"] }}">Edit Comment</a></td>
-                            <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question["id"] }}">Delete Comment</a></td>
+                            <td><a href="/comment/{{ q_comment['id'] }}/edit?question_id={{ question["id"] }}" class="btn">Edit Comment</a></td>
+                            <td><a href="/comment/{{ q_comment['id'] }}/delete?question_id={{ question["id"] }}" class="btn">Delete Comment</a></td>
                         {% endif %}
                 {% endif %}
             {% endfor %}
 
-        </table>
-        <br><br>
+<!-- Answer -->
 
-        <table>
-            <tr>
+
+       </table>
+    <h2>Answers</h2>
+            {% for answer in answers %}
+                <table class="answer-table">
+                <tr>
                 <th></th>
                 <th>Vote <br> Number &nbsp;</th>
                 <th>Answer &nbsp;</th>
                 <th>Image &nbsp;</th>
             </tr>
-            {% for answer in answers %}
-                <tr>
                     {% if answer['accepted'] %}
-                        <td>accepted</td>
+                        <td style="color: #3A7734"><strong>Verified</strong></td>
                     {% else %}
                         <td></td>
                     {% endif %}
                     <td>{{ answer['vote_number'] }}</td>
                     <td>{{ answer['message'] }}</td>
                     {% if answer['image'] %}
-                        <td><img src="{{url_for('static', filename=answer['image'])}}" alt=" " width="42" height="42"></td>
+                        <td><img src="{{url_for('static', filename=answer['image'])}}" alt=" " width="85" height="85"></td>
                     {% else %}
                         <td></td>
                     {% endif %}
                     <td>
-                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=1&table=answer&reputation=10" > Up vote</a>
-                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=-1&table=answer&reputation=-2" >Down vote</a>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=1&table=answer&reputation=10" class="btn vote-up"> Up vote</a>
+                        <a href="/answer/{{ answer['id'] }}/vote?question_id={{ question["id"] }}&vote-up=-1&table=answer&reputation=-2" class="btn vote-down">Down vote</a>
                     {% if 'user_name' in session  and session["id"] == answer["user_id"] %}
                     <td>
-                        <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question["id"] }}">Delete</a>
-                        <a href="/answer/{{ answer['id'] }}/edit">Edit</a>
+                        <a href="/answer/{{ answer['id'] }}/delete?question_id={{ question["id"] }}" class="btn">Delete</a>
+                        <a href="/answer/{{ answer['id'] }}/edit" class="btn">Edit</a>
                     {% else %}
                         <p></p>
                         <p></p>
@@ -78,24 +86,23 @@
                     <td>
                         <form action="/answer/{{ answer['id'] }}/accept?question_id={{ question["id"] }}" method="POST">
                             {% if answer["accepted"] == False %}
-                            <button type="submit" name="accepted" value="true" class="btn add-new">ACCEPT</button>
+                            <button type="submit" name="accepted" value="true" class="btn" tyle="font-weight: bold">Verify</button>
                             {% else %}
-                            <button type="submit" name="accepted" value="false" class="btn add-new">UNACCEPT</button>
+                            <button type="submit" name="accepted" value="false" class="btn" style="font-weight: bold">Unverify</button>
                             {% endif %}
                         </form>
                     </td>
                 </tr>
                 <tr>
-                    <table>
-                        {% for comment in answer_comments %}
+                       {% for comment in answer_comments %}
                             {% if comment['answer_id'] == answer['id'] %}
                             <tr>
                                 <td>{{ comment['message'] }}</td>
                                 <td>{{ comment['submission_time'] }}</td>
                                 <td>edited {{ comment['edited_count'] }} times</td>
                                 {% if 'user_name' in session  and session["id"] == comment["user_id"] %}
-                                    <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question["id"] }}">Edit Comment</a></td>
-                                    <td><a href="/comment/{{ comment['id'] }}/delete?question_id={{ question["id"] }}">Delete Comment</a></td>
+                                    <td><a href="/comment/{{ comment['id'] }}/edit?question_id={{ question["id"] }}" class="btn">Edit Comment</a></td>
+                                    <td><a href="/comment/{{ comment['id'] }}/delete?question_id={{ question["id"] }}" class="btn">Delete Comment</a></td>
                                 {% else %}
                                     <td></td>
                                     <td></td>
@@ -103,14 +110,15 @@
                             </tr>
                             {% endif %}
                         {% endfor %}
-                    </table>
+
                 </tr>
                 <tr>
-                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question["id"] }}" class="btn add-new">Comment</a></td>
+                    <td><a href="/answer/{{ answer['id'] }}/new-comment?question_id={{ question["id"] }}" class="btn">Comment</a></td>
                 </tr>
+                </table>
             {% endfor %}
-        </table>
-        <a href="/question/{{ question["id"] }}/new-answer?question_id={{ question["id"] }}" class="btn add-new">Add new answer</a><br>
+
+
         <a href="/list" class="btn add-new">back to the questions</a>
 
 {% endblock %}

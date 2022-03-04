@@ -44,7 +44,9 @@ a, button{
     font-weight: 500;
 }
 .btn{
-    min-width: 95px;
+    max-width: 200px;
+    max-width: content-box;
+    height: 40px;
     text-align: center;
     text-decoration: none;
     color: white;
@@ -54,6 +56,7 @@ a, button{
     white-space: nowrap;
     border-radius: 10px;
     cursor: pointer;
+    margin: 1rem 0;
 }
 
 .vote-up{
@@ -95,3 +98,78 @@ a, button{
     margin:  1.5rem auto;
     font-weight: 600;
 }
+
+/* question page | header*/
+
+#question-header{
+    display: flex;
+    justify-content: space-around;
+    border: black solid 2px;
+    border-radius: 25px;
+}
+#question-header img{
+    width: 120px;
+    height: 120px;
+    vertical-align: center;
+    border-radius: 50%;
+    border: darkgrey solid 3px;
+    position: relative;
+    top: 3rem;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+
+}
+#question-text{
+    max-width: 25rem;
+    overflow-wrap: break-word;
+    padding-bottom: 3rem;
+}
+
+#question-text h1{
+    display: inline-block;
+}
+#question-text h1, p, h4{
+    margin: 1rem 0;
+}
+
+#question-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+#tags{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5em;
+}
+
+/* question page| comment */
+
+#question-comment{
+    display: flex;
+    justify-content: space-around;
+    border: solid #323432 2px;
+    width: calc(100% - 4rem);
+    margin: 0 auto 2rem auto;
+    border-top: none;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+#question-comment p{
+    padding: 1rem;
+    overflow-wrap: break-word;
+
+}
+
+/* answer table*/
+
+.answer-table{
+ border: solid black 2px;
+    border-radius: 25px;
+    margin-bottom: 3rem;
+}
+
